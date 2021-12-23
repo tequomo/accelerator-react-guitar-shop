@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom';
+import { AppRoute } from '../../../const';
+
 function ProductCard(): JSX.Element {
   return (
     <div className="product-card"><img src="img/content/guitar-2.jpg" width="75" height="190" alt="СURT Z30 Plus Acoustics" />
@@ -24,7 +27,7 @@ function ProductCard(): JSX.Element {
         </p>
       </div>
       <div className="product-card__buttons">
-        <a className="button button--mini" href="/#">Подробнее</a>
+        <Link className="button button--mini" to={AppRoute.Product}>Подробнее</Link>
         <a className="button button--red button--mini button--add-to-cart" href="/#">Купить</a>
       </div>
     </div>
