@@ -1,4 +1,23 @@
+import { ChangeEvent, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { REQUEST_DELAY } from '../../../../const';
+import { fetchSearchGuitarAction } from '../../../../services/api-actions';
+import { getSearchGuitars/*, getSearchLoadingStatus*/ } from '../../../../store/reducers/guitars-data/selectors';
+import { debounce } from '../../../../utils/utils';
+
 function FormSearch(): JSX.Element {
+
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const searchResult = useSelector(getSearchGuitars);
+  // const searchResultLoadingStatus = useSelector(getSearchLoadingStatus);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchSearchGuitarAction(searchQuery));
+  },[dispatch, searchQuery]);
+
   return (
     <div className="form-search">
       <form className="form-search__form">
@@ -7,17 +26,15 @@ function FormSearch(): JSX.Element {
             <use xlinkHref="#icon-search"></use>
           </svg><span className="visually-hidden">Начать поиск</span>
         </button>
-        <input className="form-search__input" id="search" type="text" autoComplete="off" placeholder="что вы ищете?" />
+        <input className="form-search__input" id="search" type="text" autoComplete="off" placeholder="что вы ищете?" onChange={debounce<ChangeEvent<HTMLInputElement>>((e) => setSearchQuery(e.target.value), REQUEST_DELAY)} />
         <label className="visually-hidden" htmlFor="search">Поиск</label>
       </form>
-      <ul className="form-search__select-list hidden">
-        <li className="form-search__select-item" tabIndex={0}>Четстер Plus</li>
-        <li className="form-search__select-item" tabIndex={0}>Четстер UX</li>
-        <li className="form-search__select-item" tabIndex={0}>Четстер UX2</li>
-        <li className="form-search__select-item" tabIndex={0}>Четстер UX3</li>
-        <li className="form-search__select-item" tabIndex={0}>Четстер UX4</li>
-        <li className="form-search__select-item" tabIndex={0}>Четстер UX5</li>
-      </ul>
+      {searchResult &&
+        <ul className="form-search__select-list">
+          {searchResult.length ? searchResult.map(({id, name}, idx) =>
+            <li key={`${name}-${id}`} className="form-search__select-item" tabIndex={idx}>{name}</li>) :
+            <li className="form-search__select-item" tabIndex={0}>Ничего не нашлось</li>}
+        </ul>}
     </div>
   );
 }

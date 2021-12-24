@@ -14,3 +14,12 @@ export const ratingValues = new Array(MAX_RATING_VALUE)
   .fill(null)
   .map((_, index) => index + 1);
   // .sort((a, b) => b - a);
+
+export const debounce = <T>(callback: (e: T) => void, timeoutDelay: number) => {
+
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return (...rest: [T]) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};

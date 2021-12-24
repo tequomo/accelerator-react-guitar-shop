@@ -1,5 +1,5 @@
 import { ApiRoute, LoadingStatus } from '../const';
-import { loadCurrentGuitar, loadGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus } from '../store/action';
+import { doSearchRequest, loadCurrentGuitar, loadGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
 import { ThunkActionResult } from '../types/action';
 import { GuitarType } from '../types/guitar-type';
 
@@ -23,6 +23,23 @@ export const fetchCurrentGuitarAction = (id: string): ThunkActionResult =>
       dispatch(setCurrentGuitarLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setCurrentGuitarLoadingStatus(LoadingStatus.Failed));
+      // toast.error(Messages.OFFER_LOADING_ERROR);
+    }
+  };
+
+export const fetchSearchGuitarAction = (query: string): ThunkActionResult =>
+  async (dispatch, _getState, api): Promise<void> => {
+    try {
+      dispatch(setSearchResultLoadingStatus(LoadingStatus.Loading));
+      if(!query) {
+        dispatch(doSearchRequest(null));
+      } else {
+        const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?name_like=${query}`);
+        dispatch(doSearchRequest(data));
+      }
+      dispatch(setSearchResultLoadingStatus(LoadingStatus.Succeeded));
+    } catch {
+      dispatch(setSearchResultLoadingStatus(LoadingStatus.Failed));
       // toast.error(Messages.OFFER_LOADING_ERROR);
     }
   };

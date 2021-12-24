@@ -5,6 +5,8 @@ import { GuitarType } from './guitar-type';
 export type GuitarsData = {
   guitars: GuitarType[],
   guitarsLoadingStatus: LoadingStatus,
+  searchResult: GuitarType[] | null,
+  searchResultLoadingStatus: LoadingStatus,
 }
 
 export type CurrentGuitarData = {

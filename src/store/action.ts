@@ -30,3 +30,17 @@ export const setCurrentGuitarLoadingStatus = createAction(
     payload: currentGuitarLoadingStatus,
   }),
 );
+
+export const doSearchRequest = createAction(
+  ActionType.DoSearchRequest,
+  (searchResult: GuitarType[] | null) => ({
+    payload: searchResult,
+  }),
+);
+
+export const setSearchResultLoadingStatus = createAction(
+  ActionType.SetSearchResultLoadingStatus,
+  (searchResultLoadingStatus: LoadingStatus) => ({
+    payload: searchResultLoadingStatus,
+  }),
+);

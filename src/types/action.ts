@@ -8,6 +8,8 @@ export enum ActionType {
   LoadCurrentGuitar = 'data/loadCurrentGuitar',
   SetCurrentGuitarLoadingStatus = 'data/setCurrentGuitarLoadingStatus',
   RedirectToRoute = 'main/redirectToRoute',
+  DoSearchRequest = 'data/doSearchRequest',
+  SetSearchResultLoadingStatus = 'data/setSearchResultLoadingStatus',
 }
 
 export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, State, AxiosInstance, Action>;

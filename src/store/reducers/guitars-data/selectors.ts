@@ -5,6 +5,8 @@ import { NameSpace } from '../root-reducer';
 
 export const getGuitars = (state: State): GuitarType[] => state[NameSpace.guitars].guitars;
 export const getGuitarsLoadingStatus = (state: State): LoadingStatus => state[NameSpace.guitars].guitarsLoadingStatus;
+export const getSearchGuitars = (state: State): GuitarType[] |null => state[NameSpace.guitars].searchResult;
+export const getSearchLoadingStatus = (state: State): LoadingStatus => state[NameSpace.guitars].searchResultLoadingStatus;
 
 // export const getFilteredOffers = createSelector(
 //   getOffers,
