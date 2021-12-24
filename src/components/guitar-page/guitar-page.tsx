@@ -1,7 +1,37 @@
+import { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { LoadingStatus } from '../../const';
+import { fetchCurrentGuitarAction } from '../../services/api-actions';
+import { getCurrentGuitar, getCurrentGuitarLoadingStatus } from '../../store/reducers/current-guitar-data/selectors';
+import { GuitarType } from '../../types/guitar-type';
 import Footer from '../layout/footer/footer';
 import Header from '../layout/header/header';
+import LoaderWrapper from '../layout/loader-wrapper/loader-wrapper';
+import GuitarContainer from './guitar-container/guitar-container';
 
-function ProductPage(): JSX.Element {
+type ParamsPropsType = {
+    id: string,
+  }
+
+function GuitarPage(): JSX.Element {
+
+  const { id } = useParams<ParamsPropsType>();
+
+  const currentGuitar = useSelector(getCurrentGuitar);
+  const currentGuitarLoadingStatus = useSelector(getCurrentGuitarLoadingStatus);
+
+  const dispatch = useDispatch();
+
+  const fetchCurrentGuitar = useCallback(() => {
+    dispatch(fetchCurrentGuitarAction(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    fetchCurrentGuitar();
+  }, [fetchCurrentGuitar]);
+
+
   return (
     <div className="wrapper">
       <Header />
@@ -16,54 +46,9 @@ function ProductPage(): JSX.Element {
             <li className="breadcrumbs__item"><a className="link" href="/#">Товар</a>
             </li>
           </ul>
-          <div className="product-container">
-            <img className="product-container__img" src="/img/content/guitar-2.jpg" width="90" height="235" alt="" />
-            <div className="product-container__info-wrapper">
-              <h2 className="product-container__title title title--big title--uppercase">СURT Z30 Plus</h2>
-              <div className="rate product-container__rating" aria-hidden="true"><span className="visually-hidden">Рейтинг:</span>
-                <svg width="14" height="14" aria-hidden="true">
-                  <use xlinkHref="#icon-full-star"></use>
-                </svg>
-                <svg width="14" height="14" aria-hidden="true">
-                  <use xlinkHref="#icon-full-star"></use>
-                </svg>
-                <svg width="14" height="14" aria-hidden="true">
-                  <use xlinkHref="#icon-full-star"></use>
-                </svg>
-                <svg width="14" height="14" aria-hidden="true">
-                  <use xlinkHref="#icon-full-star"></use>
-                </svg>
-                <svg width="14" height="14" aria-hidden="true">
-                  <use xlinkHref="#icon-star"></use>
-                </svg><span className="rate__count"></span><span className="rate__message"></span>
-              </div>
-              <div className="tabs"><a className="button button--medium tabs__button" href="#characteristics">Характеристики</a><a className="button button--black-border button--medium tabs__button" href="#description">Описание</a>
-                <div className="tabs__content" id="characteristics">
-                  <table className="tabs__table">
-                    <tbody>
-                      <tr className="tabs__table-row">
-                        <td className="tabs__title">Артикул:</td>
-                        <td className="tabs__value">SO754565</td>
-                      </tr>
-                      <tr className="tabs__table-row">
-                        <td className="tabs__title">Тип:</td>
-                        <td className="tabs__value">Электрогитара</td>
-                      </tr>
-                      <tr className="tabs__table-row">
-                        <td className="tabs__title">Количество струн:</td>
-                        <td className="tabs__value">6 струнная</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <p className="tabs__product-description hidden">Гитара подходит как для старта обучения, так и для домашних занятий или использования в полевых условиях, например, в походах или для проведения уличных выступлений. Доступная стоимость, качество и надежная конструкция, а также приятный внешний вид, который сделает вас звездой вечеринки.</p>
-                </div>
-              </div>
-            </div>
-            <div className="product-container__price-wrapper">
-              <p className="product-container__price-info product-container__price-info--title">Цена:</p>
-              <p className="product-container__price-info product-container__price-info--value">52 000 ₽</p><a className="button button--red button--big product-container__button" href="/#">Добавить в корзину</a>
-            </div>
-          </div>
+          <LoaderWrapper isLoad={currentGuitarLoadingStatus === LoadingStatus.Succeeded}>
+            <GuitarContainer guitar={currentGuitar as GuitarType} />
+          </LoaderWrapper>
           <section className="reviews">
             <h3 className="reviews__title title title--bigger">Отзывы</h3>
             <a className="button button--red-border button--big reviews__sumbit-button" href="/#">Оставить отзыв</a>
@@ -160,4 +145,4 @@ function ProductPage(): JSX.Element {
   );
 }
 
-export default ProductPage;
+export default GuitarPage;

@@ -1,6 +1,7 @@
 export enum AppRoute {
   Main = '/',
-  Product = '/guitars/:id',
+  Guitar = '/guitars/',
+  GuitarRoom = '/guitars/:id',
   Cart = '/cart',
 }
 
@@ -25,3 +26,5 @@ export enum LoadingStatus {
 }
 
 export const CARDS_PER_PAGE = 9;
+
+export const IMG_BASE_PATH = 'content';

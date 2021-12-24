@@ -3,7 +3,7 @@ import { AppRoute } from '../../const';
 import CartPage from '../cart-page/cart-page';
 import MainPage from '../main-page/main-page';
 import NotFoundPage from '../not-found-page/not-found-page';
-import ProductPage from '../product-page/product-page';
+import GuitarPage from '../guitar-page/guitar-page';
 
 function App(): JSX.Element {
   return (
@@ -11,8 +11,8 @@ function App(): JSX.Element {
       <Route exact path={AppRoute.Main}>
         <MainPage />
       </Route>
-      <Route exact path={AppRoute.Product}>
-        <ProductPage />
+      <Route exact path={AppRoute.GuitarRoom}>
+        <GuitarPage />
       </Route>
       <Route exact path={AppRoute.Cart}>
         <CartPage />

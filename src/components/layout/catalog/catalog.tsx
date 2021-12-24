@@ -1,14 +1,39 @@
+import { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { CARDS_PER_PAGE } from '../../../const';
+import { fetchGuitarsAction } from '../../../services/api-actions';
+import { getGuitars } from '../../../store/reducers/guitars-data/selectors';
+import { GuitarType } from '../../../types/guitar-type';
 import CatalogFilter from '../catalog-filter/catalog-filter';
 import CatalogSort from '../catalog-sort/catalog-sort';
+import GuitarCard from '../guitar-card/guitar-card';
 import Pagination from '../pagination/pagination';
 
+
 function Catalog(): JSX.Element {
+
+  const guitars = useSelector(getGuitars).slice(0, CARDS_PER_PAGE);
+
+  const dispatch = useDispatch();
+
+  const fetchGuitars = useCallback(() => {
+    dispatch(fetchGuitarsAction());
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchGuitars();
+  }, [fetchGuitars]);
+
   return (
     <div className="catalog">
       <CatalogFilter />
       <CatalogSort />
       <div className="cards catalog__cards">
-        <div className="product-card"><img src="img/content/guitar-2.jpg" width="75" height="190" alt="СURT Z30 Plus Acoustics" />
+        {
+          guitars.map((guitar: GuitarType) => <GuitarCard key={guitar.vendorCode} guitar={guitar}/>)
+        }
+
+        {/* <div className="product-card"><img src="img/content/guitar-2.jpg" width="75" height="190" alt="СURT Z30 Plus Acoustics" />
           <div className="product-card__info">
             <div className="rate product-card__rate" aria-hidden="true"><span className="visually-hidden">Рейтинг:</span>
               <svg width="12" height="11" aria-hidden="true">
@@ -259,7 +284,7 @@ function Catalog(): JSX.Element {
             <a className="button button--mini" href="/#">Подробнее</a>
             <a className="button button--red button--mini button--add-to-cart" href="/#">Купить</a>
           </div>
-        </div>
+        </div> */}
       </div>
       <Pagination />
     </div>
