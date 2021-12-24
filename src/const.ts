@@ -28,3 +28,5 @@ export enum LoadingStatus {
 export const CARDS_PER_PAGE = 9;
 
 export const IMG_BASE_PATH = 'content';
+
+export const MAX_RATING_VALUE = 5;

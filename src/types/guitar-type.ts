@@ -6,5 +6,6 @@ export type GuitarType = {
   description: string,
   previewImg: string,
   stringCount: number,
+  rating: number,
   price: number,
 }
