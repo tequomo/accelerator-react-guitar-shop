@@ -43,3 +43,15 @@ export const fetchSearchGuitarAction = (query: string): ThunkActionResult =>
       // toast.error(Messages.OFFER_LOADING_ERROR);
     }
   };
+
+export const fetchSortedGuitarsAction = (sortingType: string, order: string): ThunkActionResult =>
+  async (dispatch, _getState, api): Promise<void> => {
+    try {
+      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?_sort=${sortingType}&_order=${order}`);
+      dispatch(loadGuitars(data));
+      dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
+    } catch {
+      dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
+      // toast.error(Messages.OFFER_LOADING_ERROR);
+    }
+  };

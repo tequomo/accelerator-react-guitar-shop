@@ -32,3 +32,13 @@ export const IMG_BASE_PATH = 'content';
 export const MAX_RATING_VALUE = 5;
 
 export const REQUEST_DELAY = 500;
+
+export enum SortingType {
+  Price = 'price',
+  Rating = 'rating',
+}
+
+export enum SortingOrder {
+  Ascending = 'asc',
+  Descending = 'desc',
+}
