@@ -15,8 +15,8 @@ export type CurrentGuitarData = {
 }
 
 // export type ReviewsData = {
-//   offerReviews: ReviewType[],
-//   offerReviewsLoadingStatus: LoadingStatus,
+//   guitarReviews: ReviewType[],
+//   guitarReviewsLoadingStatus: LoadingStatus,
 //   reviewLoadingStatus: LoadingStatus,
 // }
 
