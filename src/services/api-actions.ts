@@ -1,3 +1,4 @@
+import { ByPriceType } from '../components/layout/catalog-filter/catalog-filter';
 import { ApiRoute, LoadingStatus } from '../const';
 import { doSearchRequest, loadCurrentGuitar, loadGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
 import { ThunkActionResult } from '../types/action';
@@ -55,3 +56,16 @@ export const fetchSortedGuitarsAction = (sortingType: string, order: string): Th
       // toast.error(Messages.OFFER_LOADING_ERROR);
     }
   };
+
+export const fetchFilteredGuitarsAction = ({priceMin, priceMax}: ByPriceType): ThunkActionResult =>
+  async (dispatch, _getState, api): Promise<void> => {
+    try {
+      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?price_gte=${priceMin}&price_lte=${priceMax}`);
+      dispatch(loadGuitars(data));
+      dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
+    } catch {
+      dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
+      // toast.error(Messages.OFFER_LOADING_ERROR);
+    }
+  };
+
