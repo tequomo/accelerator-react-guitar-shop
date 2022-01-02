@@ -1,11 +1,16 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { LoadingStatus } from '../../../const';
 import { GuitarsData } from '../../../types/state';
-import { doSearchRequest, loadGuitars, setGuitarsLoadingStatus, setSearchResultLoadingStatus } from '../../action';
+import { doSearchRequest, getMinMaxPriceValues, loadGuitars, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../../action';
 
 const initialState: GuitarsData = {
   guitars: [],
   guitarsLoadingStatus: LoadingStatus.Idle,
+  minMaxPriceValues: {
+    priceMin: 0,
+    priceMax: 0,
+  },
+  priceValuesLoadingStatus: LoadingStatus.Idle,
   searchResult: null,
   searchResultLoadingStatus: LoadingStatus.Idle,
 };
@@ -23,6 +28,12 @@ const guitarsData = createReducer(initialState, (builder) => {
     })
     .addCase(setSearchResultLoadingStatus, (state, action) => {
       state.searchResultLoadingStatus = action.payload;
+    })
+    .addCase(getMinMaxPriceValues,(state, action) => {
+      state.minMaxPriceValues = action.payload;
+    })
+    .addCase(setPriceValuesLoadingStatus, (state, action) => {
+      state.priceValuesLoadingStatus = action.payload;
     });
 });
 

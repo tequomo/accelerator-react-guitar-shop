@@ -1,45 +1,67 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { LoadingStatus } from '../../../const';
-import { fetchFilteredGuitarsAction } from '../../../services/api-actions';
-import { getGuitars, getGuitarsLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
+import { useHistory } from 'react-router-dom';
+import { ApiRoute, AppRoute, LoadingStatus } from '../../../const';
+import { fetchFilteredGuitarsAction, fetchMinMaxPriceValuesAction } from '../../../services/api-actions';
+import { getGuitars, getGuitarsLoadingStatus, getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
 import { debounce } from '../../../utils/utils';
 
 export type ByPriceType = {
-  priceMin: string,
-  priceMax: string,
+  priceFrom: string,
+  priceTo: string,
 }
 
 function CatalogFilter(): JSX.Element {
 
-  const guitars = useSelector(getGuitars);
-  const guitarsloadingStatus = useSelector(getGuitarsLoadingStatus);
-  const isLoaded = guitarsloadingStatus === LoadingStatus.Succeeded;
+  const minMaxPriceValues = useSelector(getMinMaxPriceValues);
+  const priceValuesLoadingStatus = useSelector(getPriceValuesLoadingStatus);
+  const isLoaded = priceValuesLoadingStatus === LoadingStatus.Succeeded;
 
   const dispatch = useDispatch();
-
-  const minPriceValue = Math.min(...guitars.map((guitar) => guitar.price));
-  const maxPriceValue = Math.max(...guitars.map((guitar) => guitar.price));
+  const history = useHistory();
 
   const initPriceParams: ByPriceType = {
-    priceMin: '',
-    priceMax: '',
+    priceFrom: '',
+    priceTo: '',
   };
 
   const [filterByPrice, setFilterByPrice] = useState<ByPriceType>(initPriceParams);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [filterByType, setFilterByType] = useState<string>('');
 
+  const [queryString, setQueryString] = useState<string>('');
 
   const checkMinPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
-    if(+e.target.value < minPriceValue || +e.target.value > maxPriceValue) {
-      e.target.value = minPriceValue.toString();
+    if(+e.target.value < minMaxPriceValues.priceMin || +e.target.value > minMaxPriceValues.priceMax) {
+      setFilterByPrice((state) => ({
+        ...state,
+        priceFrom: minMaxPriceValues.priceMin.toString(),
+      }));
+    } else if(filterByPrice.priceTo !== '' && e.target.value > filterByPrice.priceTo) {
+      setFilterByPrice((state) => ({
+        ...state,
+        priceFrom: filterByPrice.priceTo,
+      }));
     }
   };
 
   const checkMaxPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
-    if(+e.target.value > maxPriceValue || +e.target.value < 0) {
-      e.target.value = maxPriceValue.toString();
+    if(+e.target.value > minMaxPriceValues.priceMax) {
+      setFilterByPrice((state) => ({
+        ...state,
+        priceTo: minMaxPriceValues.priceMax.toString(),
+      }));
+    } else if(filterByPrice.priceFrom !== '' && e.target.value < filterByPrice.priceFrom) {
+      setFilterByPrice((state) => ({
+        ...state,
+        priceTo: filterByPrice.priceFrom,
+      }));
+    } else if(filterByPrice.priceFrom === '' && e.target.value < minMaxPriceValues.priceMin.toString()) {
+      setFilterByPrice((state) => ({
+        ...state,
+        priceMax: minMaxPriceValues.priceMin.toString(),
+      }));
     }
   };
 
@@ -48,12 +70,6 @@ function CatalogFilter(): JSX.Element {
       ...state,
       priceMin: e.target.value,
     }));
-    if(filterByPrice.priceMax === '') {
-      setFilterByPrice((state) => ({
-        ...state,
-        priceMax: maxPriceValue.toString(),
-      }));
-    }
   };
 
   const handleMaxPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -61,12 +77,6 @@ function CatalogFilter(): JSX.Element {
       ...state,
       priceMax: e.target.value,
     }));
-    if(filterByPrice.priceMin === '') {
-      setFilterByPrice((state) => ({
-        ...state,
-        priceMin: minPriceValue.toString(),
-      }));
-    }
   };
 
   // const fetchFilteredGuitars = useCallback(() => {
@@ -77,10 +87,31 @@ function CatalogFilter(): JSX.Element {
   //   dispatch(fetchFilteredGuitarsAction(filterByPrice));
   // };
 
-  useEffect(() => {
-    dispatch(fetchFilteredGuitarsAction(filterByPrice));
-  }, [dispatch, filterByPrice]);
+  // useEffect(() => {
+  //   dispatch(fetchFilteredGuitarsAction(filterByPrice));
+  // }, [dispatch, filterByPrice]);
 
+  const composeQueryString = useCallback(() => {
+    let query = '';
+    if(filterByPrice.priceFrom !== '') {
+      query += `${query !== '' ? '&' : '?'}price_gte=${filterByPrice.priceFrom}`;
+    }
+    if(filterByPrice.priceTo !== '') {
+      query += `${query !== '' ? '&' : '?'}price_lte=${filterByPrice.priceTo}`;
+    }
+    setQueryString(query);
+  }, [filterByPrice.priceFrom, filterByPrice.priceTo]);
+
+  useEffect(() => {
+    composeQueryString();
+    // eslint-disable-next-line no-console
+    console.log(queryString);
+    // history.push(`${ApiRoute.Guitars}${queryString}`);
+  },[composeQueryString, history, queryString]);
+
+  useEffect(() => {
+    dispatch(fetchMinMaxPriceValuesAction());
+  }, [dispatch]);
 
   return (
     <form className="catalog-filter">
@@ -90,11 +121,11 @@ function CatalogFilter(): JSX.Element {
         <div className="catalog-filter__price-range">
           <div className="form-input">
             <label className="visually-hidden">Минимальная цена</label>
-            <input type="number" placeholder={isLoaded ? minPriceValue.toString() : '...'} id="priceMin" name="от" onChange={handleMinPriceChange}  onInput={debounce(checkMinPriceInput, 2000)} value={filterByPrice.priceMin} />
+            <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMin.toString() : '...'} id="priceMin" name="от" onChange={handleMinPriceChange}  onInput={debounce(checkMinPriceInput, 2000)} value={filterByPrice.priceFrom} />
           </div>
           <div className="form-input">
             <label className="visually-hidden">Максимальная цена</label>
-            <input type="number" placeholder={isLoaded ? maxPriceValue.toString() : '...'} id="priceMax" name="до" onChange={handleMaxPriceChange}  onInput={debounce(checkMaxPriceInput, 2000)} value={filterByPrice.priceMax} />
+            <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMax.toString() : '...'} id="priceMax" name="до" onChange={handleMaxPriceChange}  onInput={debounce(checkMaxPriceInput, 2000)} value={filterByPrice.priceTo} />
           </div>
         </div>
       </fieldset>

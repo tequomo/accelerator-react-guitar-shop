@@ -5,6 +5,8 @@ import { State } from './state';
 export enum ActionType {
   LoadGuitars = 'data/loadGuitars',
   SetGuitarsLoadingStatus = 'data/setGuitarsLoadingStatus',
+  GetMinMaxPriceValues = 'data/getMinMaxPriceValues',
+  SetPriceValuesLoadingStatus = 'data/setPriceValuesLoadingStatus',
   LoadCurrentGuitar = 'data/loadCurrentGuitar',
   SetCurrentGuitarLoadingStatus = 'data/setCurrentGuitarLoadingStatus',
   RedirectToRoute = 'main/redirectToRoute',

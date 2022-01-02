@@ -1,6 +1,6 @@
 import { ByPriceType } from '../components/layout/catalog-filter/catalog-filter';
-import { ApiRoute, LoadingStatus } from '../const';
-import { doSearchRequest, loadCurrentGuitar, loadGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
+import { ApiRoute, LoadingStatus, maxPriceGuitarQuery, minPriceGuitarQuery } from '../const';
+import { doSearchRequest, getMinMaxPriceValues, loadCurrentGuitar, loadGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
 import { ThunkActionResult } from '../types/action';
 import { GuitarType } from '../types/guitar-type';
 
@@ -12,6 +12,24 @@ export const fetchGuitarsAction = (): ThunkActionResult =>
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
+      // toast.error(Messages.OFFER_LOADING_ERROR);
+    }
+  };
+
+export const fetchMinMaxPriceValuesAction = (): ThunkActionResult =>
+  async (dispatch, _getState, api): Promise<void> => {
+    try {
+      const minPriceResponse = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${minPriceGuitarQuery}`);
+      const minPriceGuitar = minPriceResponse.data.reduce((result, item) => result = item);
+      const maxPriceResponse = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${maxPriceGuitarQuery}`);
+      const maxPriceGuitar = maxPriceResponse.data.reduce((result, item) => result = item);
+      dispatch(getMinMaxPriceValues({
+        priceMin: minPriceGuitar.price,
+        priceMax: maxPriceGuitar.price,
+      }));
+      dispatch(setPriceValuesLoadingStatus(LoadingStatus.Succeeded));
+    } catch {
+      dispatch(setPriceValuesLoadingStatus(LoadingStatus.Failed));
       // toast.error(Messages.OFFER_LOADING_ERROR);
     }
   };
@@ -57,10 +75,10 @@ export const fetchSortedGuitarsAction = (sortingType: string, order: string): Th
     }
   };
 
-export const fetchFilteredGuitarsAction = ({priceMin, priceMax}: ByPriceType): ThunkActionResult =>
+export const fetchFilteredGuitarsAction = ({priceFrom, priceTo}: ByPriceType): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?price_gte=${priceMin}&price_lte=${priceMax}`);
+      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?price_gte=${priceFrom}&price_lte=${priceTo}`);
       dispatch(loadGuitars(data));
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
     } catch {

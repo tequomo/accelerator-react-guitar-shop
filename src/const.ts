@@ -1,5 +1,6 @@
 export enum AppRoute {
   Main = '/',
+  // GuitarQuery = '/guitars',
   Guitar = '/guitars/',
   GuitarRoom = '/guitars/:id',
   Cart = '/cart',
@@ -42,3 +43,6 @@ export enum SortingOrder {
   Ascending = 'asc',
   Descending = 'desc',
 }
+
+export const minPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=asc';
+export const maxPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=desc';
