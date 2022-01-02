@@ -7,7 +7,7 @@ import { fetchFilteredGuitarsAction, fetchMinMaxPriceValuesAction } from '../../
 import { getGuitars, getGuitarsLoadingStatus, getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
 import { debounce } from '../../../utils/utils';
 
-export type ByPriceType = {
+export type FilterType = {
   priceFrom: string,
   priceTo: string,
 }
@@ -21,12 +21,12 @@ function CatalogFilter(): JSX.Element {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const initPriceParams: ByPriceType = {
+  const initFilterParams: FilterType = {
     priceFrom: '',
     priceTo: '',
   };
 
-  const [filterByPrice, setFilterByPrice] = useState<ByPriceType>(initPriceParams);
+  const [filters, setFilters] = useState<FilterType>(initFilterParams);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [filterByType, setFilterByType] = useState<string>('');
 
@@ -34,80 +34,80 @@ function CatalogFilter(): JSX.Element {
 
   const checkMinPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
     if(+e.target.value < minMaxPriceValues.priceMin || +e.target.value > minMaxPriceValues.priceMax) {
-      setFilterByPrice((state) => ({
+      setFilters((state) => ({
         ...state,
         priceFrom: minMaxPriceValues.priceMin.toString(),
       }));
-    } else if(filterByPrice.priceTo !== '' && e.target.value > filterByPrice.priceTo) {
-      setFilterByPrice((state) => ({
+    } else if(filters.priceTo !== '' && e.target.value > filters.priceTo) {
+      setFilters((state) => ({
         ...state,
-        priceFrom: filterByPrice.priceTo,
+        priceFrom: filters.priceTo,
       }));
     }
   };
 
   const checkMaxPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
     if(+e.target.value > minMaxPriceValues.priceMax) {
-      setFilterByPrice((state) => ({
+      setFilters((state) => ({
         ...state,
         priceTo: minMaxPriceValues.priceMax.toString(),
       }));
-    } else if(filterByPrice.priceFrom !== '' && e.target.value < filterByPrice.priceFrom) {
-      setFilterByPrice((state) => ({
+    } else if(filters.priceFrom !== '' && e.target.value < filters.priceFrom) {
+      setFilters((state) => ({
         ...state,
-        priceTo: filterByPrice.priceFrom,
+        priceTo: filters.priceFrom,
       }));
-    } else if(filterByPrice.priceFrom === '' && e.target.value < minMaxPriceValues.priceMin.toString()) {
-      setFilterByPrice((state) => ({
+    } else if(filters.priceFrom === '' && e.target.value < minMaxPriceValues.priceMin.toString()) {
+      setFilters((state) => ({
         ...state,
-        priceMax: minMaxPriceValues.priceMin.toString(),
+        priceTo: minMaxPriceValues.priceMin.toString(),
       }));
     }
   };
 
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setFilterByPrice((state) => ({
+    setFilters((state) => ({
       ...state,
-      priceMin: e.target.value,
+      priceFrom: e.target.value,
     }));
   };
 
   const handleMaxPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setFilterByPrice((state) => ({
+    setFilters((state) => ({
       ...state,
-      priceMax: e.target.value,
+      priceTo: e.target.value,
     }));
   };
 
   // const fetchFilteredGuitars = useCallback(() => {
-  //   dispatch(fetchFilteredGuitarsAction(filterByPrice));
-  // }, [dispatch, filterByPrice]);
+  //   dispatch(fetchFilteredGuitarsAction(filters));
+  // }, [dispatch, filters]);
 
   // const fetchFilteredGuitars = () => {
-  //   dispatch(fetchFilteredGuitarsAction(filterByPrice));
+  //   dispatch(fetchFilteredGuitarsAction(filters));
   // };
 
   // useEffect(() => {
-  //   dispatch(fetchFilteredGuitarsAction(filterByPrice));
-  // }, [dispatch, filterByPrice]);
+  //   dispatch(fetchFilteredGuitarsAction(filters));
+  // }, [dispatch, filters]);
 
   const composeQueryString = useCallback(() => {
     let query = '';
-    if(filterByPrice.priceFrom !== '') {
-      query += `${query !== '' ? '&' : '?'}price_gte=${filterByPrice.priceFrom}`;
+    if(filters.priceFrom !== '') {
+      query += `${query !== '' ? '&' : '?'}price_gte=${filters.priceFrom}`;
     }
-    if(filterByPrice.priceTo !== '') {
-      query += `${query !== '' ? '&' : '?'}price_lte=${filterByPrice.priceTo}`;
+    if(filters.priceTo !== '') {
+      query += `${query !== '' ? '&' : '?'}price_lte=${filters.priceTo}`;
     }
     setQueryString(query);
-  }, [filterByPrice.priceFrom, filterByPrice.priceTo]);
+  }, [filters.priceFrom, filters.priceTo]);
 
   useEffect(() => {
     composeQueryString();
     // eslint-disable-next-line no-console
-    console.log(queryString);
+    console.log(filters);
     // history.push(`${ApiRoute.Guitars}${queryString}`);
-  },[composeQueryString, history, queryString]);
+  },[composeQueryString, filters, history, queryString]);
 
   useEffect(() => {
     dispatch(fetchMinMaxPriceValuesAction());
@@ -121,11 +121,11 @@ function CatalogFilter(): JSX.Element {
         <div className="catalog-filter__price-range">
           <div className="form-input">
             <label className="visually-hidden">Минимальная цена</label>
-            <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMin.toString() : '...'} id="priceMin" name="от" onChange={handleMinPriceChange}  onInput={debounce(checkMinPriceInput, 2000)} value={filterByPrice.priceFrom} />
+            <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMin.toString() : '...'} id="priceMin" name="от" onChange={handleMinPriceChange}  onInput={debounce(checkMinPriceInput, 2000)} value={filters.priceFrom} />
           </div>
           <div className="form-input">
             <label className="visually-hidden">Максимальная цена</label>
-            <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMax.toString() : '...'} id="priceMax" name="до" onChange={handleMaxPriceChange}  onInput={debounce(checkMaxPriceInput, 2000)} value={filterByPrice.priceTo} />
+            <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMax.toString() : '...'} id="priceMax" name="до" onChange={handleMaxPriceChange}  onInput={debounce(checkMaxPriceInput, 2000)} value={filters.priceTo} />
           </div>
         </div>
       </fieldset>

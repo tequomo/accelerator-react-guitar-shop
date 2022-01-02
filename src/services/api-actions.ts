@@ -1,4 +1,4 @@
-import { ByPriceType } from '../components/layout/catalog-filter/catalog-filter';
+import { FilterType } from '../components/layout/catalog-filter/catalog-filter';
 import { ApiRoute, LoadingStatus, maxPriceGuitarQuery, minPriceGuitarQuery } from '../const';
 import { doSearchRequest, getMinMaxPriceValues, loadCurrentGuitar, loadGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
 import { ThunkActionResult } from '../types/action';
@@ -75,7 +75,7 @@ export const fetchSortedGuitarsAction = (sortingType: string, order: string): Th
     }
   };
 
-export const fetchFilteredGuitarsAction = ({priceFrom, priceTo}: ByPriceType): ThunkActionResult =>
+export const fetchFilteredGuitarsAction = ({priceFrom, priceTo}: FilterType): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
       const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?price_gte=${priceFrom}&price_lte=${priceTo}`);
