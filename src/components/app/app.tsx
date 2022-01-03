@@ -11,11 +11,11 @@ function App(): JSX.Element {
       <Route exact path={AppRoute.Main}>
         <MainPage />
       </Route>
-      <Route path={AppRoute.GuitarQuery}>
-        <MainPage />
-      </Route>
       <Route exact path={AppRoute.GuitarRoom}>
         <GuitarPage />
+      </Route>
+      <Route path={AppRoute.GuitarQuery}>
+        <MainPage />
       </Route>
       <Route exact path={AppRoute.Cart}>
         <CartPage />
