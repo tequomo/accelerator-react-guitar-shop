@@ -19,3 +19,5 @@ export const debounce = <T>(callback: (e: T) => void, timeoutDelay: number) => {
     timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
   };
 };
+
+export const capitalizeWord = (word: string): string => word.charAt(0).toUpperCase() + word.slice(1);

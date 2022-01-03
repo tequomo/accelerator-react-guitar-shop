@@ -1,6 +1,6 @@
 export enum AppRoute {
   Main = '/',
-  // GuitarQuery = '/guitars',
+  GuitarQuery = '/guitars',
   Guitar = '/guitars/',
   GuitarRoom = '/guitars/:id',
   Cart = '/cart',
@@ -46,3 +46,16 @@ export enum SortingOrder {
 
 export const minPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=asc';
 export const maxPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=desc';
+
+export const guitarsByType = ['acoustic', 'electric', 'ukulele'];
+
+export const GuitarTypeName: {[key: string]: string} = {
+  Acoustic: 'Акустические гитары',
+  Electric: 'Электрогитары',
+  Ukulele: 'Укулеле',
+};
+
+export const priceQueryKey: {[key: string]: string} = {
+  priceFrom: 'price_gte',
+  priceTo: 'price_lte',
+};

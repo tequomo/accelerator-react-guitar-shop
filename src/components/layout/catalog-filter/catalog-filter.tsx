@@ -1,16 +1,21 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { ApiRoute, AppRoute, LoadingStatus } from '../../../const';
-import { fetchFilteredGuitarsAction, fetchMinMaxPriceValuesAction } from '../../../services/api-actions';
-import { getGuitars, getGuitarsLoadingStatus, getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
-import { debounce } from '../../../utils/utils';
+import { AppRoute, guitarsByType, GuitarTypeName, LoadingStatus, priceQueryKey } from '../../../const';
+import { fetchMinMaxPriceValuesAction } from '../../../services/api-actions';
+import { getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
+import { capitalizeWord, debounce } from '../../../utils/utils';
 
 export type FilterType = {
   priceFrom: string,
   priceTo: string,
+  type: string[],
+  stringCount: number[],
 }
+
+const guitarsByStringCount = [4, 6, 7, 12];
+const initStringCountState: boolean[] = new Array(guitarsByStringCount.length).fill(false);
+const initTypeCheckedState: boolean[] = new Array(guitarsByType.length).fill(false);
 
 function CatalogFilter(): JSX.Element {
 
@@ -21,44 +26,42 @@ function CatalogFilter(): JSX.Element {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const initFilterParams: FilterType = {
+  const initPriceIntervalParams: {[key: string]: string} = {
     priceFrom: '',
     priceTo: '',
   };
 
-  const [filters, setFilters] = useState<FilterType>(initFilterParams);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [filterByType, setFilterByType] = useState<string>('');
-
-  const [queryString, setQueryString] = useState<string>('');
+  const [priceInterval, setpriceInterval] = useState(initPriceIntervalParams);
+  const [stringCountCheckedState, setStringsCountCheckedState] = useState<boolean[]>(initStringCountState);
+  const [typeCheckedState, setTypeCheckedState] = useState<boolean[]>(initTypeCheckedState);
 
   const checkMinPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
     if(+e.target.value < minMaxPriceValues.priceMin || +e.target.value > minMaxPriceValues.priceMax) {
-      setFilters((state) => ({
+      setpriceInterval((state) => ({
         ...state,
         priceFrom: minMaxPriceValues.priceMin.toString(),
       }));
-    } else if(filters.priceTo !== '' && e.target.value > filters.priceTo) {
-      setFilters((state) => ({
+    } else if(priceInterval.priceTo !== '' && e.target.value > priceInterval.priceTo) {
+      setpriceInterval((state) => ({
         ...state,
-        priceFrom: filters.priceTo,
+        priceFrom: priceInterval.priceTo,
       }));
     }
   };
 
   const checkMaxPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
     if(+e.target.value > minMaxPriceValues.priceMax) {
-      setFilters((state) => ({
+      setpriceInterval((state) => ({
         ...state,
         priceTo: minMaxPriceValues.priceMax.toString(),
       }));
-    } else if(filters.priceFrom !== '' && e.target.value < filters.priceFrom) {
-      setFilters((state) => ({
+    } else if(priceInterval.priceFrom !== '' && e.target.value < priceInterval.priceFrom) {
+      setpriceInterval((state) => ({
         ...state,
-        priceTo: filters.priceFrom,
+        priceTo: priceInterval.priceFrom,
       }));
-    } else if(filters.priceFrom === '' && e.target.value < minMaxPriceValues.priceMin.toString()) {
-      setFilters((state) => ({
+    } else if(priceInterval.priceFrom === '' && e.target.value < minMaxPriceValues.priceMin.toString()) {
+      setpriceInterval((state) => ({
         ...state,
         priceTo: minMaxPriceValues.priceMin.toString(),
       }));
@@ -66,48 +69,72 @@ function CatalogFilter(): JSX.Element {
   };
 
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setFilters((state) => ({
+    setpriceInterval((state) => ({
       ...state,
       priceFrom: e.target.value,
     }));
   };
 
   const handleMaxPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setFilters((state) => ({
+    setpriceInterval((state) => ({
       ...state,
       priceTo: e.target.value,
     }));
   };
 
+  const handleStringsCountCheck = (position: number): void => {
+    const updatedStringsCountCheckedState = stringCountCheckedState.map((item, idx) =>
+      idx === position ? !item : item,
+    );
+    setStringsCountCheckedState(updatedStringsCountCheckedState);
+  };
+
+  const handleTypeCheck = (position: number): void => {
+    const updatedTypeCheckedState = typeCheckedState.map((item, idx) =>
+      idx === position ? !item : item,
+    );
+    setTypeCheckedState(updatedTypeCheckedState);
+  };
+
   // const fetchFilteredGuitars = useCallback(() => {
-  //   dispatch(fetchFilteredGuitarsAction(filters));
-  // }, [dispatch, filters]);
+  //   dispatch(fetchFilteredGuitarsAction(priceInterval));
+  // }, [dispatch, priceInterval]);
 
   // const fetchFilteredGuitars = () => {
-  //   dispatch(fetchFilteredGuitarsAction(filters));
+  //   dispatch(fetchFilteredGuitarsAction(priceInterval));
   // };
 
   // useEffect(() => {
-  //   dispatch(fetchFilteredGuitarsAction(filters));
-  // }, [dispatch, filters]);
+  //   dispatch(fetchFilteredGuitarsAction(priceInterval));
+  // }, [dispatch, priceInterval]);
 
   const composeQueryString = useCallback(() => {
-    let query = '';
-    if(filters.priceFrom !== '') {
-      query += `${query !== '' ? '&' : '?'}price_gte=${filters.priceFrom}`;
-    }
-    if(filters.priceTo !== '') {
-      query += `${query !== '' ? '&' : '?'}price_lte=${filters.priceTo}`;
-    }
-    setQueryString(query);
-  }, [filters.priceFrom, filters.priceTo]);
+    const priceQuery = Object.keys(priceInterval)
+      .filter((key) => priceInterval[key] !== '')
+      .map((key) => `${priceQueryKey[key]}=${priceInterval[key]}`);
+
+    const typeQuery = guitarsByType
+      .filter((_type, idx) => typeCheckedState[idx] === true)
+      .map((type) => `type=${type}`);
+
+    const stringCountQuery = guitarsByStringCount
+      .filter((_type, idx) => stringCountCheckedState[idx] === true)
+      .map((stringCount) => `stringCount=${stringCount}`);
+
+    const query = priceQuery
+      .concat(typeQuery, stringCountQuery)
+      .join('&');
+
+    return query;
+  }, [priceInterval, stringCountCheckedState, typeCheckedState]);
 
   useEffect(() => {
-    composeQueryString();
-    // eslint-disable-next-line no-console
-    console.log(filters);
-    // history.push(`${ApiRoute.Guitars}${queryString}`);
-  },[composeQueryString, filters, history, queryString]);
+    const queryString = composeQueryString();
+    history.push({
+      pathname: AppRoute.GuitarQuery,
+      search: `${queryString}`,
+    });
+  },[composeQueryString, priceInterval, history]);
 
   useEffect(() => {
     dispatch(fetchMinMaxPriceValuesAction());
@@ -121,47 +148,45 @@ function CatalogFilter(): JSX.Element {
         <div className="catalog-filter__price-range">
           <div className="form-input">
             <label className="visually-hidden">Минимальная цена</label>
-            <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMin.toString() : '...'} id="priceMin" name="от" onChange={handleMinPriceChange}  onInput={debounce(checkMinPriceInput, 2000)} value={filters.priceFrom} />
+            <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMin.toString() : '...'} id="priceMin" name="от" onChange={handleMinPriceChange}  onInput={debounce(checkMinPriceInput, 2000)} value={priceInterval.priceFrom} />
           </div>
           <div className="form-input">
             <label className="visually-hidden">Максимальная цена</label>
-            <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMax.toString() : '...'} id="priceMax" name="до" onChange={handleMaxPriceChange}  onInput={debounce(checkMaxPriceInput, 2000)} value={filters.priceTo} />
+            <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMax.toString() : '...'} id="priceMax" name="до" onChange={handleMaxPriceChange}  onInput={debounce(checkMaxPriceInput, 2000)} value={priceInterval.priceTo} />
           </div>
         </div>
       </fieldset>
       <fieldset className="catalog-filter__block">
         <legend className="catalog-filter__block-title">Тип гитар</legend>
-        <div className="form-checkbox catalog-filter__block-item">
-          <input className="visually-hidden" type="checkbox" id="acoustic" name="acoustic" />
-          <label htmlFor="acoustic">Акустические гитары</label>
-        </div>
-        <div className="form-checkbox catalog-filter__block-item">
-          <input className="visually-hidden" type="checkbox" id="electric" name="electric" defaultChecked />
-          <label htmlFor="electric">Электрогитары</label>
-        </div>
-        <div className="form-checkbox catalog-filter__block-item">
-          <input className="visually-hidden" type="checkbox" id="ukulele" name="ukulele" defaultChecked />
-          <label htmlFor="ukulele">Укулеле</label>
-        </div>
+        {
+          guitarsByType.map((type, idx) => (
+            <div key={type} className="form-checkbox catalog-filter__block-item">
+              <input className="visually-hidden"
+                type="checkbox"
+                id={type}
+                name={type}
+                defaultChecked={typeCheckedState[idx]}
+                onChange={() => handleTypeCheck(idx)}
+              />
+              <label htmlFor={type}>{GuitarTypeName[capitalizeWord(type)]}</label>
+            </div>))
+        }
       </fieldset>
       <fieldset className="catalog-filter__block">
         <legend className="catalog-filter__block-title">Количество струн</legend>
-        <div className="form-checkbox catalog-filter__block-item">
-          <input className="visually-hidden" type="checkbox" id="4-strings" name="4-strings" defaultChecked />
-          <label htmlFor="4-strings">4</label>
-        </div>
-        <div className="form-checkbox catalog-filter__block-item">
-          <input className="visually-hidden" type="checkbox" id="6-strings" name="6-strings" defaultChecked />
-          <label htmlFor="6-strings">6</label>
-        </div>
-        <div className="form-checkbox catalog-filter__block-item">
-          <input className="visually-hidden" type="checkbox" id="7-strings" name="7-strings" />
-          <label htmlFor="7-strings">7</label>
-        </div>
-        <div className="form-checkbox catalog-filter__block-item">
-          <input className="visually-hidden" type="checkbox" id="12-strings" name="12-strings" disabled />
-          <label htmlFor="12-strings">12</label>
-        </div>
+        {
+          guitarsByStringCount.map((string, idx) => (
+            <div key={string} className="form-checkbox catalog-filter__block-item">
+              <input className="visually-hidden"
+                type="checkbox"
+                id={`${string}-strings`}
+                name={`${string}-strings`}
+                defaultChecked={stringCountCheckedState[idx]}
+                onChange={() => handleStringsCountCheck(idx)}
+              />
+              <label htmlFor={`${string}-strings`}>{string}</label>
+            </div>))
+        }
       </fieldset>
     </form>
   );
