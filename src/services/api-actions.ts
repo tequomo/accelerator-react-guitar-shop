@@ -1,13 +1,24 @@
-import { FilterType } from '../components/layout/catalog-filter/catalog-filter';
 import { ApiRoute, LoadingStatus, maxPriceGuitarQuery, minPriceGuitarQuery } from '../const';
 import { doSearchRequest, getMinMaxPriceValues, loadCurrentGuitar, loadGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
 import { ThunkActionResult } from '../types/action';
 import { GuitarType } from '../types/guitar-type';
 
-export const fetchGuitarsAction = (): ThunkActionResult =>
+// export const fetchGuitarsAction = (): ThunkActionResult =>
+//   async (dispatch, _getState, api): Promise<void> => {
+//     try {
+//       const { data } = await api.get<GuitarType[]>(ApiRoute.Guitars);
+//       dispatch(loadGuitars(data));
+//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
+//     } catch {
+//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
+//       // toast.error(Messages.OFFER_LOADING_ERROR);
+//     }
+//   };
+
+export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const { data } = await api.get<GuitarType[]>(ApiRoute.Guitars);
+      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}`);
       dispatch(loadGuitars(data));
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
     } catch {
@@ -75,10 +86,10 @@ export const fetchSortedGuitarsAction = (sortingType: string, order: string): Th
     }
   };
 
-export const fetchFilteredGuitarsAction = ({priceFrom, priceTo}: FilterType): ThunkActionResult =>
+export const fetchFilteredGuitarsAction = (queryString: string): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?price_gte=${priceFrom}&price_lte=${priceTo}`);
+      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}`);
       dispatch(loadGuitars(data));
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
     } catch {
@@ -86,4 +97,5 @@ export const fetchFilteredGuitarsAction = ({priceFrom, priceTo}: FilterType): Th
       // toast.error(Messages.OFFER_LOADING_ERROR);
     }
   };
+
 

@@ -96,14 +96,6 @@ function CatalogFilter(): JSX.Element {
     setTypeCheckedState(updatedTypeCheckedState);
   };
 
-  // const fetchFilteredGuitars = useCallback(() => {
-  //   dispatch(fetchFilteredGuitarsAction(priceInterval));
-  // }, [dispatch, priceInterval]);
-
-  // const fetchFilteredGuitars = () => {
-  //   dispatch(fetchFilteredGuitarsAction(priceInterval));
-  // };
-
   // useEffect(() => {
   //   dispatch(fetchFilteredGuitarsAction(priceInterval));
   // }, [dispatch, priceInterval]);
@@ -134,7 +126,7 @@ function CatalogFilter(): JSX.Element {
       pathname: AppRoute.GuitarQuery,
       search: `${queryString}`,
     });
-  },[composeQueryString, priceInterval, history]);
+  },[composeQueryString, history]);
 
   useEffect(() => {
     dispatch(fetchMinMaxPriceValuesAction());
