@@ -30,6 +30,8 @@ function CatalogFilter(): JSX.Element {
   const [typeCheckedState, setTypeCheckedState] = useState<boolean[]>(initTypeCheckedState);
   const [stringCountDisabledState, setStringsCountDisabledState] = useState<boolean[]>(initStringCountState);
 
+  const [minMaxQueryString, setMinMaxQueryString] = useState<string>('');
+
   const checkMinPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
     if(+e.target.value < minMaxPriceValues.priceMin || +e.target.value > minMaxPriceValues.priceMax) {
       setpriceInterval((state) => ({
@@ -137,6 +139,13 @@ function CatalogFilter(): JSX.Element {
       .concat(typeQuery, stringCountQuery)
       .join('&');
 
+    const minMaxQuery = typeQuery
+      .concat(stringCountQuery)
+      .join('&');
+
+    setMinMaxQueryString(minMaxQuery);
+    // eslint-disable-next-line no-console
+    console.log(minMaxQuery);
     history.push({
       pathname: AppRoute.GuitarQuery,
       search: query,
@@ -144,8 +153,8 @@ function CatalogFilter(): JSX.Element {
   }, [history, priceInterval, stringCountCheckedState, typeCheckedState]);
 
   useEffect(() => {
-    dispatch(fetchMinMaxPriceValuesAction());
-  }, [dispatch]);
+    dispatch(fetchMinMaxPriceValuesAction(minMaxQueryString));
+  }, [dispatch, minMaxQueryString]);
 
   return (
     <form className="catalog-filter">

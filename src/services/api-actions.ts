@@ -27,12 +27,12 @@ export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
     }
   };
 
-export const fetchMinMaxPriceValuesAction = (): ThunkActionResult =>
+export const fetchMinMaxPriceValuesAction = (queryString: string): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const minPriceResponse = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${minPriceGuitarQuery}`);
+      const minPriceResponse = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${minPriceGuitarQuery}&${queryString}`);
       const minPriceGuitar = minPriceResponse.data.reduce((result, item) => result = item);
-      const maxPriceResponse = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${maxPriceGuitarQuery}`);
+      const maxPriceResponse = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&${queryString}`);
       const maxPriceGuitar = maxPriceResponse.data.reduce((result, item) => result = item);
       dispatch(getMinMaxPriceValues({
         priceMin: minPriceGuitar.price,
