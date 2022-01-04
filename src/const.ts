@@ -49,7 +49,7 @@ export const maxPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=desc';
 
 export const guitarsByType = ['acoustic', 'electric', 'ukulele'];
 
-export const GuitarTypeName: {[key: string]: string} = {
+export const guitarTypeName: {[key: string]: string} = {
   Acoustic: 'Акустические гитары',
   Electric: 'Электрогитары',
   Ukulele: 'Укулеле',
@@ -59,3 +59,27 @@ export const priceQueryKey: {[key: string]: string} = {
   priceFrom: 'price_gte',
   priceTo: 'price_lte',
 };
+
+export const stringCountByType = {
+  Acoustic: [6, 7, 12],
+  Electric: [4, 6, 7],
+  Ukulele: [4],
+};
+
+export const guitarTypes = [
+  {
+    type: 'acoustic',
+    name: 'Акустические гитары',
+    stringCount: [6, 7, 12],
+  },
+  {
+    type: 'electric',
+    name: 'Электрогитары',
+    stringCount: [4, 6, 7],
+  },
+  {
+    type: 'ukulele',
+    name: 'Укулеле',
+    stringCount: [4],
+  },
+];

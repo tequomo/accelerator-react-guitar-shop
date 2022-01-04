@@ -1,21 +1,15 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { AppRoute, guitarsByType, GuitarTypeName, LoadingStatus, priceQueryKey } from '../../../const';
+import { AppRoute, guitarsByType, guitarTypeName, guitarTypes, LoadingStatus, priceQueryKey } from '../../../const';
 import { fetchMinMaxPriceValuesAction } from '../../../services/api-actions';
 import { getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
 import { capitalizeWord, debounce } from '../../../utils/utils';
 
-export type FilterType = {
-  priceFrom: string,
-  priceTo: string,
-  type: string[],
-  stringCount: number[],
-}
 
 const guitarsByStringCount = [4, 6, 7, 12];
 const initStringCountState: boolean[] = new Array(guitarsByStringCount.length).fill(false);
-const initTypeCheckedState: boolean[] = new Array(guitarsByType.length).fill(false);
+const initTypeCheckedState: boolean[] = new Array(guitarTypes.length).fill(false);
 
 function CatalogFilter(): JSX.Element {
 
@@ -34,6 +28,7 @@ function CatalogFilter(): JSX.Element {
   const [priceInterval, setpriceInterval] = useState(initPriceIntervalParams);
   const [stringCountCheckedState, setStringsCountCheckedState] = useState<boolean[]>(initStringCountState);
   const [typeCheckedState, setTypeCheckedState] = useState<boolean[]>(initTypeCheckedState);
+  const [stringCountDisabledState, setStringsCountDisabledState] = useState<boolean[]>(initStringCountState);
 
   const checkMinPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
     if(+e.target.value < minMaxPriceValues.priceMin || +e.target.value > minMaxPriceValues.priceMax) {
@@ -67,6 +62,26 @@ function CatalogFilter(): JSX.Element {
       }));
     }
   };
+  // const checkStringCountInput = ШОБ НЕ ЗАБЫТЬ!
+  useEffect(() => {
+    let disabledState = initStringCountState;
+    if(typeCheckedState.includes(true)) {
+      const availableStringCounts = new Set<number>();
+      // const selectedGuitarTypes = guitarTypes
+      guitarTypes
+        .filter((_guitar, idx) => typeCheckedState[idx])
+        .forEach((guitar) => {
+          guitar.stringCount.forEach((stringCount: number) => {
+            availableStringCounts.add(stringCount);
+          });
+        });
+      disabledState = guitarsByStringCount.map((count) => !availableStringCounts.has(count));
+    }
+    setStringsCountDisabledState(disabledState);
+    setStringsCountCheckedState(initStringCountState);
+    // const availableStringCounts = [...new Set(selectedGuitarTypes.reduce((a, b) => a.concat(b), []))].sort((a, b) => a - b);
+    // const disabledState = guitarsByStringCount.map((count) => availableStringCounts.includes(count));
+  }, [typeCheckedState]);
 
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setpriceInterval((state) => ({
@@ -86,47 +101,47 @@ function CatalogFilter(): JSX.Element {
     const updatedStringsCountCheckedState = stringCountCheckedState.map((item, idx) =>
       idx === position ? !item : item,
     );
-    setStringsCountCheckedState(updatedStringsCountCheckedState);
+    setStringsCountCheckedState(() => updatedStringsCountCheckedState);
   };
 
   const handleTypeCheck = (position: number): void => {
     const updatedTypeCheckedState = typeCheckedState.map((item, idx) =>
       idx === position ? !item : item,
     );
-    setTypeCheckedState(updatedTypeCheckedState);
+    // eslint-disable-next-line no-console
+    console.log('updatedTypeCheckedState', updatedTypeCheckedState);
+    setTypeCheckedState(() => updatedTypeCheckedState);
   };
 
   // useEffect(() => {
   //   dispatch(fetchFilteredGuitarsAction(priceInterval));
   // }, [dispatch, priceInterval]);
+  //const composeQueryString ШОБ НЕ ЗАБЫТЬ
 
-  const composeQueryString = useCallback(() => {
+  useEffect(() => {
     const priceQuery = Object.keys(priceInterval)
-      .filter((key) => priceInterval[key] !== '')
+      .filter((key) => !!priceInterval[key])
       .map((key) => `${priceQueryKey[key]}=${priceInterval[key]}`);
 
     const typeQuery = guitarsByType
-      .filter((_type, idx) => typeCheckedState[idx] === true)
+      .filter((_type, idx) => typeCheckedState[idx])
       .map((type) => `type=${type}`);
+    // eslint-disable-next-line no-console
+    console.log('stringCountCheckedState', stringCountCheckedState);
 
     const stringCountQuery = guitarsByStringCount
-      .filter((_type, idx) => stringCountCheckedState[idx] === true)
+      .filter((_type, idx) => stringCountCheckedState[idx])
       .map((stringCount) => `stringCount=${stringCount}`);
 
     const query = priceQuery
       .concat(typeQuery, stringCountQuery)
       .join('&');
 
-    return query;
-  }, [priceInterval, stringCountCheckedState, typeCheckedState]);
-
-  useEffect(() => {
-    const queryString = composeQueryString();
     history.push({
       pathname: AppRoute.GuitarQuery,
-      search: `${queryString}`,
+      search: query,
     });
-  },[composeQueryString, history]);
+  }, [history, priceInterval, stringCountCheckedState, typeCheckedState]);
 
   useEffect(() => {
     dispatch(fetchMinMaxPriceValuesAction());
@@ -160,7 +175,7 @@ function CatalogFilter(): JSX.Element {
                 defaultChecked={typeCheckedState[idx]}
                 onChange={() => handleTypeCheck(idx)}
               />
-              <label htmlFor={type}>{GuitarTypeName[capitalizeWord(type)]}</label>
+              <label htmlFor={type}>{guitarTypeName[capitalizeWord(type)]}</label>
             </div>))
         }
       </fieldset>
@@ -173,7 +188,8 @@ function CatalogFilter(): JSX.Element {
                 type="checkbox"
                 id={`${string}-strings`}
                 name={`${string}-strings`}
-                defaultChecked={stringCountCheckedState[idx]}
+                checked={stringCountCheckedState[idx]}
+                disabled={stringCountDisabledState[idx]}
                 onChange={() => handleStringsCountCheck(idx)}
               />
               <label htmlFor={`${string}-strings`}>{string}</label>
