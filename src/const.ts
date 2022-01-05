@@ -83,3 +83,10 @@ export const guitarTypes = [
     stringCount: [4],
   },
 ];
+
+export const urlParams = [
+  'price_gte',
+  'price_lte',
+  'type',
+  'stringCount',
+];

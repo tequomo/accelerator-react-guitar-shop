@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { AppRoute, guitarsByType, guitarTypeName, guitarTypes, LoadingStatus, priceQueryKey } from '../../../const';
+import { AppRoute, guitarsByType, guitarTypeName, guitarTypes, LoadingStatus, priceQueryKey, urlParams } from '../../../const';
+import useQuery from '../../../hooks/use-query';
 import { fetchMinMaxPriceValuesAction } from '../../../services/api-actions';
 import { getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
 import { capitalizeWord, debounce } from '../../../utils/utils';
@@ -26,11 +28,58 @@ function CatalogFilter(): JSX.Element {
   };
 
   const [priceInterval, setpriceInterval] = useState(initPriceIntervalParams);
-  const [stringCountCheckedState, setStringsCountCheckedState] = useState<boolean[]>(initStringCountState);
+  const [stringCountCheckedState, setStringCountCheckedState] = useState<boolean[]>(initStringCountState);
   const [typeCheckedState, setTypeCheckedState] = useState<boolean[]>(initTypeCheckedState);
-  const [stringCountDisabledState, setStringsCountDisabledState] = useState<boolean[]>(initStringCountState);
+  const [stringCountDisabledState, setStringCountDisabledState] = useState<boolean[]>(initStringCountState);
 
   const [minMaxQueryString, setMinMaxQueryString] = useState<string>('');
+  const [firstFilterInit, setFirstFilterInit] = useState<boolean>(true);
+
+  const queryString = useQuery();
+
+  useEffect(() => {
+    const queryParams: {[key:string]: string[]} = {};
+
+    if(firstFilterInit) {
+      urlParams.forEach((param) => {
+        const value = queryString.getAll(param);
+        if(value) {
+          queryParams[param] = value;
+        }
+      });
+      // eslint-disable-next-line no-console
+      console.log('queryParams', queryParams);
+
+      if(queryParams['price_gte'].length) {
+        setpriceInterval((state) => ({
+          ...state,
+          priceFrom: queryParams['price_gte'].join(''),
+        }));
+        console.log('priceInterval', priceInterval);
+      }
+      if(queryParams['price_lte'].length) {
+        setpriceInterval((state) => ({
+          ...state,
+          priceTo: queryParams['price_lte'].join(''),
+        }));
+        console.log('priceInterval', priceInterval);
+      }
+      if(queryParams['type'].length) {
+        const typeFilter = guitarTypes
+          .map((guitar) => queryParams['type'].includes(guitar.type));
+        setTypeCheckedState(typeFilter);
+        console.log('typeCheckedState', typeFilter);
+      }
+      if(queryParams['stringCount'].length) {
+        const stringCountFilter = guitarsByStringCount
+          .map((string) => queryParams['stringCount'].includes(string.toString()));
+        setStringCountCheckedState(stringCountFilter);
+        console.log('stringCountCheckedState', stringCountFilter);
+      }
+      setFirstFilterInit(false);
+      console.log('firstFilterInit', firstFilterInit);
+    }
+  }, [queryString]);
 
   const checkMinPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
     if(+e.target.value < minMaxPriceValues.priceMin || +e.target.value > minMaxPriceValues.priceMax) {
@@ -79,11 +128,13 @@ function CatalogFilter(): JSX.Element {
         });
       disabledState = guitarsByStringCount.map((count) => !availableStringCounts.has(count));
     }
-    setStringsCountDisabledState(disabledState);
-    setStringsCountCheckedState(initStringCountState);
+    setStringCountDisabledState(disabledState);
+    // if(!firstFilterInit) {
+    setStringCountCheckedState(initStringCountState);
+    // }
     // const availableStringCounts = [...new Set(selectedGuitarTypes.reduce((a, b) => a.concat(b), []))].sort((a, b) => a - b);
     // const disabledState = guitarsByStringCount.map((count) => availableStringCounts.includes(count));
-  }, [typeCheckedState]);
+  }, [firstFilterInit, typeCheckedState]);
 
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setpriceInterval((state) => ({
@@ -103,7 +154,7 @@ function CatalogFilter(): JSX.Element {
     const updatedStringsCountCheckedState = stringCountCheckedState.map((item, idx) =>
       idx === position ? !item : item,
     );
-    setStringsCountCheckedState(() => updatedStringsCountCheckedState);
+    setStringCountCheckedState(() => updatedStringsCountCheckedState);
   };
 
   const handleTypeCheck = (position: number): void => {
@@ -129,7 +180,7 @@ function CatalogFilter(): JSX.Element {
       .filter((_type, idx) => typeCheckedState[idx])
       .map((type) => `type=${type}`);
     // eslint-disable-next-line no-console
-    console.log('stringCountCheckedState', stringCountCheckedState);
+    // console.log('stringCountCheckedState', stringCountCheckedState);
 
     const stringCountQuery = guitarsByStringCount
       .filter((_type, idx) => stringCountCheckedState[idx])
@@ -145,7 +196,7 @@ function CatalogFilter(): JSX.Element {
 
     setMinMaxQueryString(minMaxQuery);
     // eslint-disable-next-line no-console
-    console.log(minMaxQuery);
+    // console.log(minMaxQuery);
     history.push({
       pathname: AppRoute.GuitarQuery,
       search: query,
@@ -181,7 +232,7 @@ function CatalogFilter(): JSX.Element {
                 type="checkbox"
                 id={type}
                 name={type}
-                defaultChecked={typeCheckedState[idx]}
+                checked={typeCheckedState[idx]}
                 onChange={() => handleTypeCheck(idx)}
               />
               <label htmlFor={type}>{guitarTypeName[capitalizeWord(type)]}</label>
