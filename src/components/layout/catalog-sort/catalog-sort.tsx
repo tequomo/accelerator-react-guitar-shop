@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console */
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { SortingOrder, SortingType } from '../../../const';
+import { useHistory } from 'react-router-dom';
+import { AppRoute, SortingOrder, SortingType, urlSortParams } from '../../../const';
+import useQuery from '../../../hooks/use-query';
 import { fetchSortedGuitarsAction } from '../../../services/api-actions';
 
 function CatalogSort(): JSX.Element {
-
   const [sortingType, setSortingType] = useState<string>(SortingType.Price);
   const [sortingOrder, setSortingOrder] = useState<string>(SortingOrder.Ascending);
 
@@ -19,16 +22,33 @@ function CatalogSort(): JSX.Element {
   const buttonDescendingProps = byDescending ? {tabIndex: -1} : {};
 
   const dispatch = useDispatch();
+  const history = useHistory();
+  const queryString = useQuery();
 
   const fetchSortedGuitars = useCallback(() => {
     dispatch(fetchSortedGuitarsAction(sortingType, sortingOrder));
+    console.log('sortingType:', sortingType, 'sortingOrder:',sortingOrder);
   }, [dispatch, sortingOrder, sortingType]);
 
   useEffect(() => {
     fetchSortedGuitars();
   }, [fetchSortedGuitars]);
 
+  useEffect(() => {
+    const queryParams = Array.from(queryString.entries())
+      .filter((arr) => !Object.values(urlSortParams).includes(arr[0]));
 
+    console.log('Ы', queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'));
+    console.log(queryString.entries());
+
+    queryParams.push([urlSortParams.SortingType, sortingType]);
+    queryParams.push([urlSortParams.SortingOrder, sortingOrder]);
+
+    history.push({
+      pathname: AppRoute.GuitarQuery,
+      search: queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'),
+    });
+  }, [sortingType, sortingOrder]);
   return (
     <div className="catalog-sort">
       <h2 className="catalog-sort__title">Сортировать:</h2>

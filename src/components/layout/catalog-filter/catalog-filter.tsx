@@ -1,12 +1,23 @@
+/* eslint-disable prefer-const */
 /* eslint-disable no-console */
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { AppRoute, guitarsByType, guitarTypeName, guitarTypes, LoadingStatus, priceQueryKey, urlParams } from '../../../const';
+import {
+  AppRoute,
+  guitarsByType,
+  guitarTypeName,
+  guitarTypes,
+  LoadingStatus,
+  priceQueryKey,
+  urlFilterParams,
+  urlSortParams
+} from '../../../const';
 import useQuery from '../../../hooks/use-query';
 import { fetchMinMaxPriceValuesAction } from '../../../services/api-actions';
 import { getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
 import { capitalizeWord, debounce } from '../../../utils/utils';
+
 type FiltersType = {
   priceInterval: {
     priceFrom: string,
@@ -34,7 +45,8 @@ function CatalogFilter(): JSX.Element {
     priceFrom: '',
     priceTo: '',
   };
-  const defaultFilters = {
+
+  const defaultFilters = useMemo(() => ({
     priceInterval: {
       priceFrom: '',
       priceTo: '',
@@ -42,7 +54,8 @@ function CatalogFilter(): JSX.Element {
     stringCountCheckedState: [...initStringCountState],
     typeCheckedState: [...initTypeCheckedState],
     stringCountDisabledState: [...initStringCountState],
-  };
+  }), []);
+
   const [filters, setFilters] = useState<FiltersType>(defaultFilters);
   const [priceInterval, setpriceInterval] = useState(initPriceIntervalParams);
   // const [stringCountCheckedState, setStringCountCheckedState] = useState<boolean[]>(initStringCountState);
@@ -59,7 +72,7 @@ function CatalogFilter(): JSX.Element {
     const queryParams: {[key:string]: string[]} = {};
 
     if(firstFilterInit) {
-      urlParams.forEach((param) => {
+      Object.values(urlFilterParams).forEach((param) => {
         const value = queryString.getAll(param);
         if(value) {
           queryParams[param] = value;
@@ -68,27 +81,25 @@ function CatalogFilter(): JSX.Element {
       // eslint-disable-next-line no-console
       const queryFilters: FiltersType = {...defaultFilters};
 
-      if(queryParams['price_gte'].length) {
-        queryFilters.priceInterval.priceFrom = queryParams['price_gte'].join('');
+      if(queryParams[urlFilterParams.PriceFrom].length) {
+        queryFilters.priceInterval.priceFrom = queryParams[urlFilterParams.PriceFrom].join('');
       }
-      if(queryParams['price_lte'].length) {
-        queryFilters.priceInterval.priceTo = queryParams['price_lte'].join('');
+      if(queryParams[urlFilterParams.PriceTo].length) {
+        queryFilters.priceInterval.priceTo = queryParams[urlFilterParams.PriceTo].join('');
       }
-      if(queryParams['type'].length) {
+      if(queryParams[urlFilterParams.Type].length) {
         queryFilters.typeCheckedState = guitarTypes
-          .map((guitar) => queryParams['type'].includes(guitar.type));
+          .map((guitar) => queryParams[urlFilterParams.Type].includes(guitar.type));
+        const disabledState = checkStringCountDisabledInput(queryFilters.typeCheckedState);
+        queryFilters.stringCountDisabledState = disabledState;
       }
-      if(queryParams['stringCount'].length) {
+      if(queryParams[urlFilterParams.StringCount].length) {
         queryFilters.stringCountCheckedState = guitarsByStringCount
-          .map((string) => queryParams['stringCount'].includes(string.toString()));
+          .map((string) => queryParams[urlFilterParams.StringCount].includes(string.toString()));
       }
       setFilters(queryFilters);
-      // setTimeout(() => {
-      //   setFirstFilterInit(false);
-      // }, 300);
-      // console.log('firstFilterInit', firstFilterInit);
     }
-  }, [queryString]);
+  }, [defaultFilters, firstFilterInit, queryString]);
 
   const checkMinPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
     if(+e.target.value < minMaxPriceValues.priceMin || +e.target.value > minMaxPriceValues.priceMax) {
@@ -96,11 +107,25 @@ function CatalogFilter(): JSX.Element {
         ...state,
         priceFrom: minMaxPriceValues.priceMin.toString(),
       }));
+      // setFilters((state) => ({
+      //   ...state,
+      //   priceInterval: {
+      //     priceFrom: minMaxPriceValues.priceMin.toString(),
+      //     priceTo: filters.priceInterval.priceTo,
+      //   },
+      // }));
     } else if(filters.priceInterval.priceTo !== '' && e.target.value > filters.priceInterval.priceTo) {
       setpriceInterval((state) => ({
         ...state,
         priceFrom: priceInterval.priceTo,
       }));
+      // setFilters((state) => ({
+      //   ...state,
+      //   priceInterval: {
+      //     priceFrom: filters.priceInterval.priceTo,
+      //     priceTo: filters.priceInterval.priceTo,
+      //   },
+      // }));
     }
   };
 
@@ -122,6 +147,23 @@ function CatalogFilter(): JSX.Element {
       }));
     }
   };
+
+  const checkStringCountDisabledInput = (updatedTypeCheckedState: boolean[]) => {
+    const availableStringCounts = new Set<number>();
+    let disabledState = initStringCountState;
+    if(updatedTypeCheckedState.includes(true)) {
+      guitarTypes
+        .filter((_guitar, idx) => updatedTypeCheckedState[idx])
+        .forEach((guitar) => {
+          guitar.stringCount.forEach((stringCount: number) => {
+            availableStringCounts.add(stringCount);
+          });
+        });
+      disabledState = guitarsByStringCount.map((count) => !availableStringCounts.has(count));
+    }
+    return disabledState;
+  };
+
   // const checkStringCountInput = ШОБ НЕ ЗАБЫТЬ!
   // useEffect(() => {
   //   if(firstFilterInit) {
@@ -147,8 +189,6 @@ function CatalogFilter(): JSX.Element {
   // }, [filters]);
 
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    console.log('handleMinPriceChange');
-
     setpriceInterval((state) => ({
       ...state,
       priceFrom: e.target.value,
@@ -156,20 +196,19 @@ function CatalogFilter(): JSX.Element {
   };
 
   const handleMaxPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    console.log('handleMaxPriceChange');
     setpriceInterval((state) => ({
       ...state,
       priceTo: e.target.value,
     }));
   };
 
-  const handleStringsCountCheck = (position: number): void => {
-    const updatedStringsCountCheckedState = filters.stringCountCheckedState.map((item, idx) =>
+  const handleStringCountCheck = (position: number): void => {
+    const updatedStringCountCheckedState = filters.stringCountCheckedState.map((item, idx) =>
       idx === position ? !item : item,
     );
     setFilters((state) => ({
       ...state,
-      stringCountCheckedState: [...updatedStringsCountCheckedState],
+      stringCountCheckedState: [...updatedStringCountCheckedState],
     }));
   };
 
@@ -177,18 +216,20 @@ function CatalogFilter(): JSX.Element {
     const updatedTypeCheckedState = filters.typeCheckedState.map((item, idx) =>
       idx === position ? !item : item,
     );
-    const availableStringCounts = new Set<number>();
-    let disabledState = initStringCountState;
-    if(updatedTypeCheckedState.includes(true)) {
-      guitarTypes
-        .filter((_guitar, idx) => updatedTypeCheckedState[idx])
-        .forEach((guitar) => {
-          guitar.stringCount.forEach((stringCount: number) => {
-            availableStringCounts.add(stringCount);
-          });
-        });
-      disabledState = guitarsByStringCount.map((count) => !availableStringCounts.has(count));
-    }
+    // const availableStringCounts = new Set<number>();
+    // let disabledState = initStringCountState;
+    // if(updatedTypeCheckedState.includes(true)) {
+    //   guitarTypes
+    //     .filter((_guitar, idx) => updatedTypeCheckedState[idx])
+    //     .forEach((guitar) => {
+    //       guitar.stringCount.forEach((stringCount: number) => {
+    //         availableStringCounts.add(stringCount);
+    //       });
+    //     });
+    //   disabledState = guitarsByStringCount.map((count) => !availableStringCounts.has(count));
+    // }
+    const disabledState = checkStringCountDisabledInput(updatedTypeCheckedState);
+
     setFilters((state) => ({
       ...state,
       typeCheckedState: [...updatedTypeCheckedState],
@@ -205,7 +246,6 @@ function CatalogFilter(): JSX.Element {
     if(firstFilterInit) {
       return;
     }
-    console.log('priceInterval');
     setFilters((state) => ({
       ...state,
       priceInterval: {
@@ -216,7 +256,6 @@ function CatalogFilter(): JSX.Element {
   }, [priceInterval]);
 
   useEffect(() => {
-    console.log('filtersUpdate', filters);
     if(firstFilterInit){
       setFirstFilterInit(false);
       return;
@@ -228,24 +267,26 @@ function CatalogFilter(): JSX.Element {
     const typeQuery = guitarsByType
       .filter((_type, idx) => filters.typeCheckedState[idx])
       .map((type) => `type=${type}`);
-    // eslint-disable-next-line no-console
-    // console.log('stringCountCheckedState', stringCountCheckedState);
 
     const stringCountQuery = guitarsByStringCount
       .filter((_type, idx) => filters.stringCountCheckedState[idx])
       .map((stringCount) => `stringCount=${stringCount}`);
 
-    const query = priceQuery
+    let query = priceQuery
       .concat(typeQuery, stringCountQuery)
       .join('&');
 
     const minMaxQuery = typeQuery
       .concat(stringCountQuery)
       .join('&');
-
+    const queryParams = new Map(Array.from(queryString.entries()));
+    const sortingType = queryParams.get(urlSortParams.SortingType);
+    const sortingOrder = queryParams.get(urlSortParams.SortingOrder);
+    if(sortingType) {
+      query = `${query}&${urlSortParams.SortingType}=${sortingType}&${urlSortParams.SortingOrder}=${sortingOrder}`;
+    }
     setMinMaxQueryString(minMaxQuery);
     // eslint-disable-next-line no-console
-    console.log(minMaxQuery);
     history.push({
       pathname: AppRoute.GuitarQuery,
       search: query,
@@ -255,6 +296,7 @@ function CatalogFilter(): JSX.Element {
   useEffect(() => {
     dispatch(fetchMinMaxPriceValuesAction(minMaxQueryString));
   }, [dispatch, minMaxQueryString]);
+
   return (
     <form className="catalog-filter" style={{opacity: firstFilterInit ? 0.5 : 1,
       pointerEvents: firstFilterInit? 'none': 'all'}}
@@ -307,7 +349,7 @@ function CatalogFilter(): JSX.Element {
                 name={`${string}-strings`}
                 checked={filters.stringCountCheckedState[idx]}
                 disabled={filters.stringCountDisabledState[idx]}
-                onChange={() => handleStringsCountCheck(idx)}
+                onChange={() => handleStringCountCheck(idx)}
               />
               <label htmlFor={`${string}-strings`}>{string}</label>
             </div>))

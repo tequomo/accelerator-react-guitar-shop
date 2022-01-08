@@ -84,9 +84,26 @@ export const guitarTypes = [
   },
 ];
 
-export const urlParams = [
-  'price_gte',
-  'price_lte',
-  'type',
-  'stringCount',
-];
+// export const urlFilterParams = [
+//   'price_gte',
+//   'price_lte',
+//   'type',
+//   'stringCount',
+// ];
+
+export const urlFilterParams = {
+  PriceFrom:  'price_gte',
+  PriceTo: 'price_lte',
+  Type: 'type',
+  StringCount: 'stringCount',
+};
+
+// export const urlSortParams = [
+//   'sortingType',
+//   'sortingOrder',
+// ];
+
+export const urlSortParams = {
+  SortingType: '_sort',
+  SortingOrder: '_order',
+};

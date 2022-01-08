@@ -74,10 +74,10 @@ export const fetchSearchGuitarAction = (query: string): ThunkActionResult =>
     }
   };
 
-export const fetchSortedGuitarsAction = (sortingType: string, order: string): ThunkActionResult =>
+export const fetchSortedGuitarsAction = (sortingType: string, sortingOrder: string): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?_sort=${sortingType}&_order=${order}`);
+      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?_sort=${sortingType}&_order=${sortingOrder}`);
       dispatch(loadGuitars(data));
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
     } catch {

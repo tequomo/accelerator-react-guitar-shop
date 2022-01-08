@@ -37,7 +37,9 @@ function Catalog(): JSX.Element {
       <CatalogSort />
       <div className="cards catalog__cards">
         {
-          guitars.map((guitar: GuitarType) => <GuitarCard key={guitar.vendorCode} guitar={guitar}/>)
+          guitars.length ?
+            guitars.map((guitar: GuitarType) => <GuitarCard key={guitar.vendorCode} guitar={guitar}/>) :
+            <div style={{gridColumn: '1 / -1'}}>Товары, соответствующие выбранным параметрам, не найдены.</div>
         }
       </div>
       <Pagination />
