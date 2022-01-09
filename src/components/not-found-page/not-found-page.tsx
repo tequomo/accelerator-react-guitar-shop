@@ -12,7 +12,7 @@ function NotFoundPage(): JSX.Element {
           <div style={{display: 'flex',  justifyContent: 'center', alignItems: 'center'}}>
             <img src='img/content/accordion.png' alt='404'></img>
             <div style={{display: 'flex',  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', paddingLeft: '50px'}}>
-              <div style={{fontSize: '100px', margin: '0', padding: '30px 0 50px', height: '100%'}}>404</div>
+              <div style={{fontSize: '120px', fontWeight: 'bold', margin: '0', padding: '30px 0 50px', height: '100%'}}>404</div>
               <p style={{margin: '0', padding: '0 0 30px'}}>Страница не найдена.</p>
               <p style={{margin: '0', padding: '0'}}><Link to={AppRoute.Main}>Вернуться на главную.</Link></p>
             </div>

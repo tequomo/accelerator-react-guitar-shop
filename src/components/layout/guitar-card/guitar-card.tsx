@@ -1,3 +1,4 @@
+import { MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute, IMG_BASE_PATH } from '../../../const';
 import { GuitarType } from '../../../types/guitar-type';
@@ -7,9 +8,10 @@ import StarRating from '../star-rating/star-rating';
 
 type GuitarCardProps = {
   guitar: GuitarType,
+  onAddCartClick: (evt: MouseEvent<HTMLAnchorElement>, guitar: GuitarType) => void,
 }
 
-function GuitarCard({guitar}: GuitarCardProps): JSX.Element {
+function GuitarCard({guitar, onAddCartClick}: GuitarCardProps): JSX.Element {
 
   const {id, name, price, previewImg, rating} = guitar;
 
@@ -26,7 +28,7 @@ function GuitarCard({guitar}: GuitarCardProps): JSX.Element {
       </div>
       <div className="product-card__buttons">
         <Link className="button button--mini" to={`${AppRoute.Guitar}${id}`}>Подробнее</Link>
-        <a className="button button--red button--mini button--add-to-cart" href="/#">Купить</a>
+        <a className="button button--red button--mini button--add-to-cart" href="/#" onClick={(e) => onAddCartClick(e, guitar)}>Купить</a>
       </div>
     </div>
   );

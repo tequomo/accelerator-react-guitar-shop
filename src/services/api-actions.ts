@@ -18,7 +18,7 @@ import { GuitarType } from '../types/guitar-type';
 export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}`);
+      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}?_embed=comments`);
       dispatch(loadGuitars(data));
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
     } catch {

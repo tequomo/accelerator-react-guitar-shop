@@ -10,6 +10,7 @@ import { fetchSortedGuitarsAction } from '../../../services/api-actions';
 function CatalogSort(): JSX.Element {
   const [sortingType, setSortingType] = useState<string>(SortingType.Price);
   const [sortingOrder, setSortingOrder] = useState<string>(SortingOrder.Ascending);
+  const [firstSortInit, setFirstSortInit] = useState<boolean>(true);
 
   const byPrice = sortingType === SortingType.Price;
   const byRating = sortingType === SortingType.Rating;
@@ -27,7 +28,7 @@ function CatalogSort(): JSX.Element {
 
   const fetchSortedGuitars = useCallback(() => {
     dispatch(fetchSortedGuitarsAction(sortingType, sortingOrder));
-    console.log('sortingType:', sortingType, 'sortingOrder:',sortingOrder);
+    // console.log('sortingType:', sortingType, 'sortingOrder:',sortingOrder);
   }, [dispatch, sortingOrder, sortingType]);
 
   useEffect(() => {
@@ -35,11 +36,16 @@ function CatalogSort(): JSX.Element {
   }, [fetchSortedGuitars]);
 
   useEffect(() => {
+    if(firstSortInit){
+      setFirstSortInit(false);
+      console.log(firstSortInit);
+      return;
+    }
     const queryParams = Array.from(queryString.entries())
       .filter((arr) => !Object.values(urlSortParams).includes(arr[0]));
 
-    console.log('Ы', queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'));
-    console.log(queryString.entries());
+    console.log(queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'));
+    // console.log(queryString.entries());
 
     queryParams.push([urlSortParams.SortingType, sortingType]);
     queryParams.push([urlSortParams.SortingOrder, sortingOrder]);
@@ -48,7 +54,8 @@ function CatalogSort(): JSX.Element {
       pathname: AppRoute.GuitarQuery,
       search: queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'),
     });
-  }, [sortingType, sortingOrder]);
+  }, [sortingType, sortingOrder, firstSortInit]);
+
   return (
     <div className="catalog-sort">
       <h2 className="catalog-sort__title">Сортировать:</h2>
