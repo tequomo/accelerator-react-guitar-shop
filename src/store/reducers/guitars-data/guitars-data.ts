@@ -1,7 +1,14 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { LoadingStatus } from '../../../const';
 import { GuitarsData } from '../../../types/state';
-import { doSearchRequest, getMinMaxPriceValues, loadGuitars, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../../action';
+import {
+  loadGuitars,
+  doSearchRequest,
+  getMinMaxPriceValues,
+  setGuitarsLoadingStatus,
+  setPriceValuesLoadingStatus,
+  setSearchResultLoadingStatus
+} from '../../action';
 
 const initialState: GuitarsData = {
   guitars: [],

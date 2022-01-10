@@ -54,7 +54,7 @@ function CatalogSort(): JSX.Element {
       pathname: AppRoute.GuitarQuery,
       search: queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'),
     });
-  }, [sortingType, sortingOrder, firstSortInit]);
+  }, [sortingType, sortingOrder, firstSortInit, queryString, history]);
 
   return (
     <div className="catalog-sort">

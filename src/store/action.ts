@@ -66,3 +66,17 @@ export const redirectToRoute = createAction(
     payload: url,
   }),
 );
+
+export const loadTotalCountGuitars = createAction(
+  ActionType.LoadTotalCountGuitars,
+  (totalCountGuitars: number) => ({
+    payload: totalCountGuitars,
+  }),
+);
+
+export const setFirstLoadState = createAction(
+  ActionType.SetFirstLoadState,
+  (firstLoadState: boolean) => ({
+    payload: firstLoadState,
+  }),
+);

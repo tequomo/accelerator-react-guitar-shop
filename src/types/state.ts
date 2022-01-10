@@ -21,15 +21,9 @@ export type CurrentGuitarData = {
   currentGuitarLoadingStatus: LoadingStatus,
 }
 
-// export type ReviewsData = {
-//   guitarReviews: ReviewType[],
-//   guitarReviewsLoadingStatus: LoadingStatus,
-//   reviewLoadingStatus: LoadingStatus,
-// }
-
 export type AppState = {
-  selectedCity: string,
-  currentSortingType: string,
+  firstLoadState: boolean,
+  totalCountGuitars: number,
 }
 
 export type State = RootState;

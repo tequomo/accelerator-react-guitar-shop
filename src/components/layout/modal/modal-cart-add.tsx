@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { IMG_BASE_PATH } from '../../../const';
+import { guitarTypes, IMG_BASE_PATH } from '../../../const';
 import { GuitarType } from '../../../types/guitar-type';
 import { modifyImgUrl } from '../../../utils/utils';
 
@@ -17,6 +17,8 @@ function ModalCardAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JS
   };
 
   const {type, price, previewImg, vendorCode, name, stringCount} = activeGuitar as GuitarType;
+
+  const guitarType = guitarTypes.find((guitar) => guitar.type === type)?.name;
 
   const handleModalEscClose = (event: KeyboardEvent) => {
     if(event.key === 'Escape' || event.keyCode === 27) {
@@ -43,7 +45,7 @@ function ModalCardAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JS
             <div className="modal__info-wrapper">
               <h3 className="modal__product-name title title--little title--uppercase">Гитара {name}</h3>
               <p className="modal__product-params modal__product-params--margin-11">Артикул: {vendorCode}</p>
-              <p className="modal__product-params">{type}, {stringCount} струнная</p>
+              <p className="modal__product-params">{guitarType}, {stringCount} струнная</p>
               <p className="modal__price-wrapper"><span className="modal__price">Цена:</span><span className="modal__price">{price.toLocaleString()} ₽</span></p>
             </div>
           </div>

@@ -1,7 +1,9 @@
 import { ApiRoute, LoadingStatus, maxPriceGuitarQuery, minPriceGuitarQuery } from '../const';
-import { doSearchRequest, getMinMaxPriceValues, loadCurrentGuitar, loadGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
+import { doSearchRequest, getMinMaxPriceValues, loadCurrentGuitar, loadGuitars, loadTotalCountGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
 import { ThunkActionResult } from '../types/action';
 import { GuitarType } from '../types/guitar-type';
+
+const TOTAL_COUNT_HEADER = 'x-total-count';
 
 // export const fetchGuitarsAction = (): ThunkActionResult =>
 //   async (dispatch, _getState, api): Promise<void> => {
@@ -18,7 +20,12 @@ import { GuitarType } from '../types/guitar-type';
 export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}?_embed=comments`);
+      const { data, headers } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments`);
+      if(headers[TOTAL_COUNT_HEADER]) {
+        dispatch(loadTotalCountGuitars(+headers[TOTAL_COUNT_HEADER]));
+        // eslint-disable-next-line no-console
+        console.log(headers[TOTAL_COUNT_HEADER]);
+      }
       dispatch(loadGuitars(data));
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
     } catch {

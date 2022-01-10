@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   AppRoute,
-  guitarsByType,
-  guitarTypeName,
+  // guitarsByType,
+  // guitarTypeName,
   guitarTypes,
   LoadingStatus,
   priceQueryKey,
@@ -16,7 +16,7 @@ import {
 import useQuery from '../../../hooks/use-query';
 import { fetchMinMaxPriceValuesAction } from '../../../services/api-actions';
 import { getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
-import { capitalizeWord, debounce } from '../../../utils/utils';
+import { debounce } from '../../../utils/utils';
 
 type FiltersType = {
   priceInterval: {
@@ -29,6 +29,7 @@ type FiltersType = {
 }
 
 const guitarsByStringCount = [4, 6, 7, 12];
+const guitarsByType = guitarTypes.map((guitar) => guitar.type);
 const initStringCountState: boolean[] = new Array(guitarsByStringCount.length).fill(false);
 const initTypeCheckedState: boolean[] = new Array(guitarTypes.length).fill(false);
 
@@ -253,7 +254,8 @@ function CatalogFilter(): JSX.Element {
         priceTo: priceInterval.priceTo,
       },
     }));
-  }, [priceInterval]);
+    // firstFilterInit ?
+  }, [firstFilterInit, priceInterval]);
 
   useEffect(() => {
     if(firstFilterInit){
@@ -265,6 +267,7 @@ function CatalogFilter(): JSX.Element {
       .map((key) => `${priceQueryKey[key]}=${priceInterval[key]}`);
 
     const typeQuery = guitarsByType
+    // const typeQuery = guitarTypes.map((guitar) => guitar.type)
       .filter((_type, idx) => filters.typeCheckedState[idx])
       .map((type) => `type=${type}`);
 
@@ -286,12 +289,11 @@ function CatalogFilter(): JSX.Element {
       query = `${query}&${urlSortParams.SortingType}=${sortingType}&${urlSortParams.SortingOrder}=${sortingOrder}`;
     }
     setMinMaxQueryString(minMaxQuery);
-    // eslint-disable-next-line no-console
     history.push({
       pathname: AppRoute.GuitarQuery,
       search: query,
     });
-  }, [filters]);
+  }, [filters, firstFilterInit, history, priceInterval, queryString]);
 
   useEffect(() => {
     dispatch(fetchMinMaxPriceValuesAction(minMaxQueryString));
@@ -325,7 +327,7 @@ function CatalogFilter(): JSX.Element {
       <fieldset className="catalog-filter__block">
         <legend className="catalog-filter__block-title">Тип гитар</legend>
         {
-          guitarsByType.map((type, idx) => (
+          guitarTypes.map(({type, sectionName}, idx) => (
             <div key={type} className="form-checkbox catalog-filter__block-item">
               <input className="visually-hidden"
                 type="checkbox"
@@ -334,7 +336,7 @@ function CatalogFilter(): JSX.Element {
                 checked={filters.typeCheckedState[idx]}
                 onChange={() => handleTypeCheck(idx)}
               />
-              <label htmlFor={type}>{guitarTypeName[capitalizeWord(type)]}</label>
+              <label htmlFor={type}>{sectionName}</label>
             </div>))
         }
       </fieldset>

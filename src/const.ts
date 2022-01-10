@@ -13,11 +13,11 @@ export enum ApiRoute {
   Orders = '/orders',
 }
 
-export enum HttpCode {
-  Ok = 200,
-  BadRequest = 400,
-  NotFound = 404,
-}
+// export enum HttpCode {
+//   Ok = 200,
+//   BadRequest = 400,
+//   NotFound = 404,
+// }
 
 export enum LoadingStatus {
   Idle = 'idle',
@@ -47,13 +47,13 @@ export enum SortingOrder {
 export const minPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=asc';
 export const maxPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=desc';
 
-export const guitarsByType = ['acoustic', 'electric', 'ukulele'];
+// export const guitarsByType = ['acoustic', 'electric', 'ukulele'];
 
-export const guitarTypeName: {[key: string]: string} = {
-  Acoustic: 'Акустические гитары',
-  Electric: 'Электрогитары',
-  Ukulele: 'Укулеле',
-};
+// export const guitarTypeName: {[key: string]: string} = {
+//   Acoustic: 'Акустические гитары',
+//   Electric: 'Электрогитары',
+//   Ukulele: 'Укулеле',
+// };
 
 export const priceQueryKey: {[key: string]: string} = {
   priceFrom: 'price_gte',
@@ -69,16 +69,19 @@ export const stringCountByType = {
 export const guitarTypes = [
   {
     type: 'acoustic',
-    name: 'Акустические гитары',
+    sectionName: 'Акустические гитары',
+    name: 'Акустическая гитара',
     stringCount: [6, 7, 12],
   },
   {
     type: 'electric',
-    name: 'Электрогитары',
+    sectionName: 'Электрогитары',
+    name: 'Электрогитара',
     stringCount: [4, 6, 7],
   },
   {
     type: 'ukulele',
+    sectionName: 'Укулеле',
     name: 'Укулеле',
     stringCount: [4],
   },
