@@ -282,13 +282,17 @@ function CatalogFilter(): JSX.Element {
     const minMaxQuery = typeQuery
       .concat(stringCountQuery)
       .join('&');
+
     const queryParams = new Map(Array.from(queryString.entries()));
     const sortingType = queryParams.get(urlSortParams.SortingType);
     const sortingOrder = queryParams.get(urlSortParams.SortingOrder);
-    if(sortingType) {
+
+    if(!firstFilterInit && sortingType) {
       query = `${query}&${urlSortParams.SortingType}=${sortingType}&${urlSortParams.SortingOrder}=${sortingOrder}`;
     }
+
     setMinMaxQueryString(minMaxQuery);
+
     history.push({
       pathname: AppRoute.GuitarQuery,
       search: query,
