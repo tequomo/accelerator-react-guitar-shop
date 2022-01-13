@@ -59,9 +59,6 @@ function CatalogFilter(): JSX.Element {
 
   const [filters, setFilters] = useState<FiltersType>(defaultFilters);
   const [priceInterval, setpriceInterval] = useState(initPriceIntervalParams);
-  // const [stringCountCheckedState, setStringCountCheckedState] = useState<boolean[]>(initStringCountState);
-  // const [typeCheckedState, setTypeCheckedState] = useState<boolean[]>(initTypeCheckedState);
-  // const [stringCountDisabledState, setStringCountDisabledState] = useState<boolean[]>(initStringCountState);
 
   const [minMaxQueryString, setMinMaxQueryString] = useState<string>('');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -297,7 +294,7 @@ function CatalogFilter(): JSX.Element {
       pathname: AppRoute.GuitarQuery,
       search: query,
     });
-  }, [filters, firstFilterInit, history, priceInterval, queryString]);
+  }, [filters, history, priceInterval, queryString]);
 
   useEffect(() => {
     dispatch(fetchMinMaxPriceValuesAction(minMaxQueryString));

@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
-import { ApiRoute, LoadingStatus, maxPriceGuitarQuery, minPriceGuitarQuery } from '../const';
+import { toast } from 'react-toastify';
+import { ApiRoute, LoadingStatus, maxPriceGuitarQuery, Messages, minPriceGuitarQuery } from '../const';
 import { doSearchRequest, getMinMaxPriceValues, loadCurrentGuitar, loadGuitars, loadTotalCountGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
 import { ThunkActionResult } from '../types/action';
 import { GuitarType } from '../types/guitar-type';
@@ -30,7 +31,7 @@ export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
-      // toast.error(Messages.OFFER_LOADING_ERROR);
+      toast.error(Messages.LOAD_FAIL);
     }
   };
 

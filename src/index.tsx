@@ -3,6 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router as BrowserRouter } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import browserHistory from './browser-history';
 import App from './components/app/app';
 import { createAPI } from './services/api';
@@ -25,6 +27,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter history={browserHistory}>
+        <ToastContainer />
         <App />
       </BrowserRouter>
     </Provider>

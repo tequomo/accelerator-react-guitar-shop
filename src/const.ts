@@ -110,3 +110,13 @@ export const urlSortParams = {
   SortingType: '_sort',
   SortingOrder: '_order',
 };
+
+export const urlPaginationParams = {
+  Start: '_start',
+  End: '_end',
+};
+
+export const Messages = {
+  LOAD_FAIL: 'Загрузка данных не удалась. Возможно, Вы не в сети',
+  // OFFER_LOADING_ERROR: 'Offers loading failed',
+};

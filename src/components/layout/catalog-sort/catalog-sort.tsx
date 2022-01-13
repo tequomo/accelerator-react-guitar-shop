@@ -44,17 +44,19 @@ function CatalogSort(): JSX.Element {
     const queryParams = Array.from(queryString.entries())
       .filter((arr) => !Object.values(urlSortParams).includes(arr[0]));
 
-    console.log(queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'));
+    // console.log(queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'));
     // console.log(queryString.entries());
 
     queryParams.push([urlSortParams.SortingType, sortingType]);
     queryParams.push([urlSortParams.SortingOrder, sortingOrder]);
 
-    history.push({
-      pathname: AppRoute.GuitarQuery,
-      search: queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'),
-    });
-  }, [sortingType, sortingOrder, firstSortInit, queryString, history]);
+    if(!firstSortInit) {
+      history.push({
+        pathname: AppRoute.GuitarQuery,
+        search: queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'),
+      });
+    }
+  }, [sortingType, sortingOrder, history]);
 
   return (
     <div className="catalog-sort">
