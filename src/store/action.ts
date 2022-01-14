@@ -80,3 +80,10 @@ export const setFirstLoadState = createAction(
     payload: firstLoadState,
   }),
 );
+
+export const setCurrentPage = createAction(
+  ActionType.SetCurrentPage,
+  (currentPage: number) => ({
+    payload: currentPage,
+  }),
+);

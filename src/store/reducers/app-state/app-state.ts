@@ -1,10 +1,11 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { AppState } from '../../../types/state';
-import { loadTotalCountGuitars, setFirstLoadState } from '../../action';
+import { loadTotalCountGuitars, setCurrentPage, setFirstLoadState } from '../../action';
 
 const initialState: AppState = {
   firstLoadState: true,
   totalCountGuitars: 0,
+  currentPage: 1,
 };
 
 const appState = createReducer(initialState, (builder) => {
@@ -14,6 +15,9 @@ const appState = createReducer(initialState, (builder) => {
     })
     .addCase(setFirstLoadState, (state, action) => {
       state.firstLoadState = action.payload;
+    })
+    .addCase(setCurrentPage, (state, action) => {
+      state.currentPage = action.payload;
     });
 });
 

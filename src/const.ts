@@ -4,6 +4,7 @@ export enum AppRoute {
   Guitar = '/guitars/',
   GuitarRoom = '/guitars/:id',
   Cart = '/cart',
+  CatalogPage = '/page_:pageNumber',
 }
 
 export enum ApiRoute {

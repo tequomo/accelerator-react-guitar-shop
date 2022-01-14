@@ -24,6 +24,7 @@ export type CurrentGuitarData = {
 export type AppState = {
   firstLoadState: boolean,
   totalCountGuitars: number,
+  currentPage: number,
 }
 
 export type State = RootState;

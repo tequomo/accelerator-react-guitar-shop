@@ -14,6 +14,7 @@ export enum ActionType {
   SetSearchResultLoadingStatus = 'data/setSearchResultLoadingStatus',
   LoadTotalCountGuitars = 'data/loadTotalCountGuitars',
   SetFirstLoadState = 'main/setFirstLoadState',
+  SetCurrentPage = 'main/setCurrentPage',
 }
 
 export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, State, AxiosInstance, Action>;

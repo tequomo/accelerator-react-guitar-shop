@@ -11,6 +11,9 @@ function App(): JSX.Element {
       <Route exact path={AppRoute.Main}>
         <MainPage />
       </Route>
+      <Route exact path={`${AppRoute.GuitarQuery}${AppRoute.CatalogPage}`}>
+        <MainPage />
+      </Route>
       <Route exact path={AppRoute.GuitarRoom}>
         <GuitarPage />
       </Route>

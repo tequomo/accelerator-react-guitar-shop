@@ -22,7 +22,8 @@ const TOTAL_COUNT_HEADER = 'x-total-count';
 export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const { data, headers } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments&_start=0&_end=9`);
+      // const { data, headers } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments&_start=0&_end=9`);
+      const { data, headers } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments`);
       if(headers[TOTAL_COUNT_HEADER]) {
         dispatch(loadTotalCountGuitars(+headers[TOTAL_COUNT_HEADER]));
         console.log(headers[TOTAL_COUNT_HEADER]);
