@@ -28,15 +28,6 @@ function CatalogSort(): JSX.Element {
   const history = useHistory();
   const queryString = useQuery();
 
-  const fetchSortedGuitars = useCallback(() => {
-    // dispatch(fetchSortedGuitarsAction(sortingType, sortingOrder));
-    // console.log('sortingType:', sortingType, 'sortingOrder:',sortingOrder);
-  }, [dispatch, sortingOrder, sortingType]);
-
-  useEffect(() => {
-    fetchSortedGuitars();
-  }, [fetchSortedGuitars]);
-
   useEffect(() => {
     if(firstSortInit){
       setFirstSortInit(false);
@@ -53,7 +44,6 @@ function CatalogSort(): JSX.Element {
     queryParams.push([urlSortParams.SortingOrder, sortingOrder]);
 
     if(!firstSortInit) {
-      dispatch(setCurrentPage(initialState.currentPage));
       history.push({
         pathname: AppRoute.GuitarQuery,
         search: queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'),

@@ -4,7 +4,6 @@ import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
-  AppRoute,
   guitarTypes,
   LoadingStatus,
   priceQueryKey,
@@ -14,7 +13,6 @@ import {
 import useQuery from '../../../hooks/use-query';
 import { fetchMinMaxPriceValuesAction } from '../../../services/api-actions';
 import { setCurrentPage } from '../../../store/action';
-import { initialState } from '../../../store/reducers/app-state/app-state';
 import { getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
 import { debounce } from '../../../utils/utils';
 
@@ -239,6 +237,7 @@ function CatalogFilter(): JSX.Element {
     if(firstFilterInit) {
       return;
     }
+
     setFilters((state) => ({
       ...state,
       priceInterval: {
@@ -250,6 +249,7 @@ function CatalogFilter(): JSX.Element {
   }, [firstFilterInit, priceInterval]);
 
   useEffect(() => {
+    console.log('firstFilterInit', filters, priceInterval, queryString);
     if(firstFilterInit){
       setFirstFilterInit(false);
       return;
@@ -283,12 +283,12 @@ function CatalogFilter(): JSX.Element {
     }
 
     setMinMaxQueryString(minMaxQuery);
-    dispatch(setCurrentPage(initialState.currentPage));
+    dispatch(setCurrentPage(1));
     history.push({
-      pathname: AppRoute.GuitarQuery,
       search: query,
     });
-  }, [filters, history, priceInterval, queryString]);
+    //TODO: Read about useMemo
+  }, [JSON.stringify(filters), priceInterval, queryString]);
 
   useEffect(() => {
     dispatch(fetchMinMaxPriceValuesAction(minMaxQueryString));

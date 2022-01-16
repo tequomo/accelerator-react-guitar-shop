@@ -2,9 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { CARDS_PER_PAGE, LoadingStatus } from '../../../const';
 import { fetchGuitarsAction } from '../../../services/api-actions';
+import { setCurrentPage } from '../../../store/action';
 import { getCurrentPage } from '../../../store/reducers/app-state/selectors';
 import { getGuitars, getGuitarsLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
 import { GuitarType } from '../../../types/guitar-type';
@@ -13,7 +14,7 @@ import CatalogSort from '../catalog-sort/catalog-sort';
 import GuitarCard from '../guitar-card/guitar-card';
 import LoaderWrapper from '../loader-wrapper/loader-wrapper';
 import ModalCardAdd from '../modal/modal-cart-add';
-import Pagination from '../pagination/pagination';
+import Pagination, { ParamsPropsType } from '../pagination/pagination';
 
 
 function Catalog(): JSX.Element {
@@ -23,6 +24,7 @@ function Catalog(): JSX.Element {
   const guitarsLoadingStatus = useSelector(getGuitarsLoadingStatus);
   const isGuitarsLoad = guitarsLoadingStatus === LoadingStatus.Succeeded;
   const currentPage = useSelector(getCurrentPage);
+  const { pageNumber } = useParams<ParamsPropsType>();
 
   const [modalAddCardVisible, setModalAddCardVisible] = useState<boolean>(false);
   const [activeGuitar, setActiveGuitar] = useState<GuitarType | []>([]);
@@ -41,9 +43,9 @@ function Catalog(): JSX.Element {
     dispatch(fetchGuitarsAction(search + pages));
   }, [dispatch, search, currentPage]);
 
-  // useEffect(() => {
-  //   // fetchGuitars();
-  // }, [fetchGuitars]);
+  useEffect(() => {
+    dispatch(setCurrentPage(+pageNumber || 1));
+  }, []);
 
   const handleAddCartClick = (evt: MouseEvent<HTMLAnchorElement>, guitar: GuitarType): void => {
     evt.preventDefault();

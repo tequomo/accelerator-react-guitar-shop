@@ -15,7 +15,7 @@ type PageServingType = {
   end: number,
 }
 
-type ParamsPropsType = {
+export type ParamsPropsType = {
   pageNumber: string,
 }
 
@@ -27,6 +27,7 @@ function Pagination(): JSX.Element {
   const { pageNumber } = useParams<ParamsPropsType>();
   const totalCountGuitars = useSelector(getTotalCountGuitars);
   const currentPage = useSelector(getCurrentPage);
+
   const dispatch = useDispatch();
 
   const queryPageNumber =  pageNumber ?? 1;
@@ -38,22 +39,17 @@ function Pagination(): JSX.Element {
 
   const totalPagesCount = Math.ceil(totalCountGuitars / CARDS_PER_PAGE);
   const totalPagesList: number[] = new Array(totalPagesCount).fill(false).map((_page, idx) => idx + 1);
+  const firstPage = Math.min(...totalPagesList);
+  const lastPage = Math.max(...totalPagesList);
 
   const [pageServing, setPageServing] = useState<PageServingType>(initPageServing);
-
-  const handlePrevPageClick = (evt: MouseEvent<HTMLAnchorElement>) => {
-    evt.preventDefault();
-    dispatch(setCurrentPage(currentPage - 1));
+  const updatePage = (page: number) => {
+    dispatch(setCurrentPage(page));
   };
 
   const handlePageChange = (evt: MouseEvent<HTMLAnchorElement>, page: number) => {
     evt.preventDefault();
-    dispatch(setCurrentPage(page));
-  };
-
-  const handleNextPageClick = (evt: MouseEvent<HTMLAnchorElement>) => {
-    evt.preventDefault();
-    dispatch(setCurrentPage(currentPage + 1));
+    updatePage(page);
   };
 
   useEffect(() => {
@@ -62,46 +58,13 @@ function Pagination(): JSX.Element {
       search: search,
     });
   }, [currentPage, history, search]);
-
-  // useEffect(() => {
-  //   console.log(search);
-  //   console.log(pageNumber);
-  //   dispatch(setCurrentPage(+pageNumber));
-  // }, [dispatch, pageNumber, search]);
-
-
-  // const composeQuery = useCallback((page: string): string => {
-  //   setPageServing((state) => ({
-  //     ...state,
-  //     start: (+page - 1) * CARDS_PER_PAGE,
-  //     end: ((+page * CARDS_PER_PAGE) - 1 < totalCountGuitars) ? +page * CARDS_PER_PAGE : totalCountGuitars -1,
-  //   }));
-  //   const paginationQuery = `${urlPaginationParams.Start}=${pageServing.start}&${urlPaginationParams.End}=${pageServing.end}`;
-  //   return paginationQuery;
-  // }, [pageServing, totalCountGuitars]);
-
-  useEffect(() => {
-    // const start = (+queryPageNumber - 1) * CARDS_PER_PAGE;
-    // const end = (((+queryPageNumber * CARDS_PER_PAGE) < totalCountGuitars) ? (+queryPageNumber * CARDS_PER_PAGE) : totalCountGuitars);
-
-    // const paginationQuery = `${search ? `${search}&` : '?'}${urlPaginationParams.Start}=${start}&${urlPaginationParams.End}=${end}`;
-    // console.log(pageNumber);
-    // const query = composeQuery(pageNumber);
-    // dispatch(fetchGuitarsAction(paginationQuery));
-    // history.push({
-    //   pathname: AppRoute.GuitarQuery,
-    //   search: `page_${currentPage}search`,
-    // });
-    // console.log(composeQuery());
-
-  }, [search]);
   return (
     <div className="pagination page-content__pagination">
       <ul className="pagination__list">
         {
-          +queryPageNumber !== Math.min(...totalPagesList) ?
+          +queryPageNumber !== firstPage ?
             <li className="pagination__page pagination__page--prev" id="prev">
-              <a className="link pagination__page-link" href={`page_${(currentPage - 1).toString()}`} onClick={handlePrevPageClick}>Назад</a>
+              <a className="link pagination__page-link" href={`page_${(currentPage - 1).toString()}`} onClick={(e) => handlePageChange(e, currentPage - 1)}>Назад</a>
             </li> : ''
         }
         {
@@ -114,9 +77,9 @@ function Pagination(): JSX.Element {
             )
         }
         {
-          +queryPageNumber !== Math.max(...totalPagesList) ?
+          +queryPageNumber !== lastPage ?
             <li className="pagination__page pagination__page--next" id="next">
-              <a className="link pagination__page-link" href={`page_${(currentPage + 1).toString()}`} onClick={handleNextPageClick}>Далее</a>
+              <a className="link pagination__page-link" href={`page_${(currentPage + 1).toString()}`} onClick={(e) => handlePageChange(e, currentPage + 1)}>Далее</a>
             </li> : ''
         }
       </ul>

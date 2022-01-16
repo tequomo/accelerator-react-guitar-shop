@@ -7,28 +7,11 @@ import { GuitarType } from '../types/guitar-type';
 
 const TOTAL_COUNT_HEADER = 'x-total-count';
 
-// export const fetchGuitarsAction = (): ThunkActionResult =>
-//   async (dispatch, _getState, api): Promise<void> => {
-//     try {
-//       const { data } = await api.get<GuitarType[]>(ApiRoute.Guitars);
-//       dispatch(loadGuitars(data));
-//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
-//     } catch {
-//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
-//       // toast.error(Messages.OFFER_LOADING_ERROR);
-//     }
-//   };
-
 export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      // const { data, headers } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments&_start=0&_end=9`);
-      const res = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments`);
-      const { data, headers } = res;
+      const { data, headers } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments`);
       dispatch(loadTotalCountGuitars( +headers[TOTAL_COUNT_HEADER] || data.length));
-      // if(headers[TOTAL_COUNT_HEADER]) {
-      //   console.log(headers[TOTAL_COUNT_HEADER]);
-      // }
       dispatch(loadGuitars(data));
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
     } catch {
