@@ -6,6 +6,8 @@ import { useHistory } from 'react-router-dom';
 import { AppRoute, SortingOrder, SortingType, urlSortParams } from '../../../const';
 import useQuery from '../../../hooks/use-query';
 import { fetchSortedGuitarsAction } from '../../../services/api-actions';
+import { setCurrentPage } from '../../../store/action';
+import { initialState } from '../../../store/reducers/app-state/app-state';
 
 function CatalogSort(): JSX.Element {
   const [sortingType, setSortingType] = useState<string>(SortingType.Price);
@@ -27,7 +29,7 @@ function CatalogSort(): JSX.Element {
   const queryString = useQuery();
 
   const fetchSortedGuitars = useCallback(() => {
-    dispatch(fetchSortedGuitarsAction(sortingType, sortingOrder));
+    // dispatch(fetchSortedGuitarsAction(sortingType, sortingOrder));
     // console.log('sortingType:', sortingType, 'sortingOrder:',sortingOrder);
   }, [dispatch, sortingOrder, sortingType]);
 
@@ -51,6 +53,7 @@ function CatalogSort(): JSX.Element {
     queryParams.push([urlSortParams.SortingOrder, sortingOrder]);
 
     if(!firstSortInit) {
+      dispatch(setCurrentPage(initialState.currentPage));
       history.push({
         pathname: AppRoute.GuitarQuery,
         search: queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'),

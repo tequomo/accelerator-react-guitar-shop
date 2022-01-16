@@ -1,8 +1,11 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { CARDS_PER_PAGE, LoadingStatus } from '../../../const';
 import { fetchGuitarsAction } from '../../../services/api-actions';
+import { getCurrentPage } from '../../../store/reducers/app-state/selectors';
 import { getGuitars, getGuitarsLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
 import { GuitarType } from '../../../types/guitar-type';
 import CatalogFilter from '../catalog-filter/catalog-filter';
@@ -19,6 +22,7 @@ function Catalog(): JSX.Element {
   const guitars = useSelector(getGuitars).slice(0, CARDS_PER_PAGE);
   const guitarsLoadingStatus = useSelector(getGuitarsLoadingStatus);
   const isGuitarsLoad = guitarsLoadingStatus === LoadingStatus.Succeeded;
+  const currentPage = useSelector(getCurrentPage);
 
   const [modalAddCardVisible, setModalAddCardVisible] = useState<boolean>(false);
   const [activeGuitar, setActiveGuitar] = useState<GuitarType | []>([]);
@@ -27,13 +31,19 @@ function Catalog(): JSX.Element {
 
   const { search } = useLocation();
 
-  const fetchGuitars = useCallback(() => {
-    dispatch(fetchGuitarsAction(search));
-  }, [dispatch, search]);
-
+  // const fetchGuitars = useCallback(() => {
+  //   // dispatch(fetchGuitarsAction(search));
+  //   console.log('get guitars');
+  // }, [dispatch, search]);
   useEffect(() => {
-    fetchGuitars();
-  }, [fetchGuitars]);
+    console.log('useEffect', search, currentPage);
+    const pages = `${search ? '&' : '?'}_start=${(currentPage - 1) * CARDS_PER_PAGE}&_end=${currentPage * CARDS_PER_PAGE}`;
+    dispatch(fetchGuitarsAction(search + pages));
+  }, [dispatch, search, currentPage]);
+
+  // useEffect(() => {
+  //   // fetchGuitars();
+  // }, [fetchGuitars]);
 
   const handleAddCartClick = (evt: MouseEvent<HTMLAnchorElement>, guitar: GuitarType): void => {
     evt.preventDefault();

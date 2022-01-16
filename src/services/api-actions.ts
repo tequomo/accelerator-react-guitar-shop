@@ -23,11 +23,12 @@ export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
       // const { data, headers } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments&_start=0&_end=9`);
-      const { data, headers } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments`);
-      if(headers[TOTAL_COUNT_HEADER]) {
-        dispatch(loadTotalCountGuitars(+headers[TOTAL_COUNT_HEADER]));
-        console.log(headers[TOTAL_COUNT_HEADER]);
-      }
+      const res = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments`);
+      const { data, headers } = res;
+      dispatch(loadTotalCountGuitars( +headers[TOTAL_COUNT_HEADER] || data.length));
+      // if(headers[TOTAL_COUNT_HEADER]) {
+      //   console.log(headers[TOTAL_COUNT_HEADER]);
+      // }
       dispatch(loadGuitars(data));
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
     } catch {
@@ -39,13 +40,13 @@ export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
 export const fetchMinMaxPriceValuesAction = (queryString: string): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const minPriceResponse = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${minPriceGuitarQuery}&${queryString}`);
-      const minPriceGuitar = minPriceResponse.data.reduce((result, item) => result = item);
-      const maxPriceResponse = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&${queryString}`);
-      const maxPriceGuitar = maxPriceResponse.data.reduce((result, item) => result = item);
+      const [min, max] = await Promise.all([
+        api.get<GuitarType[]>(`${ApiRoute.Guitars}${minPriceGuitarQuery}&${queryString}`),
+        api.get<GuitarType[]>(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&${queryString}`),
+      ]);
       dispatch(getMinMaxPriceValues({
-        priceMin: minPriceGuitar.price,
-        priceMax: maxPriceGuitar.price,
+        priceMin: min.data[0].price,
+        priceMax: max.data[0].price,
       }));
       dispatch(setPriceValuesLoadingStatus(LoadingStatus.Succeeded));
     } catch {

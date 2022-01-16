@@ -7,6 +7,7 @@ import { AppRoute, CARDS_PER_PAGE, urlPaginationParams } from '../../../const';
 import useQuery from '../../../hooks/use-query';
 import { fetchGuitarsAction } from '../../../services/api-actions';
 import { setCurrentPage } from '../../../store/action';
+import { initialState } from '../../../store/reducers/app-state/app-state';
 import { getCurrentPage, getTotalCountGuitars } from '../../../store/reducers/app-state/selectors';
 
 type PageServingType = {
@@ -69,31 +70,31 @@ function Pagination(): JSX.Element {
   // }, [dispatch, pageNumber, search]);
 
 
-  const composeQuery = useCallback((page: string): string => {
-    setPageServing((state) => ({
-      ...state,
-      start: (+page - 1) * CARDS_PER_PAGE,
-      end: ((+page * CARDS_PER_PAGE) - 1 < totalCountGuitars) ? +page * CARDS_PER_PAGE : totalCountGuitars -1,
-    }));
-    const paginationQuery = `${urlPaginationParams.Start}=${pageServing.start}&${urlPaginationParams.End}=${pageServing.end}`;
-    return paginationQuery;
-  }, [pageServing, totalCountGuitars]);
+  // const composeQuery = useCallback((page: string): string => {
+  //   setPageServing((state) => ({
+  //     ...state,
+  //     start: (+page - 1) * CARDS_PER_PAGE,
+  //     end: ((+page * CARDS_PER_PAGE) - 1 < totalCountGuitars) ? +page * CARDS_PER_PAGE : totalCountGuitars -1,
+  //   }));
+  //   const paginationQuery = `${urlPaginationParams.Start}=${pageServing.start}&${urlPaginationParams.End}=${pageServing.end}`;
+  //   return paginationQuery;
+  // }, [pageServing, totalCountGuitars]);
 
   useEffect(() => {
-    const start = (+queryPageNumber - 1) * CARDS_PER_PAGE;
-    const end = (((+queryPageNumber * CARDS_PER_PAGE) < totalCountGuitars) ? (+queryPageNumber * CARDS_PER_PAGE) : totalCountGuitars);
+    // const start = (+queryPageNumber - 1) * CARDS_PER_PAGE;
+    // const end = (((+queryPageNumber * CARDS_PER_PAGE) < totalCountGuitars) ? (+queryPageNumber * CARDS_PER_PAGE) : totalCountGuitars);
 
-    const paginationQuery = `${search ? `${search}&` : '?'}${urlPaginationParams.Start}=${start}&${urlPaginationParams.End}=${end}`;
+    // const paginationQuery = `${search ? `${search}&` : '?'}${urlPaginationParams.Start}=${start}&${urlPaginationParams.End}=${end}`;
     // console.log(pageNumber);
     // const query = composeQuery(pageNumber);
-    dispatch(fetchGuitarsAction(paginationQuery));
+    // dispatch(fetchGuitarsAction(paginationQuery));
     // history.push({
     //   pathname: AppRoute.GuitarQuery,
     //   search: `page_${currentPage}search`,
     // });
     // console.log(composeQuery());
-  }, [dispatch, queryPageNumber, search, totalCountGuitars]);
 
+  }, [search]);
   return (
     <div className="pagination page-content__pagination">
       <ul className="pagination__list">

@@ -207,7 +207,6 @@ function CatalogFilter(): JSX.Element {
       ...state,
       stringCountCheckedState: [...updatedStringCountCheckedState],
     }));
-    dispatch(setCurrentPage(initialState.currentPage));
   };
 
   const handleTypeCheck = (position: number): void => {
@@ -234,7 +233,6 @@ function CatalogFilter(): JSX.Element {
       stringCountCheckedState: [...initStringCountState],
       stringCountDisabledState: [...disabledState],
     }));
-    dispatch(setCurrentPage(initialState.currentPage));
   };
 
   useEffect(() => {
@@ -285,7 +283,7 @@ function CatalogFilter(): JSX.Element {
     }
 
     setMinMaxQueryString(minMaxQuery);
-
+    dispatch(setCurrentPage(initialState.currentPage));
     history.push({
       pathname: AppRoute.GuitarQuery,
       search: query,
