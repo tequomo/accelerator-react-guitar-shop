@@ -30,8 +30,6 @@ function Pagination(): JSX.Element {
 
   const queryPageNumber =  pageNumber ?? 1;
 
-
-  // const initCurrentPage = 1;
   const initPageServing: PageServingType = {
     start: 0,
     end: CARDS_PER_PAGE - 1,
@@ -40,25 +38,21 @@ function Pagination(): JSX.Element {
   const totalPagesCount = Math.ceil(totalCountGuitars / CARDS_PER_PAGE);
   const totalPagesList: number[] = new Array(totalPagesCount).fill(false).map((_page, idx) => idx + 1);
 
-  // const [currentPage, setCurrentPage] = useState<number>(initCurrentPage);
   const [pageServing, setPageServing] = useState<PageServingType>(initPageServing);
 
   const handlePrevPageClick = (evt: MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
     dispatch(setCurrentPage(currentPage - 1));
-    // setCurrentPage((state) => state - 1);
   };
 
   const handlePageChange = (evt: MouseEvent<HTMLAnchorElement>, page: number) => {
     evt.preventDefault();
     dispatch(setCurrentPage(page));
-    // setCurrentPage(() => page);
   };
 
   const handleNextPageClick = (evt: MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
     dispatch(setCurrentPage(currentPage + 1));
-    // setCurrentPage((state) => state + 1);
   };
 
   useEffect(() => {
@@ -71,7 +65,8 @@ function Pagination(): JSX.Element {
   // useEffect(() => {
   //   console.log(search);
   //   console.log(pageNumber);
-  // }, [pageNumber, search]);
+  //   dispatch(setCurrentPage(+pageNumber));
+  // }, [dispatch, pageNumber, search]);
 
 
   const composeQuery = useCallback((page: string): string => {
@@ -103,7 +98,6 @@ function Pagination(): JSX.Element {
     <div className="pagination page-content__pagination">
       <ul className="pagination__list">
         {
-          // +queryPageNumber !== initCurrentPage ?
           +queryPageNumber !== Math.min(...totalPagesList) ?
             <li className="pagination__page pagination__page--prev" id="prev">
               <a className="link pagination__page-link" href={`page_${(currentPage - 1).toString()}`} onClick={handlePrevPageClick}>Назад</a>

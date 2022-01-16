@@ -5,8 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   AppRoute,
-  // guitarsByType,
-  // guitarTypeName,
   guitarTypes,
   LoadingStatus,
   priceQueryKey,
@@ -15,6 +13,8 @@ import {
 } from '../../../const';
 import useQuery from '../../../hooks/use-query';
 import { fetchMinMaxPriceValuesAction } from '../../../services/api-actions';
+import { setCurrentPage } from '../../../store/action';
+import { initialState } from '../../../store/reducers/app-state/app-state';
 import { getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
 import { debounce } from '../../../utils/utils';
 
@@ -76,7 +76,6 @@ function CatalogFilter(): JSX.Element {
           queryParams[param] = value;
         }
       });
-      // eslint-disable-next-line no-console
       const queryFilters: FiltersType = {...defaultFilters};
 
       if(queryParams[urlFilterParams.PriceFrom].length) {
@@ -208,6 +207,7 @@ function CatalogFilter(): JSX.Element {
       ...state,
       stringCountCheckedState: [...updatedStringCountCheckedState],
     }));
+    dispatch(setCurrentPage(initialState.currentPage));
   };
 
   const handleTypeCheck = (position: number): void => {
@@ -234,12 +234,9 @@ function CatalogFilter(): JSX.Element {
       stringCountCheckedState: [...initStringCountState],
       stringCountDisabledState: [...disabledState],
     }));
+    dispatch(setCurrentPage(initialState.currentPage));
   };
 
-  // useEffect(() => {
-  //   dispatch(fetchFilteredGuitarsAction(priceInterval));
-  // }, [dispatch, priceInterval]);
-  //const composeQueryString ШОБ НЕ ЗАБЫТЬ
   useEffect(() => {
     if(firstFilterInit) {
       return;
@@ -264,7 +261,6 @@ function CatalogFilter(): JSX.Element {
       .map((key) => `${priceQueryKey[key]}=${priceInterval[key]}`);
 
     const typeQuery = guitarsByType
-    // const typeQuery = guitarTypes.map((guitar) => guitar.type)
       .filter((_type, idx) => filters.typeCheckedState[idx])
       .map((type) => `type=${type}`);
 

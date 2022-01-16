@@ -2,7 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import { AppState } from '../../../types/state';
 import { loadTotalCountGuitars, setCurrentPage, setFirstLoadState } from '../../action';
 
-const initialState: AppState = {
+export const initialState: AppState = {
   firstLoadState: true,
   totalCountGuitars: 0,
   currentPage: 1,
