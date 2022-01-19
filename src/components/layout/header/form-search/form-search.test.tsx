@@ -41,7 +41,8 @@ describe('Component: FormSearch', () => {
 
   });
 
-  it('should dispach an action when fetch search query', () => {
+  it('should dispach an action and display result when fetch search query', () => {
+    fakeStore.GUITARS_DATA.searchResult = [guitar];
     const dispatch = jest.fn();
     const useDispatch = jest.spyOn(Redux, 'useDispatch');
     useDispatch.mockReturnValue(dispatch);
@@ -58,9 +59,42 @@ describe('Component: FormSearch', () => {
 
     userEvent.type(screen.getByTestId('search'), guitar.name);
 
-    expect(screen.getByDisplayValue(guitar.name)).toBeInTheDocument();
-    expect(dispatch).toBeCalledTimes(1);
+    const listItems = screen.getAllByRole('listitem');
+    expect(listItems).toHaveLength(1);
 
+    listItems.forEach((_item) => {
+      expect(screen.getByText(guitar.name)).toBeInTheDocument();
+    });
+
+    expect(dispatch).toBeCalledTimes(1);
+  });
+
+  it('should dispach an action and display information when fetch mismatched search query', () => {
+    fakeStore.GUITARS_DATA.searchResult = [];
+    const dispatch = jest.fn();
+    const useDispatch = jest.spyOn(Redux, 'useDispatch');
+    useDispatch.mockReturnValue(dispatch);
+
+    const store = mockStore(fakeStore);
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <FormSearch />
+        </Router>
+      </Provider>,
+    );
+
+    userEvent.type(screen.getByTestId('search'), guitar.name);
+
+    const listItems = screen.getAllByRole('listitem');
+    expect(listItems).toHaveLength(1);
+
+    listItems.forEach((_item) => {
+      expect(screen.getByText(/Ничего не нашлось/i)).toBeInTheDocument();
+    });
+
+    expect(dispatch).toBeCalledTimes(1);
   });
 
 });
