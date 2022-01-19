@@ -324,7 +324,7 @@ function CatalogFilter(): JSX.Element {
         {
           guitarTypes.map(({type, sectionName}, idx) => (
             <div key={type} className="form-checkbox catalog-filter__block-item">
-              <input className="visually-hidden"
+              <input data-testid="guitarType" className="visually-hidden"
                 type="checkbox"
                 id={type}
                 name={type}
@@ -340,7 +340,7 @@ function CatalogFilter(): JSX.Element {
         {
           guitarsByStringCount.map((string, idx) => (
             <div key={string} className="form-checkbox catalog-filter__block-item">
-              <input className="visually-hidden"
+              <input data-testid="guitarStringCount" className="visually-hidden"
                 type="checkbox"
                 id={`${string}-strings`}
                 name={`${string}-strings`}

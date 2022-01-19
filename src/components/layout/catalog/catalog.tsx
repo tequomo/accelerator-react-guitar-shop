@@ -13,7 +13,7 @@ import CatalogFilter from '../catalog-filter/catalog-filter';
 import CatalogSort from '../catalog-sort/catalog-sort';
 import GuitarCard from '../guitar-card/guitar-card';
 import LoaderWrapper from '../loader-wrapper/loader-wrapper';
-import ModalCardAdd from '../modal/modal-cart-add';
+import ModalCartAdd from '../modal-cart-add/modal-cart-add';
 import Pagination, { ParamsPropsType } from '../pagination/pagination';
 
 
@@ -66,7 +66,7 @@ function Catalog(): JSX.Element {
           }
         </div>
       </LoaderWrapper>
-      {modalAddCardVisible && <ModalCardAdd isVisible={modalAddCardVisible} onModalClose={() => setModalAddCardVisible(false)} activeGuitar={activeGuitar}/>}
+      {modalAddCardVisible && <ModalCartAdd isVisible={modalAddCardVisible} onModalClose={() => setModalAddCardVisible(false)} activeGuitar={activeGuitar}/>}
       <Pagination />
     </div>
   );

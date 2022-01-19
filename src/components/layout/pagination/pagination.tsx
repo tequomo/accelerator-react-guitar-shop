@@ -71,7 +71,7 @@ function Pagination(): JSX.Element {
           totalPagesList
             .map((page) =>(
               <li key={`page_${page}`} className={`pagination__page${currentPage === page ? ' pagination__page--active' : ''}`}>
-                <a className="link pagination__page-link" href={`page_${page.toString()}`} onClick={(e) => handlePageChange(e, page)}>{page}</a>
+                <a className="link pagination__page-link" href={`page_${page.toString()}`} onClick={(e) => handlePageChange(e, page)} data-testid="pageItem">{page}</a>
               </li>
             ),
             )

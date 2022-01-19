@@ -9,7 +9,7 @@ function StarRating({rating}: StarRatingProps): JSX.Element {
     <>
       {
         ratingValues.map((value) => (
-          <svg key={`icon-${value}`} width="12" height="11" aria-hidden="true">
+          <svg key={`icon-${value}`} width="12" height="11" aria-hidden="true" data-testid="star">
             <use xlinkHref={`#icon-${value <= rating ? 'full-' : ''}star`}></use>
           </svg>),
         )

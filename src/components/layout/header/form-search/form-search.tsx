@@ -41,7 +41,7 @@ function FormSearch(): JSX.Element {
             <use xlinkHref={`#icon-${searchQuery ? 'close-white' : 'search'}`}></use>
           </svg><span className="visually-hidden">Начать поиск</span>
         </button>
-        <input ref={inputRef} className="form-search__input" id="search" type="text" autoComplete="off" placeholder="что вы ищете?" onChange={debounce<ChangeEvent<HTMLInputElement>>((e) => setSearchQuery(e.target.value), REQUEST_DELAY)} onFocus={(e) => setSearchQuery(e.target.value)}/>
+        <input ref={inputRef} className="form-search__input" id="search" data-testid="search" type="text" autoComplete="off" placeholder="что вы ищете?" onChange={debounce<ChangeEvent<HTMLInputElement>>((e) => setSearchQuery(e.target.value), REQUEST_DELAY)} onFocus={(e) => setSearchQuery(e.target.value)}/>
         <label className="visually-hidden" htmlFor="search">Поиск</label>
       </form>
       {searchResult &&

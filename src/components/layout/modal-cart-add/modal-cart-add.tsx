@@ -10,7 +10,7 @@ type AddCartProps = {
   onModalClose: () => void,
 }
 
-function ModalCardAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JSX.Element {
+function ModalCartAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JSX.Element {
 
   const handleModalClickClose = (): void => {
     onModalClose();
@@ -60,4 +60,4 @@ function ModalCardAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JS
     , document.body);
 }
 
-export default ModalCardAdd;
+export default ModalCartAdd;
