@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { AppRoute, LoadingStatus } from '../const';
+import { LoadingStatus } from '../const';
 import { ActionType } from '../types/action';
 import { GuitarType } from '../types/guitar-type';
 import { MinMaxPriceValuesType } from '../types/state';
@@ -25,8 +25,8 @@ export const setGuitarsLoadingStatus = createAction(
   }),
 );
 
-export const getMinMaxPriceValues = createAction(
-  ActionType.GetMinMaxPriceValues,
+export const loadMinMaxPriceValues = createAction(
+  ActionType.LoadMinMaxPriceValues,
   (minMaxPriceValues: MinMaxPriceValuesType) => ({
     payload: minMaxPriceValues,
   }),
@@ -57,13 +57,6 @@ export const setSearchResultLoadingStatus = createAction(
   ActionType.SetSearchResultLoadingStatus,
   (searchResultLoadingStatus: LoadingStatus) => ({
     payload: searchResultLoadingStatus,
-  }),
-);
-
-export const redirectToRoute = createAction(
-  ActionType.RedirectToRoute,
-  (url: AppRoute) => ({
-    payload: url,
   }),
 );
 

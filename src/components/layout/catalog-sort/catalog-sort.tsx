@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AppRoute, SortingOrder, SortingType, urlSortParams } from '../../../const';
 import useQuery from '../../../hooks/use-query';
-import { fetchSortedGuitarsAction } from '../../../services/api-actions';
 import { setCurrentPage } from '../../../store/action';
 import { initialState } from '../../../store/reducers/app-state/app-state';
 

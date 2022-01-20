@@ -14,11 +14,11 @@ export enum ApiRoute {
   Orders = '/orders',
 }
 
-// export enum HttpCode {
-//   Ok = 200,
-//   BadRequest = 400,
-//   NotFound = 404,
-// }
+export enum HttpCode {
+  Ok = 200,
+  BadRequest = 400,
+  NotFound = 404,
+}
 
 export enum LoadingStatus {
   Idle = 'idle',

@@ -20,7 +20,6 @@ const store = configureStore({
         extraArgument: api,
       },
     }),
-  // }).concat(redirect),
 });
 
 ReactDOM.render(

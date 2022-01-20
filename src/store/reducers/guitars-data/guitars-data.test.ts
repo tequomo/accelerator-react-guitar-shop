@@ -2,7 +2,7 @@ import { datatype } from 'faker';
 import { LoadingStatus } from '../../../const';
 import { GuitarsData } from '../../../types/state';
 import { getFakeGuitars } from '../../../utils/mock';
-import { doSearchRequest, getMinMaxPriceValues, loadGuitars, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../../action';
+import { doSearchRequest, loadMinMaxPriceValues, loadGuitars, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../../action';
 import { guitarsData } from './guitars-data';
 
 const state: GuitarsData = {
@@ -50,7 +50,7 @@ describe('Reducer: guitarsData', () => {
   });
 
   it('should update state if minimum and maximum price of guitars are loaded', () => {
-    expect(guitarsData(state, getMinMaxPriceValues(minMaxPriceValues)))
+    expect(guitarsData(state, loadMinMaxPriceValues(minMaxPriceValues)))
       .toEqual({
         ...state,
         minMaxPriceValues: minMaxPriceValues,

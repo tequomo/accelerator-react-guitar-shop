@@ -2,7 +2,7 @@ import { LoadingStatus } from '../const';
 import { GuitarType } from '../types/guitar-type';
 import { CommentType } from '../types/comment-type';
 import { State } from '../types/state';
-import { datatype/*, lorem, system, address, internet, name */} from 'faker';
+import { datatype } from 'faker';
 
 const FAKE_ITEMS_COUNT = 6;
 

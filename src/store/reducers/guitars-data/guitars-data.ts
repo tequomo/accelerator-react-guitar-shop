@@ -4,7 +4,7 @@ import { GuitarsData } from '../../../types/state';
 import {
   loadGuitars,
   doSearchRequest,
-  getMinMaxPriceValues,
+  loadMinMaxPriceValues,
   setGuitarsLoadingStatus,
   setPriceValuesLoadingStatus,
   setSearchResultLoadingStatus
@@ -36,7 +36,7 @@ const guitarsData = createReducer(initialState, (builder) => {
     .addCase(setSearchResultLoadingStatus, (state, action) => {
       state.searchResultLoadingStatus = action.payload;
     })
-    .addCase(getMinMaxPriceValues,(state, action) => {
+    .addCase(loadMinMaxPriceValues,(state, action) => {
       state.minMaxPriceValues = action.payload;
     })
     .addCase(setPriceValuesLoadingStatus, (state, action) => {

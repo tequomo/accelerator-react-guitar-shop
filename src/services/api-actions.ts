@@ -1,7 +1,17 @@
 /* eslint-disable no-console */
 import { toast } from 'react-toastify';
 import { ApiRoute, LoadingStatus, maxPriceGuitarQuery, Messages, minPriceGuitarQuery } from '../const';
-import { doSearchRequest, getMinMaxPriceValues, loadCurrentGuitar, loadGuitars, loadTotalCountGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
+import {
+  doSearchRequest,
+  loadMinMaxPriceValues,
+  loadCurrentGuitar,
+  loadGuitars,
+  loadTotalCountGuitars,
+  setCurrentGuitarLoadingStatus,
+  setGuitarsLoadingStatus,
+  setPriceValuesLoadingStatus,
+  setSearchResultLoadingStatus
+} from '../store/action';
 import { ThunkActionResult } from '../types/action';
 import { GuitarType } from '../types/guitar-type';
 
@@ -27,7 +37,7 @@ export const fetchMinMaxPriceValuesAction = (queryString: string): ThunkActionRe
         api.get<GuitarType[]>(`${ApiRoute.Guitars}${minPriceGuitarQuery}&${queryString}`),
         api.get<GuitarType[]>(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&${queryString}`),
       ]);
-      dispatch(getMinMaxPriceValues({
+      dispatch(loadMinMaxPriceValues({
         priceMin: min.data[0].price,
         priceMax: max.data[0].price,
       }));
@@ -67,28 +77,26 @@ export const fetchSearchGuitarAction = (query: string): ThunkActionResult =>
     }
   };
 
-export const fetchSortedGuitarsAction = (sortingType: string, sortingOrder: string): ThunkActionResult =>
-  async (dispatch, _getState, api): Promise<void> => {
-    try {
-      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?_sort=${sortingType}&_order=${sortingOrder}`);
-      dispatch(loadGuitars(data));
-      dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
-    } catch {
-      dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
-      // toast.error(Messages.OFFER_LOADING_ERROR);
-    }
-  };
+// export const fetchSortedGuitarsAction = (sortingType: string, sortingOrder: string): ThunkActionResult =>
+//   async (dispatch, _getState, api): Promise<void> => {
+//     try {
+//       const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?_sort=${sortingType}&_order=${sortingOrder}`);
+//       dispatch(loadGuitars(data));
+//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
+//     } catch {
+//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
+//       // toast.error(Messages.OFFER_LOADING_ERROR);
+//     }
+//   };
 
-export const fetchFilteredGuitarsAction = (queryString: string): ThunkActionResult =>
-  async (dispatch, _getState, api): Promise<void> => {
-    try {
-      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}`);
-      dispatch(loadGuitars(data));
-      dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
-    } catch {
-      dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
-      // toast.error(Messages.OFFER_LOADING_ERROR);
-    }
-  };
-
-
+// export const fetchFilteredGuitarsAction = (queryString: string): ThunkActionResult =>
+//   async (dispatch, _getState, api): Promise<void> => {
+//     try {
+//       const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}`);
+//       dispatch(loadGuitars(data));
+//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
+//     } catch {
+//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
+//       // toast.error(Messages.OFFER_LOADING_ERROR);
+//     }
+//   };
