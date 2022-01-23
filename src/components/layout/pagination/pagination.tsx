@@ -1,19 +1,10 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { MouseEvent, useCallback, useEffect, useState } from 'react';
+import { MouseEvent, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { AppRoute, CARDS_PER_PAGE, urlPaginationParams } from '../../../const';
-import useQuery from '../../../hooks/use-query';
-import { fetchGuitarsAction } from '../../../services/api-actions';
+import { AppRoute, CARDS_PER_PAGE } from '../../../const';
 import { setCurrentPage } from '../../../store/action';
-import { initialState } from '../../../store/reducers/app-state/app-state';
 import { getCurrentPage, getTotalCountGuitars } from '../../../store/reducers/app-state/selectors';
 
-type PageServingType = {
-  start: number,
-  end: number,
-}
 
 export type ParamsPropsType = {
   pageNumber: string,
@@ -22,7 +13,6 @@ export type ParamsPropsType = {
 function Pagination(): JSX.Element {
 
   const history = useHistory();
-  const queryString = useQuery();
   const { search } = useLocation();
   const { pageNumber } = useParams<ParamsPropsType>();
   const totalCountGuitars = useSelector(getTotalCountGuitars);
@@ -32,17 +22,11 @@ function Pagination(): JSX.Element {
 
   const queryPageNumber =  pageNumber ?? 1;
 
-  const initPageServing: PageServingType = {
-    start: 0,
-    end: CARDS_PER_PAGE - 1,
-  };
-
   const totalPagesCount = Math.ceil(totalCountGuitars / CARDS_PER_PAGE);
   const totalPagesList: number[] = new Array(totalPagesCount).fill(false).map((_page, idx) => idx + 1);
   const firstPage = Math.min(...totalPagesList);
   const lastPage = Math.max(...totalPagesList);
 
-  const [pageServing, setPageServing] = useState<PageServingType>(initPageServing);
   const updatePage = (page: number) => {
     dispatch(setCurrentPage(page));
   };

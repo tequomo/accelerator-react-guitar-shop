@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AppRoute, REQUEST_DELAY } from '../../../../const';
 import { fetchSearchGuitarAction } from '../../../../services/api-actions';
-import { getSearchGuitars/*, getSearchLoadingStatus*/ } from '../../../../store/reducers/guitars-data/selectors';
+import { getSearchGuitars } from '../../../../store/reducers/guitars-data/selectors';
 import { debounce } from '../../../../utils/utils';
 
 function FormSearch(): JSX.Element {
@@ -11,7 +11,6 @@ function FormSearch(): JSX.Element {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const searchResult = useSelector(getSearchGuitars);
-  // const searchResultLoadingStatus = useSelector(getSearchLoadingStatus);
 
   const dispatch = useDispatch();
 
@@ -34,7 +33,6 @@ function FormSearch(): JSX.Element {
         <button className="form-search__submit" type="submit" onClick={() => {
           if(searchQuery) {
             setSearchQuery('');
-            // inputRef.current.value = '';
           }}}
         >
           <svg className="form-search__icon" width="14" height="15" aria-hidden="true">

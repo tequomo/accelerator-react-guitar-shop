@@ -1,17 +1,13 @@
-/* eslint-disable no-console */
-/* eslint-disable indent */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Action } from 'redux';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import MockAdapter from 'axios-mock-adapter';
 import { configureMockStore } from '@jedmao/redux-mock-store';
 import { createAPI } from '../services/api';
-import { ApiRoute, AppRoute, HttpCode, LoadingStatus, maxPriceGuitarQuery, minPriceGuitarQuery } from '../const';
+import { ApiRoute, HttpCode, LoadingStatus, maxPriceGuitarQuery, minPriceGuitarQuery } from '../const';
 import { State } from '../types/state';
 import { getFakeGuitar, getFakeGuitars, getFakeStore } from '../utils/mock';
 import { fetchCurrentGuitarAction, fetchGuitarsAction, fetchMinMaxPriceValuesAction, fetchSearchGuitarAction } from './api-actions';
-import { doSearchRequest, loadCurrentGuitar, loadGuitars, loadMinMaxPriceValues, loadTotalCountGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
-import { datatype } from 'faker';
+import { doSearchRequest, loadCurrentGuitar, loadGuitars, loadTotalCountGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
 
 enum FakeParamsData {
   GuitarId = '2',
@@ -25,7 +21,6 @@ describe('Api actions', () => {
 
   const fakeStore = getFakeStore();
   const fakeGuitars = getFakeGuitars();
-  const fakeTotalGuitars = datatype.number();
   const fakeGuitar = getFakeGuitar();
 
   const mockStore = configureMockStore<
@@ -34,60 +29,65 @@ describe('Api actions', () => {
     ThunkDispatch<State, typeof api, Action>
   >(middlewares);
 
-  // beforeEach(() => {
-  //   instance = AxiosApi.getAxiosInstance(); //Axios.create()
-  //   mock = new MockAdapter(instance);
-  // });
+  const store = mockStore(fakeStore);
+
+  beforeEach(() => {
+    mockAPI.reset();
+    store.clearActions();
+  });
 
   describe('Fetching guitars actions', () => {
 
     it('should load guitars and change guitarsLoadingStatus when GET /guitars', async () => {
-      // fakeStore.GUITARS_DATA.guitars = fakeGuitars;
-      const store = mockStore(fakeStore);
       mockAPI
-        // .onGet(`${ApiRoute.Guitars}?${FakeParamsData.EmbedComments}`)
-        .onGet('/guitars/page_1?_embed=comments')
-        .reply(HttpCode.Ok, fakeGuitars);
+        .onGet(`${ApiRoute.Guitars}?${FakeParamsData.EmbedComments}`)
+        .reply(
+          HttpCode.Ok,
+          fakeGuitars,
+          { 'x-total-count': fakeGuitars.length.toString() },
+        );
 
       expect(store.getActions()).toEqual([]);
 
-      await store.dispatch(fetchGuitarsAction(''));
-      console.log(store.getState());
+      await store.dispatch(fetchGuitarsAction());
+
       expect(store.getActions())
         .toEqual([
-          loadTotalCountGuitars(fakeTotalGuitars),
+          loadTotalCountGuitars(fakeGuitars.length),
           loadGuitars(fakeGuitars),
           setGuitarsLoadingStatus(LoadingStatus.Succeeded),
         ]);
 
     });
 
-    // it('should change guitarsLoadingStatus to failed when GET /guitars', async () => {
-    //   const store = mockStore(fakeStore);
+    it('should change guitarsLoadingStatus to failed when GET /guitars', async () => {
+      mockAPI
+        .onGet(`${ApiRoute.Guitars}?${FakeParamsData.EmbedComments}`)
+        .reply(
+          HttpCode.NotFound,
+          [],
+        );
 
-    //   mockAPI
-    //     .onGet(ApiRoute.Guitars)
-    //     .reply(HttpCode.NotFound, []);
+      expect(store.getActions()).toEqual([]);
 
-    //   expect(store.getActions()).toEqual([]);
+      await store.dispatch(fetchGuitarsAction());
 
-    //   await store.dispatch(fetchGuitarsAction());
-
-    //   expect(store.getActions()).toEqual([
-    //     setGuitarsLoadingStatus(LoadingStatus.Failed),
-    //   ]);
-    // });
+      expect(store.getActions()).toEqual([
+        setGuitarsLoadingStatus(LoadingStatus.Failed),
+      ]);
+    });
 
   });
 
   describe('Fetching current guitar actions', () => {
 
     it('should load current guitar and change currentGuitarLoadingStatus when GET /guitars/:id', async () => {
-      const store = mockStore(fakeStore);
-
       mockAPI
         .onGet(`${ApiRoute.Guitars}/${FakeParamsData.GuitarId}`)
-        .reply(HttpCode.Ok, fakeGuitar);
+        .reply(
+          HttpCode.Ok,
+          fakeGuitar,
+        );
 
       expect(store.getActions()).toEqual([]);
 
@@ -101,11 +101,12 @@ describe('Api actions', () => {
     });
 
     it('should change currentOfferLoadingStatus to failed when GET /guitars/:id', async () => {
-      const store = mockStore(fakeStore);
-
       mockAPI
         .onGet(`${ApiRoute.Guitars}/${FakeParamsData.GuitarId}`)
-        .reply(HttpCode.NotFound, []);
+        .reply(
+          HttpCode.NotFound,
+          [],
+        );
 
       expect(store.getActions()).toEqual([]);
 
@@ -119,86 +120,117 @@ describe('Api actions', () => {
 
   });
 
-  // describe('Fetching min and max price guitars actions', () => {
+  describe('Fetching min and max price guitars actions', () => {
 
-  // it('should load min and max price guitars and change priceValuesLoadingStatus', async () => {
-  //   const store = mockStore(fakeStore);
+    // it('should load min and max price guitars and change priceValuesLoadingStatus', async () => {
+    //   const fake1 = getFakeGuitar();
+    //   const fake2 = getFakeGuitar();
 
-  //   mockAPI
-  //     .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}`)
-  //     .reply(HttpCode.Ok, fakeGuitar)
-  //     .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}`)
-  //     .reply(HttpCode.Ok, fakeGuitar);
+    //   // mockAPI
+    //   //   .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}&`)
+    //   //   .reply(HttpCode.Ok, fake1)
+    //   //   .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&`)
+    //   //   .reply(HttpCode.Ok, fake2);
 
-  //   expect(store.getActions()).toEqual([]);
+    //   await Promise.all([
+    //     mockAPI
+    //     .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}&`)
+    //     .reply(HttpCode.Ok, fake1),
 
-  //   await store.dispatch(fetchMinMaxPriceValuesAction(''));
+    //     mockAPI
+    //     .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&`)
+    //     .reply(HttpCode.Ok, fake2),
+    //   ]);
 
-  //   expect(store.getActions()).toEqual([
-  //     loadMinMaxPriceValues({
-  //       priceMin: fakeGuitar.price,
-  //       priceMax: fakeGuitar.price,
-  //     }),
-  //     setPriceValuesLoadingStatus(LoadingStatus.Succeeded),
-  //   ]);
-  // });
+    //   expect(store.getActions()).toEqual([]);
 
-  // it('should change priceValuesLoadingStatus to failed when GET min and max price guitars', async () => {
-  //   const store = mockStore(fakeStore);
+    //   await store.dispatch(fetchMinMaxPriceValuesAction(''));
 
-  //   mockAPI
-  //     .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}`)
-  //     .reply(HttpCode.NotFound, []);
+    //   const minMaxPriceValues = {
+    //     priceMin: fake1.price,
+    //     priceMax: fake2.price,
+    //   };
 
-  //   expect(store.getActions()).toEqual([]);
+    //   expect(store.getActions()).toEqual([
+    //     loadMinMaxPriceValues(minMaxPriceValues),
+    //     setPriceValuesLoadingStatus(LoadingStatus.Succeeded),
+    //   ]);
+    // });
 
-  //   await store.dispatch(fetchMinMaxPriceValuesAction(''));
+    it('should change priceValuesLoadingStatus to failed when GET min and max price guitars', async () => {
+      mockAPI
+        .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}`)
+        .reply(HttpCode.NotFound, [])
+        .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&`)
+        .reply(HttpCode.NotFound, []);
 
-  //   expect(store.getActions()).toEqual([
-  //     setPriceValuesLoadingStatus(LoadingStatus.Failed),
-  //   ]);
-  // });
+      expect(store.getActions()).toEqual([]);
 
-  // });
+      await store.dispatch(fetchMinMaxPriceValuesAction(''));
 
-  // describe('Fetching search result actions', () => {
+      expect(store.getActions()).toEqual([
+        setPriceValuesLoadingStatus(LoadingStatus.Failed),
+      ]);
+    });
 
-  //   it('should load guitars and change searchResultLoadingStatus when doing search', async () => {
-  //     fakeStore.GUITARS_DATA.searchResult = [fakeGuitar];
-  //     const store = mockStore(fakeStore);
+  });
 
-  //     mockAPI
-  //       .onGet(`${ApiRoute.Guitars}/${FakeParamsData.GuitarId}`)
-  //       .reply(HttpCode.Ok, fakeGuitar);
+  describe('Fetching search result actions', () => {
 
-  //     expect(store.getActions()).toEqual([]);
+    it('should load null and change searchResultLoadingStatus when query is empty', async () => {
+      mockAPI
+        .onGet(`${ApiRoute.Guitars}?name_like=''`)
+        .reply(HttpCode.Ok,
+          [fakeGuitar, fakeGuitar],
+        );
 
-  //     await store.dispatch(fetchSearchGuitarAction(FakeParamsData.GuitarId));
+      expect(store.getActions()).toEqual([]);
 
-  //     expect(store.getActions())
-  //       .toEqual([
-  //         doSearchRequest([fakeGuitar]),
-  //         setSearchResultLoadingStatus(LoadingStatus.Succeeded),
-  //       ]);
-  //   });
+      await store.dispatch(fetchSearchGuitarAction(''));
 
-  //   it('should change offerReviewsLoadingStatus to failed when when doing search', async () => {
-  //     const store = mockStore();
+      expect(store.getActions())
+        .toEqual([
+          setSearchResultLoadingStatus(LoadingStatus.Loading),
+          doSearchRequest(null),
+          setSearchResultLoadingStatus(LoadingStatus.Succeeded),
+        ]);
+    });
 
-  //     mockAPI
-  //       .onGet(`${ApiRoute.Reviews}/${FakeParamsData.OfferId}`)
-  //       .reply(HttpCode.BadRequest, []);
+    it('should load search result and change searchResultLoadingStatus when doing search', async () => {
+      mockAPI
+        .onGet(`${ApiRoute.Guitars}?name_like=${fakeGuitar.name}`)
+        .reply(HttpCode.Ok,
+          [fakeGuitar, fakeGuitar],
+        );
 
-  //     expect(store.getActions()).toEqual([]);
+      expect(store.getActions()).toEqual([]);
 
-  //     await store.dispatch(fetchOfferReviewsAction(FakeParamsData.OfferId));
+      await store.dispatch(fetchSearchGuitarAction(fakeGuitar.name));
 
-  //     expect(store.getActions())
-  //       .toEqual([
-  //         setOfferReviewsLoadingStatus(LoadingStatus.Failed),
-  //       ]);
-  //   });
+      expect(store.getActions())
+        .toEqual([
+          setSearchResultLoadingStatus(LoadingStatus.Loading),
+          doSearchRequest([fakeGuitar, fakeGuitar]),
+          setSearchResultLoadingStatus(LoadingStatus.Succeeded),
+        ]);
+    });
 
-  // });
+    it('should change offerReviewsLoadingStatus to failed when cause network error', async () => {
+      mockAPI
+        .onGet(`${ApiRoute.Guitars}?name_like=${fakeGuitar.name}`)
+        .networkError();
+
+      expect(store.getActions()).toEqual([]);
+
+      await store.dispatch(fetchSearchGuitarAction(fakeGuitar.name));
+
+      expect(store.getActions())
+        .toEqual([
+          setSearchResultLoadingStatus(LoadingStatus.Loading),
+          setSearchResultLoadingStatus(LoadingStatus.Failed),
+        ]);
+    });
+
+  });
 
 });

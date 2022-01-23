@@ -1,12 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-console */
-import { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { AppRoute, SortingOrder, SortingType, urlSortParams } from '../../../const';
 import useQuery from '../../../hooks/use-query';
-import { setCurrentPage } from '../../../store/action';
-import { initialState } from '../../../store/reducers/app-state/app-state';
 
 function CatalogSort(): JSX.Element {
   const [sortingType, setSortingType] = useState<string>(SortingType.Price);
@@ -23,21 +18,16 @@ function CatalogSort(): JSX.Element {
   const buttonAscendingProps = byAscending ? {tabIndex: -1} : {};
   const buttonDescendingProps = byDescending ? {tabIndex: -1} : {};
 
-  const dispatch = useDispatch();
   const history = useHistory();
   const queryString = useQuery();
 
   useEffect(() => {
     if(firstSortInit){
       setFirstSortInit(false);
-      console.log(firstSortInit);
       return;
     }
     const queryParams = Array.from(queryString.entries())
       .filter((arr) => !Object.values(urlSortParams).includes(arr[0]));
-
-    // console.log(queryParams.map((par) => `${par[0]}=${par[1]}`).join('&'));
-    // console.log(queryString.entries());
 
     queryParams.push([urlSortParams.SortingType, sortingType]);
     queryParams.push([urlSortParams.SortingOrder, sortingOrder]);

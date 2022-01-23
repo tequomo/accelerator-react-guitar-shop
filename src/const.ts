@@ -16,7 +16,6 @@ export enum ApiRoute {
 
 export enum HttpCode {
   Ok = 200,
-  BadRequest = 400,
   NotFound = 404,
 }
 
@@ -47,14 +46,6 @@ export enum SortingOrder {
 
 export const minPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=asc';
 export const maxPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=desc';
-
-// export const guitarsByType = ['acoustic', 'electric', 'ukulele'];
-
-// export const guitarTypeName: {[key: string]: string} = {
-//   Acoustic: 'Акустические гитары',
-//   Electric: 'Электрогитары',
-//   Ukulele: 'Укулеле',
-// };
 
 export const priceQueryKey: {[key: string]: string} = {
   priceFrom: 'price_gte',
@@ -88,24 +79,12 @@ export const guitarTypes = [
   },
 ];
 
-// export const urlFilterParams = [
-//   'price_gte',
-//   'price_lte',
-//   'type',
-//   'stringCount',
-// ];
-
 export const urlFilterParams = {
   PriceFrom:  'price_gte',
   PriceTo: 'price_lte',
   Type: 'type',
   StringCount: 'stringCount',
 };
-
-// export const urlSortParams = [
-//   'sortingType',
-//   'sortingOrder',
-// ];
 
 export const urlSortParams = {
   SortingType: '_sort',
@@ -119,5 +98,4 @@ export const urlPaginationParams = {
 
 export const Messages = {
   LOAD_FAIL: 'Загрузка данных не удалась. Возможно, Вы не в сети',
-  // OFFER_LOADING_ERROR: 'Offers loading failed',
 };

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { toast } from 'react-toastify';
 import { ApiRoute, LoadingStatus, maxPriceGuitarQuery, Messages, minPriceGuitarQuery } from '../const';
 import {
@@ -44,7 +43,7 @@ export const fetchMinMaxPriceValuesAction = (queryString: string): ThunkActionRe
       dispatch(setPriceValuesLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setPriceValuesLoadingStatus(LoadingStatus.Failed));
-      // toast.error(Messages.OFFER_LOADING_ERROR);
+      toast.error(Messages.LOAD_FAIL);
     }
   };
 
@@ -56,7 +55,7 @@ export const fetchCurrentGuitarAction = (id: string): ThunkActionResult =>
       dispatch(setCurrentGuitarLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setCurrentGuitarLoadingStatus(LoadingStatus.Failed));
-      // toast.error(Messages.OFFER_LOADING_ERROR);
+      toast.error(Messages.LOAD_FAIL);
     }
   };
 
@@ -73,30 +72,6 @@ export const fetchSearchGuitarAction = (query: string): ThunkActionResult =>
       dispatch(setSearchResultLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setSearchResultLoadingStatus(LoadingStatus.Failed));
-      // toast.error(Messages.OFFER_LOADING_ERROR);
+      toast.error(Messages.LOAD_FAIL);
     }
   };
-
-// export const fetchSortedGuitarsAction = (sortingType: string, sortingOrder: string): ThunkActionResult =>
-//   async (dispatch, _getState, api): Promise<void> => {
-//     try {
-//       const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}?_sort=${sortingType}&_order=${sortingOrder}`);
-//       dispatch(loadGuitars(data));
-//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
-//     } catch {
-//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
-//       // toast.error(Messages.OFFER_LOADING_ERROR);
-//     }
-//   };
-
-// export const fetchFilteredGuitarsAction = (queryString: string): ThunkActionResult =>
-//   async (dispatch, _getState, api): Promise<void> => {
-//     try {
-//       const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}`);
-//       dispatch(loadGuitars(data));
-//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
-//     } catch {
-//       dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
-//       // toast.error(Messages.OFFER_LOADING_ERROR);
-//     }
-//   };
