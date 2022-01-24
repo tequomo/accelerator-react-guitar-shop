@@ -1,5 +1,3 @@
-/* eslint-disable prefer-const */
-/* eslint-disable no-console */
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -59,7 +57,7 @@ function CatalogFilter(): JSX.Element {
   const [priceInterval, setpriceInterval] = useState(initPriceIntervalParams);
 
   const [minMaxQueryString, setMinMaxQueryString] = useState<string>('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [firstFilterInit, setFirstFilterInit] = useState<boolean>(true);
 
   const queryString = useQuery();
@@ -159,30 +157,6 @@ function CatalogFilter(): JSX.Element {
     return disabledState;
   };
 
-  // const checkStringCountInput = ШОБ НЕ ЗАБЫТЬ!
-  // useEffect(() => {
-  //   if(firstFilterInit) {
-  //     return;
-  //   }
-  //   let disabledState = initStringCountState;
-  //   if(filters.typeCheckedState.includes(true)) {
-  //     const availableStringCounts = new Set<number>();
-  //     // const selectedGuitarTypes = guitarTypes
-  //     guitarTypes
-  //       .filter((_guitar, idx) => filters.typeCheckedState[idx])
-  //       .forEach((guitar) => {
-  //         guitar.stringCount.forEach((stringCount: number) => {
-  //           availableStringCounts.add(stringCount);
-  //         });
-  //       });
-  //     disabledState = guitarsByStringCount.map((count) => !availableStringCounts.has(count));
-  //   }
-  //   setStringCountDisabledState(disabledState);
-  //   setStringCountCheckedState(initStringCountState);
-  //   // const availableStringCounts = [...new Set(selectedGuitarTypes.reduce((a, b) => a.concat(b), []))].sort((a, b) => a - b);
-  //   // const disabledState = guitarsByStringCount.map((count) => availableStringCounts.includes(count));
-  // }, [filters]);
-
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setpriceInterval((state) => ({
       ...state,
@@ -211,18 +185,7 @@ function CatalogFilter(): JSX.Element {
     const updatedTypeCheckedState = filters.typeCheckedState.map((item, idx) =>
       idx === position ? !item : item,
     );
-    // const availableStringCounts = new Set<number>();
-    // let disabledState = initStringCountState;
-    // if(updatedTypeCheckedState.includes(true)) {
-    //   guitarTypes
-    //     .filter((_guitar, idx) => updatedTypeCheckedState[idx])
-    //     .forEach((guitar) => {
-    //       guitar.stringCount.forEach((stringCount: number) => {
-    //         availableStringCounts.add(stringCount);
-    //       });
-    //     });
-    //   disabledState = guitarsByStringCount.map((count) => !availableStringCounts.has(count));
-    // }
+
     const disabledState = checkStringCountDisabledInput(updatedTypeCheckedState);
 
     setFilters((state) => ({
@@ -245,11 +208,9 @@ function CatalogFilter(): JSX.Element {
         priceTo: priceInterval.priceTo,
       },
     }));
-    // firstFilterInit ?
   }, [firstFilterInit, priceInterval]);
 
   useEffect(() => {
-    console.log('firstFilterInit', filters, priceInterval, queryString);
     if(firstFilterInit){
       setFirstFilterInit(false);
       return;

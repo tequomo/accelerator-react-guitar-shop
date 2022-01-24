@@ -7,7 +7,7 @@ import { ApiRoute, HttpCode, LoadingStatus, maxPriceGuitarQuery, minPriceGuitarQ
 import { State } from '../types/state';
 import { getFakeGuitar, getFakeGuitars, getFakeStore } from '../utils/mock';
 import { fetchCurrentGuitarAction, fetchGuitarsAction, fetchMinMaxPriceValuesAction, fetchSearchGuitarAction } from './api-actions';
-import { doSearchRequest, loadCurrentGuitar, loadGuitars, loadTotalCountGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
+import { doSearchRequest, loadCurrentGuitar, loadGuitars, loadMinMaxPriceValues, loadTotalCountGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
 
 enum FakeParamsData {
   GuitarId = '2',
@@ -122,40 +122,40 @@ describe('Api actions', () => {
 
   describe('Fetching min and max price guitars actions', () => {
 
-    // it('should load min and max price guitars and change priceValuesLoadingStatus', async () => {
-    //   const fake1 = getFakeGuitar();
-    //   const fake2 = getFakeGuitar();
+    it('should load min and max price guitars and change priceValuesLoadingStatus', async () => {
+      const fakeMinPriceGuitar = getFakeGuitar();
+      const fakeMaxPriceGuitar = getFakeGuitar();
+      const minMaxValues = [fakeMinPriceGuitar, fakeMaxPriceGuitar];
+      mockAPI
+        .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}&`)
+        .reply(HttpCode.Ok, minMaxValues[0])
+        .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&`)
+        .reply(HttpCode.Ok, minMaxValues[1]);
 
-    //   // mockAPI
-    //   //   .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}&`)
-    //   //   .reply(HttpCode.Ok, fake1)
-    //   //   .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&`)
-    //   //   .reply(HttpCode.Ok, fake2);
+      // await Promise.all([
+      //   mockAPI
+      //     .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}&`)
+      //     .reply(HttpCode.Ok, fake1),
 
-    //   await Promise.all([
-    //     mockAPI
-    //     .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}&`)
-    //     .reply(HttpCode.Ok, fake1),
+      //   mockAPI
+      //     .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&`)
+      //     .reply(HttpCode.Ok, fake2),
+      // ]);
 
-    //     mockAPI
-    //     .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&`)
-    //     .reply(HttpCode.Ok, fake2),
-    //   ]);
+      expect(store.getActions()).toEqual([]);
 
-    //   expect(store.getActions()).toEqual([]);
+      await store.dispatch(fetchMinMaxPriceValuesAction(''));
 
-    //   await store.dispatch(fetchMinMaxPriceValuesAction(''));
+      const minMaxPriceValues = {
+        priceMin: minMaxValues[0].price,
+        priceMax: minMaxValues[1].price,
+      };
 
-    //   const minMaxPriceValues = {
-    //     priceMin: fake1.price,
-    //     priceMax: fake2.price,
-    //   };
-
-    //   expect(store.getActions()).toEqual([
-    //     loadMinMaxPriceValues(minMaxPriceValues),
-    //     setPriceValuesLoadingStatus(LoadingStatus.Succeeded),
-    //   ]);
-    // });
+      expect(store.getActions()).toEqual([
+        loadMinMaxPriceValues(minMaxPriceValues),
+        setPriceValuesLoadingStatus(LoadingStatus.Succeeded),
+      ]);
+    });
 
     it('should change priceValuesLoadingStatus to failed when GET min and max price guitars', async () => {
       mockAPI
