@@ -1,4 +1,5 @@
 import { MAX_RATING_VALUE } from '../const';
+import { GuitarType } from '../types/guitar-type';
 
 export const modifyImgUrl = (url: string, modificator: string): string => {
   const arr = url.split('/');
@@ -21,3 +22,7 @@ export const debounce = <T>(callback: (e: T) => void, timeoutDelay: number) => {
 };
 
 export const capitalizeWord = (word: string): string => word.charAt(0).toUpperCase() + word.slice(1);
+
+export const sortingGuitars = (guitars: GuitarType[]) => {
+  guitars.slice().sort((a, b) => b.name.localeCompare(a.name));
+};

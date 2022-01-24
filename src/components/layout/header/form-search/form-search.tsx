@@ -10,7 +10,7 @@ function FormSearch(): JSX.Element {
 
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const searchResult = useSelector(getSearchGuitars);
+  const searchResult = useSelector(getSearchGuitars)?.slice().sort((a, b) => b.name.localeCompare(a.name));
 
   const dispatch = useDispatch();
 

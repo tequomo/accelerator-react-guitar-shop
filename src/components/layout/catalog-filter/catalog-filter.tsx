@@ -24,6 +24,11 @@ type FiltersType = {
   stringCountDisabledState: boolean[],
 }
 
+const styleOpacity = {
+  min: 0.5,
+  max: 1,
+};
+
 const guitarsByStringCount = [4, 6, 7, 12];
 const guitarsByType = guitarTypes.map((guitar) => guitar.type);
 const initStringCountState: boolean[] = new Array(guitarsByStringCount.length).fill(false);
@@ -100,25 +105,12 @@ function CatalogFilter(): JSX.Element {
         ...state,
         priceFrom: minMaxPriceValues.priceMin.toString(),
       }));
-      // setFilters((state) => ({
-      //   ...state,
-      //   priceInterval: {
-      //     priceFrom: minMaxPriceValues.priceMin.toString(),
-      //     priceTo: filters.priceInterval.priceTo,
-      //   },
-      // }));
+
     } else if(filters.priceInterval.priceTo !== '' && e.target.value > filters.priceInterval.priceTo) {
       setpriceInterval((state) => ({
         ...state,
         priceFrom: priceInterval.priceTo,
       }));
-      // setFilters((state) => ({
-      //   ...state,
-      //   priceInterval: {
-      //     priceFrom: filters.priceInterval.priceTo,
-      //     priceTo: filters.priceInterval.priceTo,
-      //   },
-      // }));
     }
   };
 
@@ -248,7 +240,6 @@ function CatalogFilter(): JSX.Element {
     history.push({
       search: query,
     });
-    //TODO: Read about useMemo
   }, [JSON.stringify(filters), priceInterval, queryString]);
 
   useEffect(() => {
@@ -256,7 +247,7 @@ function CatalogFilter(): JSX.Element {
   }, [dispatch, minMaxQueryString]);
 
   return (
-    <form className="catalog-filter" style={{opacity: firstFilterInit ? 0.5 : 1,
+    <form className="catalog-filter" style={{opacity: firstFilterInit ? styleOpacity.min : styleOpacity.max,
       pointerEvents: firstFilterInit? 'none': 'all'}}
     >
       <h2 className="title title--bigger catalog-filter__title">Фильтр</h2>

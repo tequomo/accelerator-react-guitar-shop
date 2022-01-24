@@ -132,16 +132,6 @@ describe('Api actions', () => {
         .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&`)
         .reply(HttpCode.Ok, minMaxValues[1]);
 
-      // await Promise.all([
-      //   mockAPI
-      //     .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}&`)
-      //     .reply(HttpCode.Ok, fake1),
-
-      //   mockAPI
-      //     .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&`)
-      //     .reply(HttpCode.Ok, fake2),
-      // ]);
-
       expect(store.getActions()).toEqual([]);
 
       await store.dispatch(fetchMinMaxPriceValuesAction(''));
