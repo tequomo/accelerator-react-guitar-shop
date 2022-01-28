@@ -125,7 +125,7 @@ describe('Api actions', () => {
     it('should load min and max price guitars and change priceValuesLoadingStatus', async () => {
       const fakeMinPriceGuitar = getFakeGuitar();
       const fakeMaxPriceGuitar = getFakeGuitar();
-      const minMaxValues = [fakeMinPriceGuitar, fakeMaxPriceGuitar];
+      const minMaxValues = [[fakeMinPriceGuitar], [fakeMaxPriceGuitar]];
       mockAPI
         .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}&`)
         .reply(HttpCode.Ok, minMaxValues[0])
@@ -137,8 +137,8 @@ describe('Api actions', () => {
       await store.dispatch(fetchMinMaxPriceValuesAction(''));
 
       const minMaxPriceValues = {
-        priceMin: minMaxValues[0].price,
-        priceMax: minMaxValues[1].price,
+        priceMin: minMaxValues[0][0].price,
+        priceMax: minMaxValues[1][0].price,
       };
 
       expect(store.getActions()).toEqual([
