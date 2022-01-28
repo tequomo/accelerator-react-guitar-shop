@@ -44,8 +44,8 @@ export enum SortingOrder {
   Descending = 'desc',
 }
 
-export const minPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=asc';
-export const maxPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=desc';
+export const MIN_PRICE_QUERY = '?_start=0&_end=1&_sort=price&_order=asc';
+export const MAX_PRICE_QUERY = '?_start=0&_end=1&_sort=price&_order=desc';
 
 export const priceQueryKey: {[key: string]: string} = {
   priceFrom: 'price_gte',
@@ -58,7 +58,7 @@ export const stringCountByType = {
   Ukulele: [4],
 };
 
-export const guitarTypes = [
+export const GUITARS_TYPES = [
   {
     type: 'acoustic',
     sectionName: 'Акустические гитары',

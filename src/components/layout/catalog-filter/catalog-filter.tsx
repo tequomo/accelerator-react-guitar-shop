@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
-  guitarTypes,
+  GUITARS_TYPES,
   LoadingStatus,
   priceQueryKey,
   urlFilterParams,
@@ -30,9 +30,9 @@ const styleOpacity = {
 };
 
 const guitarsByStringCount = [4, 6, 7, 12];
-const guitarsByType = guitarTypes.map((guitar) => guitar.type);
+const guitarsByType = GUITARS_TYPES.map((guitar) => guitar.type);
 const initStringCountState: boolean[] = new Array(guitarsByStringCount.length).fill(false);
-const initTypeCheckedState: boolean[] = new Array(guitarTypes.length).fill(false);
+const initTypeCheckedState: boolean[] = new Array(GUITARS_TYPES.length).fill(false);
 
 function CatalogFilter(): JSX.Element {
 
@@ -86,7 +86,7 @@ function CatalogFilter(): JSX.Element {
         queryFilters.priceInterval.priceTo = queryParams[urlFilterParams.PriceTo].join('');
       }
       if(queryParams[urlFilterParams.Type].length) {
-        queryFilters.typeCheckedState = guitarTypes
+        queryFilters.typeCheckedState = GUITARS_TYPES
           .map((guitar) => queryParams[urlFilterParams.Type].includes(guitar.type));
         const disabledState = checkStringCountDisabledInput(queryFilters.typeCheckedState);
         queryFilters.stringCountDisabledState = disabledState;
@@ -137,7 +137,7 @@ function CatalogFilter(): JSX.Element {
     const availableStringCounts = new Set<number>();
     let disabledState = initStringCountState;
     if(updatedTypeCheckedState.includes(true)) {
-      guitarTypes
+      GUITARS_TYPES
         .filter((_guitar, idx) => updatedTypeCheckedState[idx])
         .forEach((guitar) => {
           guitar.stringCount.forEach((stringCount: number) => {
@@ -274,7 +274,7 @@ function CatalogFilter(): JSX.Element {
       <fieldset className="catalog-filter__block">
         <legend className="catalog-filter__block-title">Тип гитар</legend>
         {
-          guitarTypes.map(({type, sectionName}, idx) => (
+          GUITARS_TYPES.map(({type, sectionName}, idx) => (
             <div key={type} className="form-checkbox catalog-filter__block-item">
               <input className="visually-hidden" data-testid="guitarType"
                 type="checkbox"

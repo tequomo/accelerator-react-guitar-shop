@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { guitarTypes, IMG_BASE_PATH } from '../../../const';
+import { GUITARS_TYPES, IMG_BASE_PATH } from '../../../const';
 import { GuitarType } from '../../../types/guitar-type';
 import { modifyImgUrl } from '../../../utils/utils';
 
@@ -18,7 +18,7 @@ function ModalCartAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JS
 
   const {type, price, previewImg, vendorCode, name, stringCount} = activeGuitar as GuitarType;
 
-  const guitarType = guitarTypes.find((guitar) => guitar.type === type)?.name;
+  const guitarType = GUITARS_TYPES.find((guitar) => guitar.type === type)?.name;
 
   const handleModalEscClose = (event: KeyboardEvent) => {
     if(event.key === 'Escape' || event.keyCode === 27) {
