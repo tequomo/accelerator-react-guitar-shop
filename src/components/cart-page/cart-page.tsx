@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+import { AppRoute } from '../../const';
 import Footer from '../layout/footer/footer';
 import Header from '../layout/header/header';
 import CartFooter from './cart-footer/cart-footer';
@@ -10,11 +12,11 @@ function CartPage(): JSX.Element {
         <div className="container">
           <h1 className="title title--bigger page-content__title">Корзина</h1>
           <ul className="breadcrumbs page-content__breadcrumbs page-content__breadcrumbs--on-cart-page">
-            <li className="breadcrumbs__item"><a className="link" href="./main.html">Главная</a>
+            <li className="breadcrumbs__item"><Link to={AppRoute.Main} className="link">Главная</Link>
             </li>
-            <li className="breadcrumbs__item"><a className="link" href="./main.html">Каталог</a>
+            <li className="breadcrumbs__item"><Link to={AppRoute.Main} className="link">Каталог</Link>
             </li>
-            <li className="breadcrumbs__item"><a className="link" href="/#">Корзина</a>
+            <li className="breadcrumbs__item"><Link to={AppRoute.Cart} className="link">Корзина</Link>
             </li>
           </ul>
           <div className="cart">
