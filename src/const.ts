@@ -112,3 +112,9 @@ export enum UrlPaginationParams {
 export const Messages = {
   LOAD_FAIL: 'Загрузка данных не удалась. Возможно, Вы не в сети',
 };
+
+export enum GuitarPropertyTab {
+  Characteristics = 'characteristics',
+  Description = 'description',
+}
+

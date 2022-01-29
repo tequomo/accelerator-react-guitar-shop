@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -212,7 +211,6 @@ function CatalogFilter(): JSX.Element {
       .filter((key) => !!priceInterval[key])
       .map((key) => `${PriceQueryKey[capitalizeWord(key)]}=${priceInterval[key]}`);
 
-    console.log(Object.keys(priceInterval).filter((key) => !!priceInterval[key]).map((key) => `${PriceQueryKey[capitalizeWord(key)]}=${priceInterval[key]}`));
     const typeQuery = guitarsByType
       .filter((_type, idx) => filters.typeCheckedState[idx])
       .map((type) => `type=${type}`);
@@ -224,7 +222,7 @@ function CatalogFilter(): JSX.Element {
     let query = priceQuery
       .concat(typeQuery, stringCountQuery)
       .join('&');
-    console.log(query);
+
     const minMaxQuery = typeQuery
       .concat(stringCountQuery)
       .join('&');
