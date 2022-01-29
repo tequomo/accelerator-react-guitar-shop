@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { AppRoute, SortingOrder, SortingType, urlSortParams } from '../../../const';
+import { AppRoute, SortingOrder, SortingType, UrlSortParams } from '../../../const';
 import useQuery from '../../../hooks/use-query';
 
 function CatalogSort(): JSX.Element {
@@ -27,10 +27,10 @@ function CatalogSort(): JSX.Element {
       return;
     }
     const queryParams = Array.from(queryString.entries())
-      .filter((arr) => !Object.values(urlSortParams).includes(arr[0]));
+      .filter((arr) => !Object.values(UrlSortParams).includes(arr[0]));
 
-    queryParams.push([urlSortParams.SortingType, sortingType]);
-    queryParams.push([urlSortParams.SortingOrder, sortingOrder]);
+    queryParams.push([UrlSortParams.Type, sortingType]);
+    queryParams.push([UrlSortParams.Order, sortingOrder]);
 
     if(!firstSortInit) {
       history.push({
