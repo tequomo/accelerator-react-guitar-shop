@@ -90,25 +90,6 @@ export enum UrlPaginationParams {
   End = '_end',
 }
 
-// export const UrlParams = {
-//   Filter: {
-//     Price: {
-//       PriceFrom:  'price_gte',
-//       PriceTo: 'price_lte',
-//     },
-//     Type: 'type',
-//     StringCount: 'stringCount',
-//   },
-//   Sorting: {
-//     SortingType: '_sort',
-//     SortingOrder: '_order',
-//   },
-//   Pagination: {
-//     Start: '_start',
-//     End: '_end',
-//   },
-// };
-
 export const Messages = {
   LOAD_FAIL: 'Загрузка данных не удалась. Возможно, Вы не в сети',
 };
