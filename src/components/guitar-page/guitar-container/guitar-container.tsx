@@ -1,4 +1,5 @@
-import { IMG_BASE_PATH } from '../../../const';
+import { useState } from 'react';
+import { GuitarPropertyTab, IMG_BASE_PATH } from '../../../const';
 import { GuitarType } from '../../../types/guitar-type';
 import { modifyImgUrl } from '../../../utils/utils';
 
@@ -9,6 +10,11 @@ type GuitarContainerProps = {
 function GuitarContainer({guitar}: GuitarContainerProps): JSX.Element {
 
   const {name, previewImg, vendorCode, description, price, stringCount} = guitar;
+
+  const [visibleTab, setVisibleTab] = useState<string>(GuitarPropertyTab.Characteristics);
+
+  const isCharacteristicsVisible = visibleTab === GuitarPropertyTab.Characteristics;
+  const isDescriptionVisible = visibleTab === GuitarPropertyTab.Description;
 
   return (
     <div className="product-container">
@@ -32,8 +38,12 @@ function GuitarContainer({guitar}: GuitarContainerProps): JSX.Element {
             <use xlinkHref="#icon-star"></use>
           </svg><span className="rate__count"></span><span className="rate__message"></span>
         </div>
-        <div className="tabs"><a className="button button--medium tabs__button" href="#characteristics">Характеристики</a><a className="button button--black-border button--medium tabs__button" href="#description">Описание</a>
+        <div className="tabs">
+          <a className={`button${isDescriptionVisible ? ' button--black-border' : ''} button--medium tabs__button`} href="#characteristics" onClick={() => setVisibleTab(GuitarPropertyTab.Characteristics)}>Характеристики</a>
+          <a className={`button${isCharacteristicsVisible ? ' button--black-border' : ''} button--medium tabs__button`} href="#description" onClick={() => setVisibleTab(GuitarPropertyTab.Description)}>Описание</a>
           <div className="tabs__content" id="characteristics">
+            {
+              isCharacteristicsVisible &&
             <table className="tabs__table">
               <tbody>
                 <tr className="tabs__table-row">
@@ -50,7 +60,11 @@ function GuitarContainer({guitar}: GuitarContainerProps): JSX.Element {
                 </tr>
               </tbody>
             </table>
-            <p className="tabs__product-description hidden">{description}</p>
+            }
+            {
+              isDescriptionVisible &&
+            <p className="tabs__product-description">{description}</p>
+            }
           </div>
         </div>
       </div>

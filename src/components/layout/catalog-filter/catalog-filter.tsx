@@ -2,17 +2,17 @@ import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
-  guitarTypes,
+  GUITARS_TYPES,
   LoadingStatus,
-  priceQueryKey,
-  urlFilterParams,
-  urlSortParams
+  PriceQueryKey,
+  UrlFilterParams,
+  UrlSortParams
 } from '../../../const';
 import useQuery from '../../../hooks/use-query';
 import { fetchMinMaxPriceValuesAction } from '../../../services/api-actions';
 import { setCurrentPage } from '../../../store/action';
 import { getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
-import { debounce } from '../../../utils/utils';
+import { capitalizeWord, debounce } from '../../../utils/utils';
 
 type FiltersType = {
   priceInterval: {
@@ -30,9 +30,9 @@ const styleOpacity = {
 };
 
 const guitarsByStringCount = [4, 6, 7, 12];
-const guitarsByType = guitarTypes.map((guitar) => guitar.type);
+const guitarsByType = GUITARS_TYPES.map((guitar) => guitar.type);
 const initStringCountState: boolean[] = new Array(guitarsByStringCount.length).fill(false);
-const initTypeCheckedState: boolean[] = new Array(guitarTypes.length).fill(false);
+const initTypeCheckedState: boolean[] = new Array(GUITARS_TYPES.length).fill(false);
 
 function CatalogFilter(): JSX.Element {
 
@@ -71,7 +71,7 @@ function CatalogFilter(): JSX.Element {
     const queryParams: {[key:string]: string[]} = {};
 
     if(firstFilterInit) {
-      Object.values(urlFilterParams).forEach((param) => {
+      Object.values(UrlFilterParams).forEach((param) => {
         const value = queryString.getAll(param);
         if(value) {
           queryParams[param] = value;
@@ -79,21 +79,21 @@ function CatalogFilter(): JSX.Element {
       });
       const queryFilters: FiltersType = {...defaultFilters};
 
-      if(queryParams[urlFilterParams.PriceFrom].length) {
-        queryFilters.priceInterval.priceFrom = queryParams[urlFilterParams.PriceFrom].join('');
+      if(queryParams[UrlFilterParams.PriceFrom].length) {
+        queryFilters.priceInterval.priceFrom = queryParams[UrlFilterParams.PriceFrom].join('');
       }
-      if(queryParams[urlFilterParams.PriceTo].length) {
-        queryFilters.priceInterval.priceTo = queryParams[urlFilterParams.PriceTo].join('');
+      if(queryParams[UrlFilterParams.PriceTo].length) {
+        queryFilters.priceInterval.priceTo = queryParams[UrlFilterParams.PriceTo].join('');
       }
-      if(queryParams[urlFilterParams.Type].length) {
-        queryFilters.typeCheckedState = guitarTypes
-          .map((guitar) => queryParams[urlFilterParams.Type].includes(guitar.type));
+      if(queryParams[UrlFilterParams.Type].length) {
+        queryFilters.typeCheckedState = GUITARS_TYPES
+          .map((guitar) => queryParams[UrlFilterParams.Type].includes(guitar.type));
         const disabledState = checkStringCountDisabledInput(queryFilters.typeCheckedState);
         queryFilters.stringCountDisabledState = disabledState;
       }
-      if(queryParams[urlFilterParams.StringCount].length) {
+      if(queryParams[UrlFilterParams.StringCount].length) {
         queryFilters.stringCountCheckedState = guitarsByStringCount
-          .map((string) => queryParams[urlFilterParams.StringCount].includes(string.toString()));
+          .map((string) => queryParams[UrlFilterParams.StringCount].includes(string.toString()));
       }
       setFilters(queryFilters);
     }
@@ -137,7 +137,7 @@ function CatalogFilter(): JSX.Element {
     const availableStringCounts = new Set<number>();
     let disabledState = initStringCountState;
     if(updatedTypeCheckedState.includes(true)) {
-      guitarTypes
+      GUITARS_TYPES
         .filter((_guitar, idx) => updatedTypeCheckedState[idx])
         .forEach((guitar) => {
           guitar.stringCount.forEach((stringCount: number) => {
@@ -209,7 +209,7 @@ function CatalogFilter(): JSX.Element {
     }
     const priceQuery = Object.keys(priceInterval)
       .filter((key) => !!priceInterval[key])
-      .map((key) => `${priceQueryKey[key]}=${priceInterval[key]}`);
+      .map((key) => `${PriceQueryKey[capitalizeWord(key)]}=${priceInterval[key]}`);
 
     const typeQuery = guitarsByType
       .filter((_type, idx) => filters.typeCheckedState[idx])
@@ -228,11 +228,11 @@ function CatalogFilter(): JSX.Element {
       .join('&');
 
     const queryParams = new Map(Array.from(queryString.entries()));
-    const sortingType = queryParams.get(urlSortParams.SortingType);
-    const sortingOrder = queryParams.get(urlSortParams.SortingOrder);
+    const sortingType = queryParams.get(UrlSortParams.Type);
+    const sortingOrder = queryParams.get(UrlSortParams.Order);
 
     if(!firstFilterInit && sortingType) {
-      query = `${query}&${urlSortParams.SortingType}=${sortingType}&${urlSortParams.SortingOrder}=${sortingOrder}`;
+      query = `${query}&${UrlSortParams.Type}=${sortingType}&${UrlSortParams.Order}=${sortingOrder}`;
     }
 
     setMinMaxQueryString(minMaxQuery);
@@ -274,7 +274,7 @@ function CatalogFilter(): JSX.Element {
       <fieldset className="catalog-filter__block">
         <legend className="catalog-filter__block-title">Тип гитар</legend>
         {
-          guitarTypes.map(({type, sectionName}, idx) => (
+          GUITARS_TYPES.map(({type, sectionName}, idx) => (
             <div key={type} className="form-checkbox catalog-filter__block-item">
               <input className="visually-hidden" data-testid="guitarType"
                 type="checkbox"

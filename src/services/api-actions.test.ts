@@ -3,7 +3,7 @@ import thunk, { ThunkDispatch } from 'redux-thunk';
 import MockAdapter from 'axios-mock-adapter';
 import { configureMockStore } from '@jedmao/redux-mock-store';
 import { createAPI } from '../services/api';
-import { ApiRoute, HttpCode, LoadingStatus, maxPriceGuitarQuery, minPriceGuitarQuery } from '../const';
+import { ApiRoute, HttpCode, LoadingStatus, MAX_PRICE_QUERY, MIN_PRICE_QUERY } from '../const';
 import { State } from '../types/state';
 import { getFakeGuitar, getFakeGuitars, getFakeStore } from '../utils/mock';
 import { fetchCurrentGuitarAction, fetchGuitarsAction, fetchMinMaxPriceValuesAction, fetchSearchGuitarAction } from './api-actions';
@@ -127,9 +127,9 @@ describe('Api actions', () => {
       const fakeMaxPriceGuitar = getFakeGuitar();
       const minMaxValues = [[fakeMinPriceGuitar], [fakeMaxPriceGuitar]];
       mockAPI
-        .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}&`)
+        .onGet(`${ApiRoute.Guitars}${MIN_PRICE_QUERY}&`)
         .reply(HttpCode.Ok, minMaxValues[0])
-        .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&`)
+        .onGet(`${ApiRoute.Guitars}${MAX_PRICE_QUERY}&`)
         .reply(HttpCode.Ok, minMaxValues[1]);
 
       expect(store.getActions()).toEqual([]);
@@ -149,9 +149,9 @@ describe('Api actions', () => {
 
     it('should change priceValuesLoadingStatus to failed when GET min and max price guitars', async () => {
       mockAPI
-        .onGet(`${ApiRoute.Guitars}${minPriceGuitarQuery}`)
+        .onGet(`${ApiRoute.Guitars}${MIN_PRICE_QUERY}`)
         .reply(HttpCode.NotFound, [])
-        .onGet(`${ApiRoute.Guitars}${maxPriceGuitarQuery}&`)
+        .onGet(`${ApiRoute.Guitars}${MAX_PRICE_QUERY}&`)
         .reply(HttpCode.NotFound, []);
 
       expect(store.getActions()).toEqual([]);

@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { LoadingStatus } from '../../const';
+import { Link, useParams } from 'react-router-dom';
+import { AppRoute, LoadingStatus } from '../../const';
 import { fetchCurrentGuitarAction } from '../../services/api-actions';
 import { getCurrentGuitar, getCurrentGuitarLoadingStatus } from '../../store/reducers/current-guitar-data/selectors';
 import { GuitarType } from '../../types/guitar-type';
@@ -39,11 +39,11 @@ function GuitarPage(): JSX.Element {
         <div className="container">
           <h1 className="page-content__title title title--bigger">Товар</h1>
           <ul className="breadcrumbs page-content__breadcrumbs">
-            <li className="breadcrumbs__item"><a className="link" href="./main.html">Главная</a>
+            <li className="breadcrumbs__item"><Link to={AppRoute.Main} className="link">Главная</Link>
             </li>
-            <li className="breadcrumbs__item"><a className="link" href="./main.html">Каталог</a>
+            <li className="breadcrumbs__item"><Link to={AppRoute.Main} className="link">Каталог</Link>
             </li>
-            <li className="breadcrumbs__item"><a className="link" href="/#">Товар</a>
+            <li className="breadcrumbs__item"><Link to={AppRoute.Main} className="link">{currentGuitar?.name}</Link>
             </li>
           </ul>
           <LoaderWrapper isLoad={currentGuitarLoadingStatus === LoadingStatus.Succeeded}>

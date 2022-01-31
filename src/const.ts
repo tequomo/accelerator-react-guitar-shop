@@ -44,21 +44,15 @@ export enum SortingOrder {
   Descending = 'desc',
 }
 
-export const minPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=asc';
-export const maxPriceGuitarQuery = '?_start=0&_end=1&_sort=price&_order=desc';
+export const MIN_PRICE_QUERY = '?_start=0&_end=1&_sort=price&_order=asc';
+export const MAX_PRICE_QUERY = '?_start=0&_end=1&_sort=price&_order=desc';
 
-export const priceQueryKey: {[key: string]: string} = {
-  priceFrom: 'price_gte',
-  priceTo: 'price_lte',
+export const PriceQueryKey: {[key: string]: string} = {
+  PriceFrom: 'price_gte',
+  PriceTo: 'price_lte',
 };
 
-export const stringCountByType = {
-  Acoustic: [6, 7, 12],
-  Electric: [4, 6, 7],
-  Ukulele: [4],
-};
-
-export const guitarTypes = [
+export const GUITARS_TYPES = [
   {
     type: 'acoustic',
     sectionName: 'Акустические гитары',
@@ -79,23 +73,29 @@ export const guitarTypes = [
   },
 ];
 
-export const urlFilterParams = {
+export const UrlFilterParams = {
   PriceFrom:  'price_gte',
   PriceTo: 'price_lte',
   Type: 'type',
   StringCount: 'stringCount',
 };
 
-export const urlSortParams = {
-  SortingType: '_sort',
-  SortingOrder: '_order',
+export const UrlSortParams = {
+  Type: '_sort',
+  Order: '_order',
 };
 
-export const urlPaginationParams = {
-  Start: '_start',
-  End: '_end',
-};
+export enum UrlPaginationParams {
+  Start = '_start',
+  End = '_end',
+}
 
 export const Messages = {
   LOAD_FAIL: 'Загрузка данных не удалась. Возможно, Вы не в сети',
 };
+
+export enum GuitarPropertyTab {
+  Characteristics = 'characteristics',
+  Description = 'description',
+}
+
