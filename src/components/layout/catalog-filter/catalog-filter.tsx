@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console */
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -76,6 +78,9 @@ function CatalogFilter(): JSX.Element {
         if(value) {
           queryParams[param] = value;
         }
+        console.log('queryParams', queryParams);
+        console.log('filters', filters);
+        // console.log('priceInterval', priceInterval);
       });
       const queryFilters: FiltersType = {...defaultFilters};
 
@@ -101,34 +106,68 @@ function CatalogFilter(): JSX.Element {
 
   const checkMinPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
     if(+e.target.value < minMaxPriceValues.priceMin || +e.target.value > minMaxPriceValues.priceMax) {
-      setpriceInterval((state) => ({
+      // setpriceInterval((state) => ({
+      //   ...state,
+      //   priceFrom: minMaxPriceValues.priceMin.toString(),
+      // }));
+      setFilters((state) => ({
         ...state,
-        priceFrom: minMaxPriceValues.priceMin.toString(),
+        priceInterval: {
+          ...state.priceInterval,
+          priceFrom: minMaxPriceValues.priceMin.toString(),
+        },
       }));
-
     } else if(filters.priceInterval.priceTo !== '' && e.target.value > filters.priceInterval.priceTo) {
-      setpriceInterval((state) => ({
+      // setpriceInterval((state) => ({
+      //   ...state,
+      //   priceFrom: priceInterval.priceTo,
+      // }));
+      setFilters((state) => ({
         ...state,
-        priceFrom: priceInterval.priceTo,
+        priceInterval: {
+          ...state.priceInterval,
+          priceFrom: state.priceInterval.priceTo,
+        },
       }));
     }
   };
 
   const checkMaxPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
     if(+e.target.value > minMaxPriceValues.priceMax) {
-      setpriceInterval((state) => ({
+      // setpriceInterval((state) => ({
+      //   ...state,
+      //   priceTo: minMaxPriceValues.priceMax.toString(),
+      // }));
+      setFilters((state) => ({
         ...state,
-        priceTo: minMaxPriceValues.priceMax.toString(),
+        priceInterval: {
+          ...state.priceInterval,
+          priceTo: minMaxPriceValues.priceMax.toString(),
+        },
       }));
-    } else if(filters.priceInterval.priceFrom !== '' && e.target.value < filters.priceInterval.priceFrom) {
-      setpriceInterval((state) => ({
+    } else if(filters.priceInterval.priceFrom !== '' && (e.target.value && e.target.value < filters.priceInterval.priceFrom)) {
+      // setpriceInterval((state) => ({
+      //   ...state,
+      //   priceTo: filters.priceInterval.priceFrom,
+      // }));
+      setFilters((state) => ({
         ...state,
-        priceTo: filters.priceInterval.priceFrom,
+        priceInterval: {
+          ...state.priceInterval,
+          priceTo: state.priceInterval.priceFrom,
+        },
       }));
     } else if(filters.priceInterval.priceFrom === '' && e.target.value < minMaxPriceValues.priceMin.toString()) {
-      setpriceInterval((state) => ({
+      // setpriceInterval((state) => ({
+      //   ...state,
+      //   priceTo: minMaxPriceValues.priceMin.toString(),
+      // }));
+      setFilters((state) => ({
         ...state,
-        priceTo: minMaxPriceValues.priceMin.toString(),
+        priceInterval: {
+          ...state.priceInterval,
+          priceTo: minMaxPriceValues.priceMin.toString(),
+        },
       }));
     }
   };
@@ -150,16 +189,30 @@ function CatalogFilter(): JSX.Element {
   };
 
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setpriceInterval((state) => ({
+    // setpriceInterval((state) => ({
+    //   ...state,
+    //   priceFrom: e.target.value,
+    // }));
+    setFilters((state) => ({
       ...state,
-      priceFrom: e.target.value,
+      priceInterval: {
+        ...state.priceInterval,
+        priceFrom: e.target.value,
+      },
     }));
   };
 
   const handleMaxPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setpriceInterval((state) => ({
+    // setpriceInterval((state) => ({
+    //   ...state,
+    //   priceTo: e.target.value,
+    // }));
+    setFilters((state) => ({
       ...state,
-      priceTo: e.target.value,
+      priceInterval: {
+        ...state.priceInterval,
+        priceTo: e.target.value,
+      },
     }));
   };
 
@@ -188,20 +241,20 @@ function CatalogFilter(): JSX.Element {
     }));
   };
 
-  useEffect(() => {
-    if(firstFilterInit) {
-      return;
-    }
+  // useEffect(() => {
+  //   if(firstFilterInit) {
+  //     return;
+  //   }
 
-    setFilters((state) => ({
-      ...state,
-      priceInterval: {
-        priceFrom: priceInterval.priceFrom,
-        priceTo: priceInterval.priceTo,
-      },
-    }));
-  }, [firstFilterInit, priceInterval]);
-
+  //   setFilters((state) => ({
+  //     ...state,
+  //     priceInterval: {
+  //       priceFrom: priceInterval.priceFrom,
+  //       priceTo: priceInterval.priceTo,
+  //     },
+  //   }));
+  // }, [firstFilterInit, priceInterval]);
+  // Убрать priceInterval
   useEffect(() => {
     if(firstFilterInit){
       setFirstFilterInit(false);
