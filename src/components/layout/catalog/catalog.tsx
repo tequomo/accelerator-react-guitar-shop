@@ -59,7 +59,7 @@ function Catalog(): JSX.Element {
         </div>
       </LoaderWrapper>
       {modalAddCardVisible && <ModalCartAdd isVisible={modalAddCardVisible} onModalClose={() => setModalAddCardVisible(false)} activeGuitar={activeGuitar}/>}
-      <Pagination />
+      {guitars.length > 0 && <Pagination />}
     </div>
   );
 }
