@@ -16,11 +16,16 @@ import { setCurrentPage } from '../../../store/action';
 import { getMinMaxPriceValues, getPriceValuesLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
 import { capitalizeWord, debounce } from '../../../utils/utils';
 
+type PriceIntervalType = {
+  [key:string]: string;
+}
+
 type FiltersType = {
-  priceInterval: {
-    priceFrom: string,
-    priceTo: string,
-  },
+  // priceInterval: {
+  //   priceFrom: string,
+  //   priceTo: string,
+  // },
+  priceInterval: PriceIntervalType,
   stringCountCheckedState: boolean[],
   typeCheckedState: boolean[],
   stringCountDisabledState: boolean[],
@@ -260,10 +265,11 @@ function CatalogFilter(): JSX.Element {
       setFirstFilterInit(false);
       return;
     }
-    const priceQuery = Object.keys(priceInterval)
-      .filter((key) => !!priceInterval[key])
-      .map((key) => `${PriceQueryKey[capitalizeWord(key)]}=${priceInterval[key]}`);
+    const priceQuery = Object.keys(filters.priceInterval)
+      .filter((key) => !!filters.priceInterval[key])
+      .map((key) => `${PriceQueryKey[capitalizeWord(key)]}=${filters.priceInterval[key]}`);
 
+    console.log('priceQuery', priceQuery);
     const typeQuery = guitarsByType
       .filter((_type, idx) => filters.typeCheckedState[idx])
       .map((type) => `type=${type}`);

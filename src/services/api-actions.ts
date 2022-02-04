@@ -19,6 +19,7 @@ const TOTAL_COUNT_HEADER = 'x-total-count';
 export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
+      dispatch(setGuitarsLoadingStatus(LoadingStatus.Loading));
       const { data, headers } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments`);
       dispatch(loadTotalCountGuitars( +headers[TOTAL_COUNT_HEADER] || data.length));
       dispatch(loadGuitars(data));
