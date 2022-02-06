@@ -72,7 +72,7 @@ describe('Component: Catalog', () => {
       </Provider>,
     );
 
-    expect(dispatch).toBeCalledTimes(3);
+    expect(dispatch).toBeCalledTimes(2);
   });
 
 });

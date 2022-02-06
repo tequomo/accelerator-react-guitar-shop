@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-console */
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -21,10 +19,6 @@ type PriceIntervalType = {
 }
 
 type FiltersType = {
-  // priceInterval: {
-  //   priceFrom: string,
-  //   priceTo: string,
-  // },
   priceInterval: PriceIntervalType,
   stringCountCheckedState: boolean[],
   typeCheckedState: boolean[],
@@ -50,11 +44,6 @@ function CatalogFilter(): JSX.Element {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const initPriceIntervalParams: {[key: string]: string} = {
-    priceFrom: '',
-    priceTo: '',
-  };
-
   const defaultFilters = useMemo(() => ({
     priceInterval: {
       priceFrom: '',
@@ -66,7 +55,6 @@ function CatalogFilter(): JSX.Element {
   }), []);
 
   const [filters, setFilters] = useState<FiltersType>(defaultFilters);
-  const [priceInterval, setpriceInterval] = useState(initPriceIntervalParams);
 
   const [minMaxQueryString, setMinMaxQueryString] = useState<string>('');
 
@@ -83,9 +71,6 @@ function CatalogFilter(): JSX.Element {
         if(value) {
           queryParams[param] = value;
         }
-        console.log('queryParams', queryParams);
-        console.log('filters', filters);
-        // console.log('priceInterval', priceInterval);
       });
       const queryFilters: FiltersType = {...defaultFilters};
 
@@ -110,70 +95,46 @@ function CatalogFilter(): JSX.Element {
   }, [defaultFilters, firstFilterInit, queryString]);
 
   const checkMinPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
-    if(+e.target.value < minMaxPriceValues.priceMin || +e.target.value > minMaxPriceValues.priceMax) {
-      // setpriceInterval((state) => ({
-      //   ...state,
-      //   priceFrom: minMaxPriceValues.priceMin.toString(),
-      // }));
-      setFilters((state) => ({
-        ...state,
-        priceInterval: {
-          ...state.priceInterval,
-          priceFrom: minMaxPriceValues.priceMin.toString(),
-        },
-      }));
-    } else if(filters.priceInterval.priceTo !== '' && e.target.value > filters.priceInterval.priceTo) {
-      // setpriceInterval((state) => ({
-      //   ...state,
-      //   priceFrom: priceInterval.priceTo,
-      // }));
-      setFilters((state) => ({
-        ...state,
-        priceInterval: {
-          ...state.priceInterval,
-          priceFrom: state.priceInterval.priceTo,
-        },
-      }));
+    if(+e.target.value) {
+      if(+e.target.value < minMaxPriceValues.priceMin) {
+        setFilters((state) => ({
+          ...state,
+          priceInterval: {
+            ...state.priceInterval,
+            priceFrom: minMaxPriceValues.priceMin.toString(),
+          },
+        }));
+      } else if(+e.target.value > (+filters.priceInterval.priceTo || minMaxPriceValues.priceMax)) {
+        setFilters((state) => ({
+          ...state,
+          priceInterval: {
+            ...state.priceInterval,
+            priceFrom: filters.priceInterval.priceTo || minMaxPriceValues.priceMax.toString(),
+          },
+        }));
+      }
     }
   };
 
   const checkMaxPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
-    if(+e.target.value > minMaxPriceValues.priceMax) {
-      // setpriceInterval((state) => ({
-      //   ...state,
-      //   priceTo: minMaxPriceValues.priceMax.toString(),
-      // }));
-      setFilters((state) => ({
-        ...state,
-        priceInterval: {
-          ...state.priceInterval,
-          priceTo: minMaxPriceValues.priceMax.toString(),
-        },
-      }));
-    } else if(filters.priceInterval.priceFrom !== '' && (e.target.value && e.target.value < filters.priceInterval.priceFrom)) {
-      // setpriceInterval((state) => ({
-      //   ...state,
-      //   priceTo: filters.priceInterval.priceFrom,
-      // }));
-      setFilters((state) => ({
-        ...state,
-        priceInterval: {
-          ...state.priceInterval,
-          priceTo: state.priceInterval.priceFrom,
-        },
-      }));
-    } else if(filters.priceInterval.priceFrom === '' && e.target.value < minMaxPriceValues.priceMin.toString()) {
-      // setpriceInterval((state) => ({
-      //   ...state,
-      //   priceTo: minMaxPriceValues.priceMin.toString(),
-      // }));
-      setFilters((state) => ({
-        ...state,
-        priceInterval: {
-          ...state.priceInterval,
-          priceTo: minMaxPriceValues.priceMin.toString(),
-        },
-      }));
+    if(+e.target.value) {
+      if(+e.target.value > minMaxPriceValues.priceMax) {
+        setFilters((state) => ({
+          ...state,
+          priceInterval: {
+            ...state.priceInterval,
+            priceTo: minMaxPriceValues.priceMax.toString(),
+          },
+        }));
+      } else if(+e.target.value < (+filters.priceInterval.priceFrom || minMaxPriceValues.priceMin)) {
+        setFilters((state) => ({
+          ...state,
+          priceInterval: {
+            ...state.priceInterval,
+            priceTo: filters.priceInterval.priceFrom || minMaxPriceValues.priceMin.toString(),
+          },
+        }));
+      }
     }
   };
 
@@ -194,10 +155,6 @@ function CatalogFilter(): JSX.Element {
   };
 
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    // setpriceInterval((state) => ({
-    //   ...state,
-    //   priceFrom: e.target.value,
-    // }));
     setFilters((state) => ({
       ...state,
       priceInterval: {
@@ -208,10 +165,6 @@ function CatalogFilter(): JSX.Element {
   };
 
   const handleMaxPriceChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    // setpriceInterval((state) => ({
-    //   ...state,
-    //   priceTo: e.target.value,
-    // }));
     setFilters((state) => ({
       ...state,
       priceInterval: {
@@ -246,20 +199,6 @@ function CatalogFilter(): JSX.Element {
     }));
   };
 
-  // useEffect(() => {
-  //   if(firstFilterInit) {
-  //     return;
-  //   }
-
-  //   setFilters((state) => ({
-  //     ...state,
-  //     priceInterval: {
-  //       priceFrom: priceInterval.priceFrom,
-  //       priceTo: priceInterval.priceTo,
-  //     },
-  //   }));
-  // }, [firstFilterInit, priceInterval]);
-  // Убрать priceInterval
   useEffect(() => {
     if(firstFilterInit){
       setFirstFilterInit(false);
@@ -269,7 +208,6 @@ function CatalogFilter(): JSX.Element {
       .filter((key) => !!filters.priceInterval[key])
       .map((key) => `${PriceQueryKey[capitalizeWord(key)]}=${filters.priceInterval[key]}`);
 
-    console.log('priceQuery', priceQuery);
     const typeQuery = guitarsByType
       .filter((_type, idx) => filters.typeCheckedState[idx])
       .map((type) => `type=${type}`);
@@ -299,7 +237,7 @@ function CatalogFilter(): JSX.Element {
     history.push({
       search: query,
     });
-  }, [JSON.stringify(filters), priceInterval, queryString]);
+  }, [JSON.stringify(filters), queryString]);
 
   useEffect(() => {
     dispatch(fetchMinMaxPriceValuesAction(minMaxQueryString));
@@ -317,14 +255,14 @@ function CatalogFilter(): JSX.Element {
             <label className="visually-hidden">Минимальная цена</label>
             <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMin.toString() : '...'}
               id="priceMin" name="от"
-              onChange={handleMinPriceChange}  onInput={debounce(checkMinPriceInput, 2000)}
+              onChange={handleMinPriceChange}  onInput={debounce(checkMinPriceInput, 1500)}
               value={filters.priceInterval.priceFrom}
             />
           </div>
           <div className="form-input">
             <label className="visually-hidden">Максимальная цена</label>
             <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMax.toString() : '...'}
-              id="priceMax" name="до" onChange={handleMaxPriceChange}  onInput={debounce(checkMaxPriceInput, 2000)}
+              id="priceMax" name="до" onChange={handleMaxPriceChange}  onInput={debounce(checkMaxPriceInput, 1500)}
               value={filters.priceInterval.priceTo}
             />
           </div>

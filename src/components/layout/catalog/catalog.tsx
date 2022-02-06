@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import { CARDS_PER_PAGE, LoadingStatus } from '../../../const';
@@ -7,6 +7,7 @@ import { setCurrentPage } from '../../../store/action';
 import { getCurrentPage } from '../../../store/reducers/app-state/selectors';
 import { getGuitars, getGuitarsLoadingStatus } from '../../../store/reducers/guitars-data/selectors';
 import { GuitarType } from '../../../types/guitar-type';
+import { debounce } from '../../../utils/utils';
 import CatalogFilter from '../catalog-filter/catalog-filter';
 import CatalogSort from '../catalog-sort/catalog-sort';
 import GuitarCard from '../guitar-card/guitar-card';
@@ -30,10 +31,12 @@ function Catalog(): JSX.Element {
 
   const { search } = useLocation();
 
+  const debouncedDispatch = useMemo(() => debounce((query: string) => dispatch(fetchGuitarsAction(query)), 500), [dispatch]);
+
   useEffect(() => {
     const pages = `${search ? '&' : '?'}_start=${(currentPage - 1) * CARDS_PER_PAGE}&_end=${currentPage * CARDS_PER_PAGE}`;
-    dispatch(fetchGuitarsAction(search + pages));
-  }, [dispatch, search, currentPage]);
+    debouncedDispatch(search + pages);
+  }, [dispatch, search, currentPage, debouncedDispatch]);
 
   useEffect(() => {
     dispatch(setCurrentPage(+pageNumber || 1));
