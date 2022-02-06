@@ -53,6 +53,7 @@ describe('Api actions', () => {
 
       expect(store.getActions())
         .toEqual([
+          setGuitarsLoadingStatus(LoadingStatus.Loading),
           loadTotalCountGuitars(fakeGuitars.length),
           loadGuitars(fakeGuitars),
           setGuitarsLoadingStatus(LoadingStatus.Succeeded),
@@ -73,6 +74,7 @@ describe('Api actions', () => {
       await store.dispatch(fetchGuitarsAction());
 
       expect(store.getActions()).toEqual([
+        setGuitarsLoadingStatus(LoadingStatus.Loading),
         setGuitarsLoadingStatus(LoadingStatus.Failed),
       ]);
     });
