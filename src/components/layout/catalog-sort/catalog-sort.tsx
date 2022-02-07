@@ -23,6 +23,14 @@ function CatalogSort(): JSX.Element {
 
   useEffect(() => {
     if(firstSortInit){
+      const querySortParams = Array.from(queryString.entries())
+        .filter((arr) => Object.values(UrlSortParams).includes(arr[0]));
+      if(querySortParams[0][1] !== sortingType) {
+        setSortingType(querySortParams[0][1]);
+      }
+      if(querySortParams[1][1] !== sortingOrder) {
+        setSortingOrder(querySortParams[1][1]);
+      }
       setFirstSortInit(false);
       return;
     }
