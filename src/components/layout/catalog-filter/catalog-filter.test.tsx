@@ -16,6 +16,7 @@ import userEvent from '@testing-library/user-event';
 const api = createAPI();
 const middlewares = [thunk.withExtraArgument(api)];
 const history = createMemoryHistory();
+const onFakeCallback = jest.fn();
 
 const mockStore = configureMockStore<
   State,
@@ -32,7 +33,7 @@ describe('Component: CatalogFilter', () => {
     render(
       <Provider store={store}>
         <Router history={history}>
-          <CatalogFilter />
+          <CatalogFilter onPriceChanged={onFakeCallback} />
         </Router>
       </Provider>,
     );
@@ -49,7 +50,7 @@ describe('Component: CatalogFilter', () => {
     render(
       <Provider store={store}>
         <Router history={history}>
-          <CatalogFilter />
+          <CatalogFilter onPriceChanged={onFakeCallback} />
         </Router>
       </Provider>,
     );
@@ -65,7 +66,7 @@ describe('Component: CatalogFilter', () => {
     render(
       <Provider store={store}>
         <Router history={history}>
-          <CatalogFilter />
+          <CatalogFilter onPriceChanged={onFakeCallback}/>
         </Router>
       </Provider>,
     );
@@ -78,7 +79,7 @@ describe('Component: CatalogFilter', () => {
     render(
       <Provider store={store}>
         <Router history={history}>
-          <CatalogFilter />
+          <CatalogFilter  onPriceChanged={onFakeCallback}/>
         </Router>
       </Provider>,
     );

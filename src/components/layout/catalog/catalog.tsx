@@ -26,17 +26,22 @@ function Catalog(): JSX.Element {
 
   const [modalAddCardVisible, setModalAddCardVisible] = useState<boolean>(false);
   const [activeGuitar, setActiveGuitar] = useState<GuitarType | []>([]);
+  const [isPriceChanged, setIsPriceChanged] = useState<boolean>(true);
 
   const dispatch = useDispatch();
 
   const { search } = useLocation();
 
+  const onPriceChanged = () => setIsPriceChanged((state) => !state);
+
   const debouncedDispatch = useMemo(() => debounce((query: string) => dispatch(fetchGuitarsAction(query)), 500), [dispatch]);
 
   useEffect(() => {
     const pages = `${search ? '&' : '?'}_start=${(currentPage - 1) * CARDS_PER_PAGE}&_end=${currentPage * CARDS_PER_PAGE}`;
-    debouncedDispatch(search + pages);
-  }, [dispatch, search, currentPage, debouncedDispatch]);
+    if(isPriceChanged) {
+      debouncedDispatch(search + pages);
+    }
+  }, [dispatch, search, currentPage, debouncedDispatch, isPriceChanged]);
 
   useEffect(() => {
     dispatch(setCurrentPage(+pageNumber || 1));
@@ -50,7 +55,7 @@ function Catalog(): JSX.Element {
 
   return (
     <div className="catalog">
-      <CatalogFilter />
+      <CatalogFilter onPriceChanged={onPriceChanged} />
       <CatalogSort />
       <LoaderWrapper isLoad={isGuitarsLoad}>
         <div className="cards catalog__cards">

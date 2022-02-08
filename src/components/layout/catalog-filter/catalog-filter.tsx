@@ -25,6 +25,10 @@ type FiltersType = {
   stringCountDisabledState: boolean[],
 }
 
+type CatalogFiltersProps = {
+  onPriceChanged: () => void,
+}
+
 const styleOpacity = {
   min: 0.5,
   max: 1,
@@ -35,7 +39,7 @@ const guitarsByType = GUITARS_TYPES.map((guitar) => guitar.type);
 const initStringCountState: boolean[] = new Array(guitarsByStringCount.length).fill(false);
 const initTypeCheckedState: boolean[] = new Array(GUITARS_TYPES.length).fill(false);
 
-function CatalogFilter(): JSX.Element {
+function CatalogFilter({onPriceChanged}: CatalogFiltersProps): JSX.Element {
 
   const minMaxPriceValues = useSelector(getMinMaxPriceValues);
   const priceValuesLoadingStatus = useSelector(getPriceValuesLoadingStatus);
@@ -114,6 +118,7 @@ function CatalogFilter(): JSX.Element {
         }));
       }
     }
+    onPriceChanged();
   };
 
   const checkMaxPriceInput = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -136,6 +141,7 @@ function CatalogFilter(): JSX.Element {
         }));
       }
     }
+    onPriceChanged();
   };
 
   const checkStringCountDisabledInput = (updatedTypeCheckedState: boolean[]) => {
@@ -255,14 +261,19 @@ function CatalogFilter(): JSX.Element {
             <label className="visually-hidden">Минимальная цена</label>
             <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMin.toString() : '...'}
               id="priceMin" name="от"
-              onChange={handleMinPriceChange}  onInput={debounce(checkMinPriceInput, 1500)}
+              onChange={handleMinPriceChange}
+              onFocus={onPriceChanged}
+              onBlur={debounce(checkMinPriceInput, 300)}
               value={filters.priceInterval.priceFrom}
             />
           </div>
           <div className="form-input">
             <label className="visually-hidden">Максимальная цена</label>
             <input type="number" placeholder={isLoaded ? minMaxPriceValues.priceMax.toString() : '...'}
-              id="priceMax" name="до" onChange={handleMaxPriceChange}  onInput={debounce(checkMaxPriceInput, 1500)}
+              id="priceMax" name="до"
+              onChange={handleMaxPriceChange}
+              onFocus={onPriceChanged}
+              onBlur={debounce(checkMaxPriceInput, 300)}
               value={filters.priceInterval.priceTo}
             />
           </div>
