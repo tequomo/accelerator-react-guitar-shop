@@ -44,8 +44,8 @@ export enum SortingOrder {
   Descending = 'desc',
 }
 
-export const MIN_PRICE_QUERY = '?_start=0&_end=1&_sort=price&_order=asc';
-export const MAX_PRICE_QUERY = '?_start=0&_end=1&_sort=price&_order=desc';
+export const EMBED_COMMENTS_KEY = '_embed=comments';
+export const PRICE_INTERVAL_QUERY = '?_sort=price&_order=asc';
 
 export const PriceQueryKey: {[key: string]: string} = {
   PriceFrom: 'price_gte',

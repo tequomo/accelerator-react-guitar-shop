@@ -3,11 +3,26 @@ import thunk, { ThunkDispatch } from 'redux-thunk';
 import MockAdapter from 'axios-mock-adapter';
 import { configureMockStore } from '@jedmao/redux-mock-store';
 import { createAPI } from '../services/api';
-import { ApiRoute, HttpCode, LoadingStatus, MAX_PRICE_QUERY, MIN_PRICE_QUERY } from '../const';
+import { ApiRoute, HttpCode, LoadingStatus, PRICE_INTERVAL_QUERY } from '../const';
 import { State } from '../types/state';
 import { getFakeGuitar, getFakeGuitars, getFakeStore } from '../utils/mock';
-import { fetchCurrentGuitarAction, fetchGuitarsAction, fetchMinMaxPriceValuesAction, fetchSearchGuitarAction } from './api-actions';
-import { doSearchRequest, loadCurrentGuitar, loadGuitars, loadMinMaxPriceValues, loadTotalCountGuitars, setCurrentGuitarLoadingStatus, setGuitarsLoadingStatus, setPriceValuesLoadingStatus, setSearchResultLoadingStatus } from '../store/action';
+import {
+  fetchGuitarsAction,
+  fetchSearchGuitarAction,
+  fetchCurrentGuitarAction,
+  fetchMinMaxPriceValuesAction
+} from './api-actions';
+import {
+  loadGuitars,
+  doSearchRequest,
+  loadCurrentGuitar,
+  loadTotalCountGuitars,
+  loadMinMaxPriceValues,
+  setGuitarsLoadingStatus,
+  setPriceValuesLoadingStatus,
+  setSearchResultLoadingStatus,
+  setCurrentGuitarLoadingStatus
+} from '../store/action';
 
 enum FakeParamsData {
   GuitarId = '2',
@@ -125,22 +140,18 @@ describe('Api actions', () => {
   describe('Fetching min and max price guitars actions', () => {
 
     it('should load min and max price guitars and change priceValuesLoadingStatus', async () => {
-      const fakeMinPriceGuitar = getFakeGuitar();
-      const fakeMaxPriceGuitar = getFakeGuitar();
-      const minMaxValues = [[fakeMinPriceGuitar], [fakeMaxPriceGuitar]];
+      const fakeFilteredGuitars = getFakeGuitars();
       mockAPI
-        .onGet(`${ApiRoute.Guitars}${MIN_PRICE_QUERY}&`)
-        .reply(HttpCode.Ok, minMaxValues[0])
-        .onGet(`${ApiRoute.Guitars}${MAX_PRICE_QUERY}&`)
-        .reply(HttpCode.Ok, minMaxValues[1]);
+        .onGet(`${ApiRoute.Guitars}${PRICE_INTERVAL_QUERY}&`)
+        .reply(HttpCode.Ok, fakeFilteredGuitars);
 
       expect(store.getActions()).toEqual([]);
 
       await store.dispatch(fetchMinMaxPriceValuesAction(''));
 
       const minMaxPriceValues = {
-        priceMin: minMaxValues[0][0].price,
-        priceMax: minMaxValues[1][0].price,
+        priceMin: fakeFilteredGuitars[0].price,
+        priceMax: fakeFilteredGuitars[fakeFilteredGuitars.length - 1].price,
       };
 
       expect(store.getActions()).toEqual([
@@ -151,9 +162,7 @@ describe('Api actions', () => {
 
     it('should change priceValuesLoadingStatus to failed when GET min and max price guitars', async () => {
       mockAPI
-        .onGet(`${ApiRoute.Guitars}${MIN_PRICE_QUERY}`)
-        .reply(HttpCode.NotFound, [])
-        .onGet(`${ApiRoute.Guitars}${MAX_PRICE_QUERY}&`)
+        .onGet(`${ApiRoute.Guitars}${PRICE_INTERVAL_QUERY}&`)
         .reply(HttpCode.NotFound, []);
 
       expect(store.getActions()).toEqual([]);

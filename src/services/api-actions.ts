@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { ApiRoute, LoadingStatus, MAX_PRICE_QUERY, Messages, MIN_PRICE_QUERY } from '../const';
+import { ApiRoute, EMBED_COMMENTS_KEY, LoadingStatus, Messages, PRICE_INTERVAL_QUERY } from '../const';
 import {
   doSearchRequest,
   loadMinMaxPriceValues,
@@ -20,7 +20,7 @@ export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Loading));
-      const { data, headers } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}_embed=comments`);
+      const { data, headers } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${queryString}${queryString ? '&' : '?'}${EMBED_COMMENTS_KEY}`);
       dispatch(loadTotalCountGuitars( +headers[TOTAL_COUNT_HEADER] || data.length));
       dispatch(loadGuitars(data));
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
@@ -33,13 +33,10 @@ export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
 export const fetchMinMaxPriceValuesAction = (queryString: string): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const [min, max] = await Promise.all([
-        api.get<GuitarType[]>(`${ApiRoute.Guitars}${MIN_PRICE_QUERY}&${queryString}`),
-        api.get<GuitarType[]>(`${ApiRoute.Guitars}${MAX_PRICE_QUERY}&${queryString}`),
-      ]);
+      const { data } = await api.get<GuitarType[]>(`${ApiRoute.Guitars}${PRICE_INTERVAL_QUERY}&${queryString}`);
       dispatch(loadMinMaxPriceValues({
-        priceMin: min.data[0].price,
-        priceMax: max.data[0].price,
+        priceMin: data[0].price,
+        priceMax: data[data.length-1].price,
       }));
       dispatch(setPriceValuesLoadingStatus(LoadingStatus.Succeeded));
     } catch {
