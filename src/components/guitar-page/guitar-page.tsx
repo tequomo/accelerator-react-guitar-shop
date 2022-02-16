@@ -37,7 +37,7 @@ function GuitarPage(): JSX.Element {
       <Header />
       <main className="page-content">
         <div className="container">
-          <h1 className="page-content__title title title--bigger">Товар</h1>
+          <h1 className="page-content__title title title--bigger">{currentGuitar?.name}</h1>
           <ul className="breadcrumbs page-content__breadcrumbs">
             <li className="breadcrumbs__item"><Link to={AppRoute.Main} className="link">Главная</Link>
             </li>

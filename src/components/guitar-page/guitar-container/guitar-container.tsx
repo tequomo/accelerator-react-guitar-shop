@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { GuitarPropertyTab, IMG_BASE_PATH } from '../../../const';
 import { GuitarType } from '../../../types/guitar-type';
 import { modifyImgUrl } from '../../../utils/utils';
+import StarRating from '../../layout/star-rating/star-rating';
 
 type GuitarContainerProps = {
   guitar: GuitarType,
@@ -9,7 +10,7 @@ type GuitarContainerProps = {
 
 function GuitarContainer({guitar}: GuitarContainerProps): JSX.Element {
 
-  const {name, previewImg, vendorCode, description, price, stringCount} = guitar;
+  const {name, previewImg, vendorCode, description, price, stringCount, rating, comments} = guitar;
 
   const [visibleTab, setVisibleTab] = useState<string>(GuitarPropertyTab.Characteristics);
 
@@ -22,7 +23,8 @@ function GuitarContainer({guitar}: GuitarContainerProps): JSX.Element {
       <div className="product-container__info-wrapper">
         <h2 className="product-container__title title title--big title--uppercase">{name}</h2>
         <div className="rate product-container__rating" aria-hidden="true"><span className="visually-hidden">Рейтинг:</span>
-          <svg width="14" height="14" aria-hidden="true">
+          <StarRating rating={rating}/>
+          {/* <svg width="14" height="14" aria-hidden="true">
             <use xlinkHref="#icon-full-star"></use>
           </svg>
           <svg width="14" height="14" aria-hidden="true">
@@ -36,7 +38,8 @@ function GuitarContainer({guitar}: GuitarContainerProps): JSX.Element {
           </svg>
           <svg width="14" height="14" aria-hidden="true">
             <use xlinkHref="#icon-star"></use>
-          </svg><span className="rate__count"></span><span className="rate__message"></span>
+          </svg> */}
+          <span className="rate__count">{comments?.length}</span><span className="rate__message"></span>
         </div>
         <div className="tabs">
           <a className={`button${isDescriptionVisible ? ' button--black-border' : ''} button--medium tabs__button`} href="#characteristics" onClick={() => setVisibleTab(GuitarPropertyTab.Characteristics)}>Характеристики</a>
