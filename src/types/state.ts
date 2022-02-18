@@ -1,6 +1,7 @@
 import { LoadingStatus } from '../const';
 import { RootState } from '../store/reducers/root-reducer';
 import { GuitarType } from './guitar-type';
+import { ReviewType } from './review-type';
 
 export type MinMaxPriceValuesType = {
   priceMin: number,
@@ -19,6 +20,11 @@ export type GuitarsData = {
 export type CurrentGuitarData = {
   currentGuitar: GuitarType | null,
   currentGuitarLoadingStatus: LoadingStatus,
+}
+
+export type GuitarReviewsData = {
+  guitarReviews: ReviewType[] | [],
+  guitarReviewsLoadingStatus: LoadingStatus,
 }
 
 export type AppState = {

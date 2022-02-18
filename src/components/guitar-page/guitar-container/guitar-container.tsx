@@ -1,14 +1,15 @@
-import { useState } from 'react';
-import { GuitarPropertyTab, IMG_BASE_PATH } from '../../../const';
+import { MouseEvent, useState } from 'react';
+import { GuitarPropertyTab, IMG_BASE_PATH, StarRatingOrigin } from '../../../const';
 import { GuitarType } from '../../../types/guitar-type';
 import { modifyImgUrl } from '../../../utils/utils';
 import StarRating from '../../layout/star-rating/star-rating';
 
 type GuitarContainerProps = {
   guitar: GuitarType,
+  onAddCartClick: (evt: MouseEvent<HTMLAnchorElement>, guitar: GuitarType) => void,
 };
 
-function GuitarContainer({guitar}: GuitarContainerProps): JSX.Element {
+function GuitarContainer({guitar, onAddCartClick}: GuitarContainerProps): JSX.Element {
 
   const {name, previewImg, vendorCode, description, price, stringCount, rating, comments} = guitar;
 
@@ -23,22 +24,7 @@ function GuitarContainer({guitar}: GuitarContainerProps): JSX.Element {
       <div className="product-container__info-wrapper">
         <h2 className="product-container__title title title--big title--uppercase">{name}</h2>
         <div className="rate product-container__rating" aria-hidden="true"><span className="visually-hidden">Рейтинг:</span>
-          <StarRating rating={rating}/>
-          {/* <svg width="14" height="14" aria-hidden="true">
-            <use xlinkHref="#icon-full-star"></use>
-          </svg>
-          <svg width="14" height="14" aria-hidden="true">
-            <use xlinkHref="#icon-full-star"></use>
-          </svg>
-          <svg width="14" height="14" aria-hidden="true">
-            <use xlinkHref="#icon-full-star"></use>
-          </svg>
-          <svg width="14" height="14" aria-hidden="true">
-            <use xlinkHref="#icon-full-star"></use>
-          </svg>
-          <svg width="14" height="14" aria-hidden="true">
-            <use xlinkHref="#icon-star"></use>
-          </svg> */}
+          <StarRating rating={rating} origin={StarRatingOrigin.Card}/>
           <span className="rate__count">{comments?.length}</span><span className="rate__message"></span>
         </div>
         <div className="tabs">
@@ -66,14 +52,15 @@ function GuitarContainer({guitar}: GuitarContainerProps): JSX.Element {
             }
             {
               isDescriptionVisible &&
-            <p className="tabs__product-description">{description}</p>
+            <p className="tabs__product-description" id="description">{description}</p>
             }
           </div>
         </div>
       </div>
       <div className="product-container__price-wrapper">
         <p className="product-container__price-info product-container__price-info--title">Цена:</p>
-        <p className="product-container__price-info product-container__price-info--value">{price.toLocaleString()} ₽</p><a className="button button--red button--big product-container__button" href="/#">Добавить в корзину</a>
+        <p className="product-container__price-info product-container__price-info--value">{price.toLocaleString()} ₽</p>
+        <a className="button button--red button--big product-container__button" href="/#" onClick={(e) => onAddCartClick(e, guitar)}>Добавить в корзину</a>
       </div>
     </div>
   );

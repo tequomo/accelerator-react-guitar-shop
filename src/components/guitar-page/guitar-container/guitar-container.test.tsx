@@ -6,12 +6,13 @@ import GuitarContainer from './guitar-container';
 
 const history = createMemoryHistory();
 const guitar = getFakeGuitar();
+const onModalOpenClick = jest.fn();
 
 describe('Component: GuitarContainer', () => {
   it('should render correctly', () => {
     render(
       <Router history={history}>
-        <GuitarContainer guitar={guitar}/>
+        <GuitarContainer guitar={guitar} onAddCartClick={onModalOpenClick}/>
       </Router>,
     );
 

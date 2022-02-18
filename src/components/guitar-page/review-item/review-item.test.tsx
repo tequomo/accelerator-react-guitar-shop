@@ -1,15 +1,18 @@
 import { render, screen } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
+import { getFakeReview } from '../../../utils/mock';
 import ReviewItem from './review-item';
 
 const history = createMemoryHistory();
+
+const fakeReview = getFakeReview();
 
 describe('Component: ReviewItem', () => {
   it('should render correctly', () => {
     render(
       <Router history={history}>
-        <ReviewItem/>
+        <ReviewItem review={fakeReview}/>
       </Router>,
     );
 

@@ -6,7 +6,7 @@ import { modifyImgUrl } from '../../../utils/utils';
 
 type AddCartProps = {
   isVisible: boolean,
-  activeGuitar: GuitarType | [],
+  activeGuitar: GuitarType | null,
   onModalClose: () => void,
 }
 
@@ -14,6 +14,7 @@ function ModalCartAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JS
 
   const handleModalClickClose = (): void => {
     onModalClose();
+    document.body.style.overflow = '';
   };
 
   const {type, price, previewImg, vendorCode, name, stringCount} = activeGuitar as GuitarType;
@@ -23,6 +24,7 @@ function ModalCartAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JS
   const handleModalEscClose = (event: KeyboardEvent) => {
     if(event.key === 'Escape' || event.keyCode === 27) {
       onModalClose();
+      document.body.style.overflow = '';
     }
   };
 
@@ -36,7 +38,7 @@ function ModalCartAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JS
   return ReactDOM.createPortal(
     <div className={`modal ${isVisible ? 'is-active ' : ''}modal-for-ui-kit`}>
       <div className="modal__wrapper">
-        <div className="modal__overlay" data-close-modal></div>
+        <div className="modal__overlay" data-close-modal onClick={handleModalClickClose}></div>
         <div className="modal__content">
           <h2 className="modal__header title title--medium">Добавить товар в корзину</h2>
           <div className="modal__info">

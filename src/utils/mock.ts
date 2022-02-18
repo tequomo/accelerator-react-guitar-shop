@@ -1,12 +1,12 @@
 import { LoadingStatus } from '../const';
 import { GuitarType } from '../types/guitar-type';
-import { CommentType } from '../types/comment-type';
+import { ReviewType } from '../types/review-type';
 import { State } from '../types/state';
 import { datatype } from 'faker';
 
 const FAKE_ITEMS_COUNT = 6;
 
-export const getFakeComment = ():CommentType => ({
+export const getFakeReview = ():ReviewType => ({
   id: datatype.string(),
   userName: datatype.string(),
   advantage: datatype.string(),
@@ -17,7 +17,7 @@ export const getFakeComment = ():CommentType => ({
   guitarId: datatype.number(),
 });
 
-const fakeComment = getFakeComment();
+const fakeReview = getFakeReview();
 
 export const getFakeGuitar = (): GuitarType => ({
   id: datatype.number(),
@@ -29,7 +29,7 @@ export const getFakeGuitar = (): GuitarType => ({
   stringCount: datatype.number(),
   rating: datatype.number(),
   price: datatype.number(),
-  comments: [fakeComment],
+  comments: [fakeReview],
 });
 
 const fakeGuitar = getFakeGuitar();
@@ -53,6 +53,10 @@ export const getFakeStore = (): State => ({
   CURRENT_GUITAR_DATA: {
     currentGuitar: fakeGuitar,
     currentGuitarLoadingStatus: LoadingStatus.Succeeded,
+  },
+  GUITAR_REVIEWS_DATA: {
+    guitarReviews: [fakeReview],
+    guitarReviewsLoadingStatus: LoadingStatus.Succeeded,
   },
   STATE: {
     firstLoadState: true,

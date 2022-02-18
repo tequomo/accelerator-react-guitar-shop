@@ -9,9 +9,12 @@ import {
   setCurrentGuitarLoadingStatus,
   setGuitarsLoadingStatus,
   setPriceValuesLoadingStatus,
-  setSearchResultLoadingStatus
+  setSearchResultLoadingStatus,
+  loadGuitarReviews,
+  setGuitarReviewsLoadingStatus
 } from '../store/action';
 import { ThunkActionResult } from '../types/action';
+import { ReviewType } from '../types/review-type';
 import { GuitarType } from '../types/guitar-type';
 
 const TOTAL_COUNT_HEADER = 'x-total-count';
@@ -48,7 +51,7 @@ export const fetchMinMaxPriceValuesAction = (queryString: string): ThunkActionRe
 export const fetchCurrentGuitarAction = (id: string): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const { data } = await api.get<GuitarType>(`${ApiRoute.Guitars}/${id}`);
+      const { data } = await api.get<GuitarType>(`${ApiRoute.Guitars}/${id}?${EMBED_COMMENTS_KEY}`);
       dispatch(loadCurrentGuitar(data));
       dispatch(setCurrentGuitarLoadingStatus(LoadingStatus.Succeeded));
     } catch {
@@ -56,6 +59,19 @@ export const fetchCurrentGuitarAction = (id: string): ThunkActionResult =>
       toast.error(Messages.LOAD_FAIL);
     }
   };
+
+export const fetchGuitarReviewsAction = (guitarId: string): ThunkActionResult =>
+  async (dispatch, _getState, api): Promise<void> => {
+    try {
+      const { data } = await api.get<ReviewType[]>(`${ApiRoute.Guitars}/${guitarId}/${ApiRoute.Comments}`);
+      dispatch(loadGuitarReviews(data));
+      dispatch(setGuitarReviewsLoadingStatus(LoadingStatus.Succeeded));
+    } catch {
+      dispatch(setGuitarReviewsLoadingStatus(LoadingStatus.Failed));
+      toast.error(Messages.LOAD_FAIL);
+    }
+  };
+
 
 export const fetchSearchGuitarAction = (query: string): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {

@@ -99,3 +99,18 @@ export enum GuitarPropertyTab {
   Description = 'description',
 }
 
+export const StarRatingSize: {[key: string]: {width: number, height: number}}  = {
+  Card: {
+    width: 12,
+    height: 11,
+  },
+  Review: {
+    width: 16,
+    height: 16,
+  },
+} as const;
+
+export enum StarRatingOrigin {
+  Card = 'Card',
+  Review = 'Review',
+}

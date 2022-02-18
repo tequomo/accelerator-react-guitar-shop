@@ -9,6 +9,8 @@ export enum ActionType {
   SetPriceValuesLoadingStatus = 'data/setPriceValuesLoadingStatus',
   LoadCurrentGuitar = 'data/loadCurrentGuitar',
   SetCurrentGuitarLoadingStatus = 'data/setCurrentGuitarLoadingStatus',
+  LoadGuitarReviews = 'data/loadGuitarReviews',
+  SetGuitarReviewsLoadingStatus = 'data/setGuitarReviewsLoadingStatus',
   DoSearchRequest = 'data/doSearchRequest',
   SetSearchResultLoadingStatus = 'data/setSearchResultLoadingStatus',
   LoadTotalCountGuitars = 'data/loadTotalCountGuitars',

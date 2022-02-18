@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 import { LoadingStatus } from '../const';
 import { ActionType } from '../types/action';
+import { ReviewType } from '../types/review-type';
 import { GuitarType } from '../types/guitar-type';
 import { MinMaxPriceValuesType } from '../types/state';
 
@@ -22,6 +23,20 @@ export const setGuitarsLoadingStatus = createAction(
   ActionType.SetGuitarsLoadingStatus,
   (guitarsLoadingStatus: LoadingStatus) => ({
     payload: guitarsLoadingStatus,
+  }),
+);
+
+export const loadGuitarReviews = createAction(
+  ActionType.LoadGuitarReviews,
+  (guitarReviews: ReviewType[]) => ({
+    payload: guitarReviews,
+  }),
+);
+
+export const setGuitarReviewsLoadingStatus = createAction(
+  ActionType.SetGuitarReviewsLoadingStatus,
+  (guitarReviewsLoadingStatus: LoadingStatus) => ({
+    payload: guitarReviewsLoadingStatus,
   }),
 );
 

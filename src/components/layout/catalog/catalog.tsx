@@ -25,7 +25,7 @@ function Catalog(): JSX.Element {
   const { pageNumber } = useParams<ParamsPropsType>();
 
   const [modalAddCardVisible, setModalAddCardVisible] = useState<boolean>(false);
-  const [activeGuitar, setActiveGuitar] = useState<GuitarType | []>([]);
+  const [activeGuitar, setActiveGuitar] = useState<GuitarType | null>(null);
   const [isPriceChanged, setIsPriceChanged] = useState<boolean>(true);
 
   const dispatch = useDispatch();
