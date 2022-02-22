@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import ReactFocusLock from 'react-focus-lock';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,8 +32,7 @@ function ModalReview({activeGuitar, isVisible, onModalClose, onSuccess}: ReviewP
 
   const [userReview, setUserReview] = useState<ReviewPostType>(initReviewPost);
   const uploadReviewLoadingStatus = useSelector(getUploadReviewLoadingStatus);
-  const isLoading = uploadReviewLoadingStatus === LoadingStatus.Loading;
-  const isLoad = uploadReviewLoadingStatus === LoadingStatus.Succeeded;
+  const [isLoad, setIsLoad] = useState(false);
   const dispatch = useDispatch();
 
   const handleModalClickClose = (): void => {
@@ -84,33 +85,35 @@ function ModalReview({activeGuitar, isVisible, onModalClose, onSuccess}: ReviewP
   };
 
   const checkEmptyFields = () => {
-    if(!userReview.advantage) {
-      setUserReview((state) => ({
-        ...state,
-        advantage: 'Всё хорошо',
-      }));
+    const updatedUserReview = userReview;
+    if(userReview.advantage === '') {
+      updatedUserReview.advantage = 'Всё хорошо';
     }
     if(userReview.disadvantage === '') {
-      setUserReview((state) => ({
-        ...state,
-        disadvantage: 'Недостатков не обнаружено',
-      }));
+      updatedUserReview.disadvantage = 'Недостатков не обнаружено';
     }
     if(userReview.comment === '') {
-      setUserReview((state) => ({
-        ...state,
-        comment: 'Комментарии излишни',
-      }));
+      updatedUserReview.comment = 'Комментарии излишни';
     }
+    setUserReview(updatedUserReview);
   };
 
   const postGuitarReview = (review: ReviewPostType): void => {
     dispatch(postGuitarReviewAction(review));
   };
 
+  useEffect(() => {
+    if (uploadReviewLoadingStatus === LoadingStatus.Succeeded) {
+      setIsLoad((state) => !state);
+    }
+  }, [uploadReviewLoadingStatus]);
+
+
   const handleFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+    checkEmptyFields();
     postGuitarReview(userReview);
+    console.log(uploadReviewLoadingStatus);
     if(isLoad) {
       handleModalClickClose();
       onSuccess();
@@ -136,7 +139,7 @@ function ModalReview({activeGuitar, isVisible, onModalClose, onSuccess}: ReviewP
               <div className="form-review__wrapper">
                 <div className="form-review__name-wrapper">
                   <label className="form-review__label form-review__label--required" htmlFor="user-name">Ваше Имя</label>
-                  <input className="form-review__input form-review__input--name" id="user-name" type="text" autoComplete="off" value={userName} onChange={handleUserNameChange} required disabled={isLoading}>
+                  <input className="form-review__input form-review__input--name" id="user-name" type="text" autoComplete="off" value={userName} onChange={handleUserNameChange} required>
                   </input>
                   {userName.length === 0 && <span className="form-review__warning">Заполните поле</span>}
                 </div>
@@ -153,7 +156,7 @@ function ModalReview({activeGuitar, isVisible, onModalClose, onSuccess}: ReviewP
               <input className="form-review__input" id="cons" type="text" autoComplete="off" value={disadvantage} onChange={handleDisadvantageChange}></input>
               <label className="form-review__label" htmlFor="comment">Комментарий</label>
               <textarea className="form-review__input form-review__input--textarea" id="comment" rows={10} autoComplete="off" value={comment} onChange={handleCommentChange}></textarea>
-              <button className="button button--medium-20 form-review__button" type="submit" onClick={checkEmptyFields}>Отправить отзыв</button>
+              <button className="button button--medium-20 form-review__button" type="submit">Отправить отзыв</button>
             </form>
             <button className="modal__close-btn button-cross" type="button" aria-label="Закрыть" onClick={handleModalClickClose}><span className="button-cross__icon"></span><span className="modal__close-btn-interactive-area"></span>
             </button>
