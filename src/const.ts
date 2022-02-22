@@ -114,3 +114,11 @@ export enum StarRatingOrigin {
   Card = 'Card',
   Review = 'Review',
 }
+
+export const RatingValue = [
+  'Ужасно',
+  'Плохо',
+  'Нормально',
+  'Хорошо',
+  'Отлично',
+];

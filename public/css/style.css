@@ -2532,7 +2532,7 @@ button,
 }
 
 .rate--reverse {
-  flex-direction: row-reverse;
+  flex-direction: row;
   justify-content: flex-end;
 
   margin-left: -3px;

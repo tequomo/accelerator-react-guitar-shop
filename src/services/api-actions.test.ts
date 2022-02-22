@@ -5,12 +5,13 @@ import { configureMockStore } from '@jedmao/redux-mock-store';
 import { createAPI } from '../services/api';
 import { ApiRoute, HttpCode, LoadingStatus, PRICE_INTERVAL_QUERY } from '../const';
 import { State } from '../types/state';
-import { getFakeGuitar, getFakeGuitars, getFakeStore } from '../utils/mock';
+import { getFakeGuitar, getFakeGuitars, getFakeReviews, getFakeStore } from '../utils/mock';
 import {
   fetchGuitarsAction,
   fetchSearchGuitarAction,
   fetchCurrentGuitarAction,
-  fetchMinMaxPriceValuesAction
+  fetchMinMaxPriceValuesAction,
+  fetchGuitarReviewsAction
 } from './api-actions';
 import {
   loadGuitars,
@@ -21,7 +22,10 @@ import {
   setGuitarsLoadingStatus,
   setPriceValuesLoadingStatus,
   setSearchResultLoadingStatus,
-  setCurrentGuitarLoadingStatus
+  setCurrentGuitarLoadingStatus,
+  setGuitarReviewsLoadingStatus,
+  loadTotalCountReviews,
+  loadGuitarReviews
 } from '../store/action';
 
 enum FakeParamsData {
@@ -37,6 +41,7 @@ describe('Api actions', () => {
   const fakeStore = getFakeStore();
   const fakeGuitars = getFakeGuitars();
   const fakeGuitar = getFakeGuitar();
+  const fakeReviews = getFakeReviews();
 
   const mockStore = configureMockStore<
     State,
@@ -230,6 +235,49 @@ describe('Api actions', () => {
           setSearchResultLoadingStatus(LoadingStatus.Loading),
           setSearchResultLoadingStatus(LoadingStatus.Failed),
         ]);
+    });
+
+  });
+
+  describe('Fetching reviews actions', () => {
+
+    it('should load reviews and change guitarReviewsLoadingStatus when GET /comments', async () => {
+      mockAPI
+        .onGet(`${ApiRoute.Guitars}/1${ApiRoute.Comments}?_limit=3&_sort=createAt&_order=desc`)
+        .reply(
+          HttpCode.Ok,
+          fakeReviews,
+          { 'x-total-count': fakeReviews.length.toString() },
+        );
+
+      expect(store.getActions()).toEqual([]);
+
+      await store.dispatch(fetchGuitarReviewsAction('1', 3));
+
+      expect(store.getActions())
+        .toEqual([
+          loadTotalCountReviews(fakeReviews.length),
+          loadGuitarReviews(fakeReviews),
+          setGuitarReviewsLoadingStatus(LoadingStatus.Succeeded),
+        ]);
+
+    });
+
+    it('should change guitarReviewsLoadingStatus to failed when GET /comments', async () => {
+      mockAPI
+        .onGet(`${ApiRoute.Guitars}/1${ApiRoute.Comments}?_limit=3&_sort=createAt&_order=desc`)
+        .reply(
+          HttpCode.NotFound,
+          [],
+        );
+
+      expect(store.getActions()).toEqual([]);
+
+      await store.dispatch(fetchGuitarReviewsAction('1', 3));
+
+      expect(store.getActions()).toEqual([
+        setGuitarReviewsLoadingStatus(LoadingStatus.Failed),
+      ]);
     });
 
   });

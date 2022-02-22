@@ -11,13 +11,17 @@ import {
   setPriceValuesLoadingStatus,
   setSearchResultLoadingStatus,
   loadGuitarReviews,
-  setGuitarReviewsLoadingStatus
+  setGuitarReviewsLoadingStatus,
+  loadTotalCountReviews,
+  setUploadReviewLoadingStatus
 } from '../store/action';
 import { ThunkActionResult } from '../types/action';
-import { ReviewType } from '../types/review-type';
+import { ReviewPostType, ReviewType } from '../types/review-type';
 import { GuitarType } from '../types/guitar-type';
 
 const TOTAL_COUNT_HEADER = 'x-total-count';
+const DATA_LIMIT_KEY = '_limit=';
+const DATA_SORT_KEY = '&_sort=createAt&_order=desc';
 
 export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
@@ -60,14 +64,34 @@ export const fetchCurrentGuitarAction = (id: string): ThunkActionResult =>
     }
   };
 
-export const fetchGuitarReviewsAction = (guitarId: string): ThunkActionResult =>
+export const fetchGuitarReviewsAction = (guitarId: string, reviewsCount: number): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
     try {
-      const { data } = await api.get<ReviewType[]>(`${ApiRoute.Guitars}/${guitarId}/${ApiRoute.Comments}`);
+      const { data, headers } = await api.get<ReviewType[]>(`${ApiRoute.Guitars}/${guitarId}${ApiRoute.Comments}?${DATA_LIMIT_KEY}${reviewsCount}${DATA_SORT_KEY}`);
+      dispatch(loadTotalCountReviews( +headers[TOTAL_COUNT_HEADER] || data.length));
       dispatch(loadGuitarReviews(data));
       dispatch(setGuitarReviewsLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setGuitarReviewsLoadingStatus(LoadingStatus.Failed));
+      toast.error(Messages.LOAD_FAIL);
+    }
+  };
+
+
+export const postGuitarReviewAction = (review: ReviewPostType): ThunkActionResult =>
+  async (dispatch, getState, api): Promise<void> => {
+    try {
+      dispatch(setUploadReviewLoadingStatus(LoadingStatus.Loading));
+      const { data } = await api.post<ReviewType>(ApiRoute.Comments, review);
+
+      const showedReviews = getState().GUITAR_REVIEWS_DATA.guitarReviews;
+      const updatedReviews = [data, ...showedReviews.slice(0, showedReviews.length - 1)];
+      const updatedTotalCountReviews = getState().GUITAR_REVIEWS_DATA.totalCountReviews + 1;
+      dispatch(loadGuitarReviews(updatedReviews));
+      dispatch(loadTotalCountReviews(updatedTotalCountReviews));
+      dispatch(setUploadReviewLoadingStatus(LoadingStatus.Succeeded));
+    } catch {
+      dispatch(setUploadReviewLoadingStatus(LoadingStatus.Failed));
       toast.error(Messages.LOAD_FAIL);
     }
   };

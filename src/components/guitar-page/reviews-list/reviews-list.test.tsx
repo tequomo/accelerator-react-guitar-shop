@@ -4,12 +4,13 @@ import { Router } from 'react-router';
 import ReviewsList from './reviews-list';
 
 const history = createMemoryHistory();
+const onAddReviewClick = jest.fn();
 
 describe('Component: ReviewList', () => {
   it('should render correctly', () => {
     render(
       <Router history={history}>
-        <ReviewsList/>
+        <ReviewsList onAddReviewClick={onAddReviewClick}/>
       </Router>,
     );
 

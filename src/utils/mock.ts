@@ -19,6 +19,10 @@ export const getFakeReview = ():ReviewType => ({
 
 const fakeReview = getFakeReview();
 
+export const getFakeReviews = (): ReviewType[] => (
+  new Array(FAKE_ITEMS_COUNT).fill(null).map(getFakeReview)
+);
+
 export const getFakeGuitar = (): GuitarType => ({
   id: datatype.number(),
   name: datatype.string(),
@@ -56,7 +60,9 @@ export const getFakeStore = (): State => ({
   },
   GUITAR_REVIEWS_DATA: {
     guitarReviews: [fakeReview],
+    totalCountReviews: 5,
     guitarReviewsLoadingStatus: LoadingStatus.Succeeded,
+    uploadReviewLoadingStatus: LoadingStatus.Succeeded,
   },
   STATE: {
     firstLoadState: true,

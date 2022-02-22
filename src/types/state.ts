@@ -24,7 +24,9 @@ export type CurrentGuitarData = {
 
 export type GuitarReviewsData = {
   guitarReviews: ReviewType[] | [],
+  totalCountReviews: number,
   guitarReviewsLoadingStatus: LoadingStatus,
+  uploadReviewLoadingStatus: LoadingStatus,
 }
 
 export type AppState = {

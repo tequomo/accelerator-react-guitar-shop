@@ -33,10 +33,31 @@ export const loadGuitarReviews = createAction(
   }),
 );
 
+export const updateReviews = createAction(
+  ActionType.UpdateReviews,
+  (updatedGuitarReviews: ReviewType[]) => ({
+    payload: updatedGuitarReviews,
+  }),
+);
+
+export const loadTotalCountReviews = createAction(
+  ActionType.LoadTotalCountReviews,
+  (totalCountReviews: number) => ({
+    payload: totalCountReviews,
+  }),
+);
+
 export const setGuitarReviewsLoadingStatus = createAction(
   ActionType.SetGuitarReviewsLoadingStatus,
   (guitarReviewsLoadingStatus: LoadingStatus) => ({
     payload: guitarReviewsLoadingStatus,
+  }),
+);
+
+export const setUploadReviewLoadingStatus = createAction(
+  ActionType.SetUploadReviewLoadingStatus,
+  (uploadReviewLoadingStatus: LoadingStatus) => ({
+    payload: uploadReviewLoadingStatus,
   }),
 );
 
