@@ -146,7 +146,8 @@ function ModalReview({activeGuitar, isVisible, onModalClose, onSuccess}: ReviewP
                 <div><span className="form-review__label form-review__label--required">Ваша Оценка</span>
                   <div className="rate rate--reverse" dir="rtl">
                     <ReviewRating rating={rating} onRatingChange={handleRatingChange}/>
-                    <span className="rate__count"></span><span className="rate__message">Поставьте оценку</span>
+                    <span className="rate__count"></span>
+                    {rating === 0 && <span className="rate__message">Поставьте оценку</span>}
                   </div>
                 </div>
               </div>
