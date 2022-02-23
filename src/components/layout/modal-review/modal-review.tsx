@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from 'react';
 import ReactFocusLock from 'react-focus-lock';
 import { useDispatch, useSelector } from 'react-redux';
 import { LoadingStatus } from '../../../const';
 import { postGuitarReviewAction } from '../../../services/api-actions';
+import { setUploadReviewLoadingStatus } from '../../../store/action';
 import {
   getUploadReviewLoadingStatus
 } from '../../../store/reducers/guitar-reviews-data/selectors';
@@ -35,10 +36,10 @@ function ModalReview({activeGuitar, isVisible, onModalClose, onSuccess}: ReviewP
   const [isLoad, setIsLoad] = useState(false);
   const dispatch = useDispatch();
 
-  const handleModalClickClose = (): void => {
+  const handleModalClickClose = useCallback((): void => {
     onModalClose();
     document.body.style.overflow = '';
-  };
+  }, [onModalClose]);
 
   const handleModalEscClose = (event: KeyboardEvent) => {
     if(event.key === 'Escape' || event.keyCode === 27) {
@@ -106,18 +107,21 @@ function ModalReview({activeGuitar, isVisible, onModalClose, onSuccess}: ReviewP
     if (uploadReviewLoadingStatus === LoadingStatus.Succeeded) {
       setIsLoad((state) => !state);
     }
-  }, [uploadReviewLoadingStatus]);
+    dispatch(setUploadReviewLoadingStatus(LoadingStatus.Idle));
+  }, [dispatch, uploadReviewLoadingStatus]);
 
+  useEffect(() => {
+    if(isLoad) {
+      handleModalClickClose();
+      onSuccess();
+      setIsLoad((state) => !state);
+    }
+  }, [handleModalClickClose, isLoad, onSuccess]);
 
   const handleFormSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     checkEmptyFields();
     postGuitarReview(userReview);
-    console.log(uploadReviewLoadingStatus);
-    if(isLoad) {
-      handleModalClickClose();
-      onSuccess();
-    }
   };
 
   useEffect(() => {
