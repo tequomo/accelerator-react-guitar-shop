@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AppRoute, REQUEST_DELAY } from '../../../../const';
@@ -19,6 +19,16 @@ function FormSearch(): JSX.Element {
   const handleItemClick = (id: number): void => {
     setSearchQuery('');
     history.push(`${AppRoute.Guitar}${id}`);
+  };
+
+  const handleItemKeyboardClick = (evt: KeyboardEvent<HTMLLIElement>, id: number): void => {
+    if(evt.code === ('Enter') || evt.keyCode === 13) {
+      handleItemClick(id);
+    }
+    if(evt.code === ('Space') || evt.keyCode === 32) {
+      evt.stopPropagation();
+      handleItemClick(id);
+    }
   };
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -45,7 +55,7 @@ function FormSearch(): JSX.Element {
       {searchResult &&
         <ul className="form-search__select-list">
           {searchResult.length ? searchResult.map(({id, name}, idx) => (
-            <li key={`${name}-${id}`} className="form-search__select-item" tabIndex={0} onClick={() => handleItemClick(id)}>
+            <li key={`${name}-${id}`} role={'button'} className="form-search__select-item" tabIndex={0} onClick={() => handleItemClick(id)} onKeyDown={(evt) => handleItemKeyboardClick(evt, id)}>
               {name}
             </li>)) :
             <li className="form-search__select-item" tabIndex={0}>Ничего не нашлось</li>}

@@ -88,13 +88,13 @@ function ModalReview({activeGuitar, isVisible, onModalClose, onSuccess}: ReviewP
   const checkEmptyFields = () => {
     const updatedUserReview = userReview;
     if(userReview.advantage === '') {
-      updatedUserReview.advantage = 'Всё хорошо';
+      updatedUserReview.advantage = '-';
     }
     if(userReview.disadvantage === '') {
-      updatedUserReview.disadvantage = 'Недостатков не обнаружено';
+      updatedUserReview.disadvantage = '-';
     }
     if(userReview.comment === '') {
-      updatedUserReview.comment = 'Комментарии излишни';
+      updatedUserReview.comment = '-';
     }
     setUserReview(updatedUserReview);
   };
