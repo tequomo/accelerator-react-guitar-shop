@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import ReactFocusLock from 'react-focus-lock';
+import { useDispatch } from 'react-redux';
 import { GUITARS_TYPES, IMG_BASE_PATH } from '../../../const';
+import { addItemToCart } from '../../../store/action';
 import { GuitarType } from '../../../types/guitar-type';
 import { modifyImgUrl } from '../../../utils/utils';
 
@@ -12,6 +14,8 @@ type AddCartProps = {
 }
 
 function ModalCartAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JSX.Element {
+
+  const dispatch = useDispatch();
 
   const handleModalClickClose = (): void => {
     onModalClose();
@@ -27,6 +31,11 @@ function ModalCartAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JS
       onModalClose();
       document.body.style.overflow = '';
     }
+  };
+
+  const handleAddButtonClick = () => {
+    dispatch(addItemToCart(activeGuitar as GuitarType));
+    handleModalClickClose();
   };
 
   useEffect(() => {
@@ -54,7 +63,7 @@ function ModalCartAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JS
               </div>
             </div>
             <div className="modal__button-container">
-              <button className="button button--red button--big modal__button modal__button--add">Добавить в корзину</button>
+              <button className="button button--red button--big modal__button modal__button--add" onClick={handleAddButtonClick}>Добавить в корзину</button>
             </div>
             <button className="modal__close-btn button-cross" type="button" aria-label="Закрыть" onClick={handleModalClickClose}><span className="button-cross__icon"></span><span className="modal__close-btn-interactive-area"></span>
             </button>

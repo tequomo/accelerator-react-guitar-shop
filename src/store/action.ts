@@ -103,6 +103,20 @@ export const loadTotalCountGuitars = createAction(
   }),
 );
 
+export const addItemToCart = createAction(
+  ActionType.AddItemToCart,
+  (item: GuitarType) => ({
+    payload: item,
+  }),
+);
+
+// export const loadCartItems = createAction(
+//   ActionType.LoadCartItems,
+//   (totalCountGuitars: number) => ({
+//     payload: totalCountGuitars,
+//   }),
+// );
+
 export const setFirstLoadState = createAction(
   ActionType.SetFirstLoadState,
   (firstLoadState: boolean) => ({

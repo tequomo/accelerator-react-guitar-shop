@@ -1,5 +1,6 @@
 import { LoadingStatus } from '../const';
 import { RootState } from '../store/reducers/root-reducer';
+import { CartItemType, CouponType } from './cart-type';
 import { GuitarType } from './guitar-type';
 import { ReviewType } from './review-type';
 
@@ -33,6 +34,12 @@ export type AppState = {
   firstLoadState: boolean,
   totalCountGuitars: number,
   currentPage: number,
+}
+
+export type CartData = {
+  cartItems: CartItemType[],
+  coupon: CouponType,
+  discount: number,
 }
 
 export type State = RootState;

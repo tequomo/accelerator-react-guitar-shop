@@ -17,6 +17,12 @@ export enum ActionType {
   DoSearchRequest = 'data/doSearchRequest',
   SetSearchResultLoadingStatus = 'data/setSearchResultLoadingStatus',
   LoadTotalCountGuitars = 'data/loadTotalCountGuitars',
+  AddItemToCart = 'data/addItemToCart',
+  RemoveItemFromCart = 'data/removeItemFromCart',
+  LoadCartItems = 'data/loadCartItems',
+  LoadCoupon = 'data/loadCoupon',
+  LoadDiscount = 'data/loadDiscount',
+  SetDiscountLoadingStatus = 'data/setDiscountLoadingStatus',
   SetFirstLoadState = 'main/setFirstLoadState',
   SetCurrentPage = 'main/setCurrentPage',
 }

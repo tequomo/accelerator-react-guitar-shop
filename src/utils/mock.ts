@@ -3,6 +3,7 @@ import { GuitarType } from '../types/guitar-type';
 import { ReviewType } from '../types/review-type';
 import { State } from '../types/state';
 import { datatype } from 'faker';
+import { CartItemType } from '../types/cart-type';
 
 const FAKE_ITEMS_COUNT = 6;
 
@@ -42,6 +43,13 @@ export const getFakeGuitars = (): GuitarType[] => (
   new Array(FAKE_ITEMS_COUNT).fill(null).map(getFakeGuitar)
 );
 
+export const getFakeCartItem = (): CartItemType => ({
+  item: fakeGuitar,
+  itemCount: 2,
+});
+
+const fakeCartItem = getFakeCartItem();
+
 export const getFakeStore = (): State => ({
   GUITARS_DATA: {
     guitars: [fakeGuitar],
@@ -63,6 +71,11 @@ export const getFakeStore = (): State => ({
     totalCountReviews: 5,
     guitarReviewsLoadingStatus: LoadingStatus.Succeeded,
     uploadReviewLoadingStatus: LoadingStatus.Succeeded,
+  },
+  CART_DATA: {
+    cartItems: [fakeCartItem],
+    coupon: '',
+    discount: 0,
   },
   STATE: {
     firstLoadState: true,

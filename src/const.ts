@@ -122,3 +122,10 @@ export const RatingValue = [
   'Хорошо',
   'Отлично',
 ];
+
+export const CouponValue = {
+  DEFAULT: null,
+  LIGHT: 'light-333',
+  MEDIUM: 'medium-444',
+  HEIGHT: 'height-555',
+};
