@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -16,7 +15,6 @@ function CartPage(): JSX.Element {
 
   const [modalCartDeleteVisible, setModalCartDeleteVisible] = useState<boolean>(false);
   const [deletingGuitar, setDeletingGuitar] = useState<GuitarType | null>(null);
-  // const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const dispatch = useDispatch();
 
