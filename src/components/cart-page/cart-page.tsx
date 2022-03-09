@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { AppRoute } from '../../const';
-import { loadCoupon, loadDiscount } from '../../store/action';
+import { AppRoute, LoadingStatus } from '../../const';
+import { loadCoupon, loadDiscount, setDiscountLoadingStatus } from '../../store/action';
 import { getDiscount, getItemsInCart } from '../../store/reducers/cart-data/selectors';
 import { GuitarType } from '../../types/guitar-type';
 import Footer from '../layout/footer/footer';
@@ -33,6 +33,7 @@ function CartPage(): JSX.Element {
     if(cartItems.length === 0 && discount !== 0) {
       dispatch(loadDiscount(0));
       dispatch(loadCoupon(''));
+      dispatch(setDiscountLoadingStatus(LoadingStatus.Idle));
     }
   }, [cartItems.length, discount, dispatch]);
 

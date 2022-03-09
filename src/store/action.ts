@@ -145,13 +145,6 @@ export const setDiscountLoadingStatus = createAction(
   }),
 );
 
-// export const loadCartItems = createAction(
-//   ActionType.LoadCartItems,
-//   (totalCountGuitars: number) => ({
-//     payload: totalCountGuitars,
-//   }),
-// );
-
 export const setFirstLoadState = createAction(
   ActionType.SetFirstLoadState,
   (firstLoadState: boolean) => ({
