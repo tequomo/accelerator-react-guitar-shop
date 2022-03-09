@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import ReactFocusLock from 'react-focus-lock';
+import { Link } from 'react-router-dom';
+import { AppRoute } from '../../../const';
 
 type SuccessAddProps = {
   isVisible: boolean,
@@ -27,6 +29,12 @@ function ModalSuccessAdd({isVisible, onModalClose}: SuccessAddProps): JSX.Elemen
     };
   });
 
+  useEffect(() => {
+    if(isVisible) {
+      document.body.style.overflow = 'hidden';
+    }
+  }, [isVisible]);
+
   return (
     <ReactFocusLock>
       <div className={`modal ${isVisible ? 'is-active ' : ''}modal--success modal-for-ui-kit"`}>
@@ -38,8 +46,8 @@ function ModalSuccessAdd({isVisible, onModalClose}: SuccessAddProps): JSX.Elemen
             </svg>
             <p className="modal__message">Товар успешно добавлен в корзину</p>
             <div className="modal__button-container modal__button-container--add">
-              <button className="button button--small modal__button">Перейти в корзину</button>
-              <button className="button button--black-border button--small modal__button modal__button--right" onClick={handleModalClickClose}>Продолжить покупки</button>
+              <Link className="button button--small modal__button" to={AppRoute.Cart} onClick={handleModalClickClose}>Перейти в корзину</Link>
+              <Link className="button button--black-border button--small modal__button modal__button--right" onClick={handleModalClickClose} to={AppRoute.Main}>Продолжить покупки</Link>
             </div>
             <button className="modal__close-btn button-cross" type="button" aria-label="Закрыть" onClick={handleModalClickClose}><span className="button-cross__icon"></span><span className="modal__close-btn-interactive-area"></span>
             </button>

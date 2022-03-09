@@ -16,6 +16,7 @@ const middlewares = [thunk.withExtraArgument(api)];
 const history = createMemoryHistory();
 const guitar = getFakeGuitar();
 const onModalClose = jest.fn();
+const onSuccess = jest.fn();
 
 const mockStore = configureMockStore<
   State,
@@ -31,7 +32,7 @@ describe('Component: ModalCartAdd', () => {
     render(
       <Provider store={store}>
         <Router history={history}>
-          <ModalCartAdd activeGuitar={guitar} isVisible={false} onModalClose={onModalClose}/>
+          <ModalCartAdd activeGuitar={guitar} isVisible={false} onModalClose={onModalClose} onSuccess={onSuccess}/>
         </Router>
       </Provider>,
     );
@@ -44,7 +45,7 @@ describe('Component: ModalCartAdd', () => {
   it('should call callback when user click on close button', () => {
     render(
       <Router history={history}>
-        <ModalCartAdd activeGuitar={guitar} isVisible={false} onModalClose={onModalClose}/>
+        <ModalCartAdd activeGuitar={guitar} isVisible={false} onModalClose={onModalClose} onSuccess={onSuccess}/>
       </Router>,
     );
 

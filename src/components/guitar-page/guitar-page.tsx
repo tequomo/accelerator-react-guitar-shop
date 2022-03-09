@@ -27,7 +27,7 @@ function GuitarPage(): JSX.Element {
   const currentGuitar = useSelector(getCurrentGuitar);
   const currentGuitarLoadingStatus = useSelector(getCurrentGuitarLoadingStatus);
 
-  const [modalAddCardVisible, setModalAddCardVisible] = useState<boolean>(false);
+  const [modalAddCartVisible, setModalAddCartVisible] = useState<boolean>(false);
   const [modalAddReviewVisible, setModalAddReviewVisible] = useState<boolean>(false);
   const [modalSuccessReviewVisible, setModalSuccessReviewVisible] = useState<boolean>(false);
   const [modalSuccessAddVisible, setModalSuccessAddVisible] = useState<boolean>(false);
@@ -45,7 +45,7 @@ function GuitarPage(): JSX.Element {
 
   const handleAddCartClick = (evt: MouseEvent<HTMLAnchorElement>, guitar: GuitarType): void => {
     evt.preventDefault();
-    setModalAddCardVisible((state) => !state);
+    setModalAddCartVisible((state) => !state);
     document.body.style.overflow = 'hidden';
   };
 
@@ -72,7 +72,7 @@ function GuitarPage(): JSX.Element {
           <LoaderWrapper isLoad={currentGuitarLoadingStatus === LoadingStatus.Succeeded}>
             <GuitarContainer guitar={currentGuitar as GuitarType} onAddCartClick={handleAddCartClick}/>
           </LoaderWrapper>
-          {modalAddCardVisible && <ModalCartAdd isVisible={modalAddCardVisible} onModalClose={() => setModalAddCardVisible(false)} activeGuitar={currentGuitar}/>}
+          {modalAddCartVisible && <ModalCartAdd isVisible={modalAddCartVisible} onModalClose={() => setModalAddCartVisible(false)} activeGuitar={currentGuitar} onSuccess={() => setModalSuccessAddVisible((state) => !state)}/>}
           <ReviewsList onAddReviewClick={handleAddReviewClick}/>
           {modalAddReviewVisible && <ModalReview isVisible={modalAddReviewVisible} onModalClose={() => setModalAddReviewVisible(false)} onSuccess={() => setModalSuccessReviewVisible((state) => !state)} activeGuitar={currentGuitar}/>}
           {modalSuccessReviewVisible && <ModalSuccessReview isVisible={modalSuccessReviewVisible} onModalClose={() => setModalSuccessReviewVisible(false)}/>}

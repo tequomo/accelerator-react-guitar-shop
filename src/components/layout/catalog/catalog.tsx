@@ -13,6 +13,7 @@ import CatalogSort from '../catalog-sort/catalog-sort';
 import GuitarCard from '../guitar-card/guitar-card';
 import LoaderWrapper from '../loader-wrapper/loader-wrapper';
 import ModalCartAdd from '../modal-cart-add/modal-cart-add';
+import ModalSuccessAdd from '../modal-success-add/modal-success-add';
 import Pagination, { ParamsPropsType } from '../pagination/pagination';
 
 
@@ -25,6 +26,7 @@ function Catalog(): JSX.Element {
   const { pageNumber } = useParams<ParamsPropsType>();
 
   const [modalAddCardVisible, setModalAddCardVisible] = useState<boolean>(false);
+  const [modalSuccessAddVisible, setModalSuccessAddVisible] = useState<boolean>(false);
   const [activeGuitar, setActiveGuitar] = useState<GuitarType | null>(null);
   const [isPriceChanged, setIsPriceChanged] = useState<boolean>(true);
 
@@ -66,8 +68,9 @@ function Catalog(): JSX.Element {
           }
         </div>
       </LoaderWrapper>
-      {modalAddCardVisible && <ModalCartAdd isVisible={modalAddCardVisible} onModalClose={() => setModalAddCardVisible(false)} activeGuitar={activeGuitar}/>}
+      {modalAddCardVisible && <ModalCartAdd isVisible={modalAddCardVisible} onModalClose={() => setModalAddCardVisible(false)} activeGuitar={activeGuitar} onSuccess={() => setModalSuccessAddVisible((state) => !state)}/>}
       {guitars.length > 0 && <Pagination />}
+      {modalSuccessAddVisible && <ModalSuccessAdd isVisible={modalSuccessAddVisible} onModalClose={() => setModalSuccessAddVisible(false)}/>}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactFocusLock from 'react-focus-lock';
 import { useDispatch } from 'react-redux';
@@ -11,16 +11,18 @@ type AddCartProps = {
   isVisible: boolean,
   activeGuitar: GuitarType | null,
   onModalClose: () => void,
+  onSuccess: () => void,
 }
 
-function ModalCartAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JSX.Element {
+function ModalCartAdd({isVisible, activeGuitar, onModalClose, onSuccess}: AddCartProps): JSX.Element {
 
+  const [isAddInCart, setIsAddInCart] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  const handleModalClickClose = (): void => {
+  const handleModalClickClose = useCallback((): void => {
     onModalClose();
     document.body.style.overflow = '';
-  };
+  }, [onModalClose]);
 
   const {type, price, previewImg, vendorCode, name, stringCount} = activeGuitar as GuitarType;
 
@@ -35,7 +37,7 @@ function ModalCartAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JS
 
   const handleAddButtonClick = () => {
     dispatch(addItemToCart(activeGuitar as GuitarType));
-    handleModalClickClose();
+    setIsAddInCart((state) => !state);
   };
 
   useEffect(() => {
@@ -44,6 +46,14 @@ function ModalCartAdd({isVisible, activeGuitar, onModalClose}: AddCartProps): JS
       document.removeEventListener('keydown', handleModalEscClose);
     };
   });
+
+  useEffect(() => {
+    if(isAddInCart) {
+      handleModalClickClose();
+      onSuccess();
+      setIsAddInCart((state) => !state);
+    }
+  }, [handleModalClickClose, isAddInCart, onSuccess]);
 
   return ReactDOM.createPortal(
     <ReactFocusLock>
