@@ -33,3 +33,7 @@ export const localizeDate = (date: string): string => {
 };
 
 export const reviewRatingValues = new Array(MAX_RATING_VALUE).fill(null).map((_, index) => index + 1).sort((a, b) => b - a);
+
+export const hasBlankSpaces = (str: string) => str.match(/(\s)/g) !== null;
+export const removeSpaces = (str: string) => str.replace(/(\s)/g,'');
+

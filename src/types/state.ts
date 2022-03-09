@@ -40,6 +40,7 @@ export type CartData = {
   cartItems: CartItemType[],
   coupon: CouponType,
   discount: number,
+  discountLoadingStatus: LoadingStatus,
 }
 
 export type State = RootState;

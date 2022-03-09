@@ -1,12 +1,21 @@
 import { createReducer } from '@reduxjs/toolkit';
+import { LoadingStatus } from '../../../const';
 import { CartItemType } from '../../../types/cart-type';
 import { CartData } from '../../../types/state';
-import { addItemToCart } from '../../action';
+import {
+  loadCoupon,
+  loadDiscount,
+  addItemToCart,
+  removeItemFromCart,
+  changeCartItemCount,
+  setDiscountLoadingStatus
+} from '../../action';
 
 const initialState: CartData = {
   cartItems: [],
   coupon: null,
   discount: 0,
+  discountLoadingStatus: LoadingStatus.Idle,
 };
 
 
@@ -25,10 +34,38 @@ const cartData = createReducer(initialState, (builder) => {
         itemInCart.itemCount += 1;
         state.cartItems.map((cartItem) => cartItem.item.id === itemInCart.item.id ? itemInCart : cartItem);
       }
+    })
+    .addCase(removeItemFromCart, (state, action) => {
+      const itemInCart = state.cartItems.find((cartItem) => cartItem.item.id === action.payload.id);
+      if(itemInCart !== undefined) {
+        if(itemInCart.itemCount > 1) {
+          itemInCart.itemCount -= 1;
+          state.cartItems.map((cartItem) => cartItem.item.id === itemInCart.item.id ? itemInCart : cartItem);
+        }
+        else {
+          const itemIndex = state.cartItems.indexOf(itemInCart);
+          if (itemIndex !== -1) {
+            state.cartItems.splice(itemIndex, 1);
+          }
+        }
+      }
+    })
+    .addCase(changeCartItemCount, (state, action) => {
+      const itemInCart = state.cartItems.find((cartItem) => cartItem.item.id === action.payload.id);
+      if(itemInCart !== undefined) {
+        itemInCart.itemCount = action.payload.count;
+        state.cartItems.map((cartItem) => cartItem.item.id === itemInCart.item.id ? itemInCart : cartItem);
+      }
+    })
+    .addCase(loadDiscount, (state, action) => {
+      state.discount = action.payload;
+    })
+    .addCase(loadCoupon, (state, action) => {
+      state.coupon = action.payload;
+    })
+    .addCase(setDiscountLoadingStatus, (state, action) => {
+      state.discountLoadingStatus = action.payload;
     });
-  //   .addCase(setCurrentGuitarLoadingStatus, (state, action) => {
-  //     state.currentGuitarLoadingStatus = action.payload;
-  //   });
 });
 
 export { cartData };

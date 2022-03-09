@@ -19,6 +19,7 @@ export enum ActionType {
   LoadTotalCountGuitars = 'data/loadTotalCountGuitars',
   AddItemToCart = 'data/addItemToCart',
   RemoveItemFromCart = 'data/removeItemFromCart',
+  ChangeCartItemCount = 'data/changeCartItemCount',
   LoadCartItems = 'data/loadCartItems',
   LoadCoupon = 'data/loadCoupon',
   LoadDiscount = 'data/loadDiscount',

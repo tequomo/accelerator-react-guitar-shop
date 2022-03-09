@@ -13,11 +13,15 @@ import {
   loadGuitarReviews,
   setGuitarReviewsLoadingStatus,
   loadTotalCountReviews,
-  setUploadReviewLoadingStatus
+  setUploadReviewLoadingStatus,
+  loadDiscount,
+  setDiscountLoadingStatus,
+  loadCoupon
 } from '../store/action';
 import { ThunkActionResult } from '../types/action';
 import { ReviewPostType, ReviewType } from '../types/review-type';
 import { GuitarType } from '../types/guitar-type';
+import { CouponPostType } from '../types/cart-type';
 
 const TOTAL_COUNT_HEADER = 'x-total-count';
 const DATA_LIMIT_KEY = '_limit=';
@@ -77,7 +81,6 @@ export const fetchGuitarReviewsAction = (guitarId: string, reviewsCount: number)
     }
   };
 
-
 export const postGuitarReviewAction = (review: ReviewPostType): ThunkActionResult =>
   async (dispatch, getState, api): Promise<void> => {
     try {
@@ -111,5 +114,19 @@ export const fetchSearchGuitarAction = (query: string): ThunkActionResult =>
     } catch {
       dispatch(setSearchResultLoadingStatus(LoadingStatus.Failed));
       toast.error(Messages.LOAD_FAIL);
+    }
+  };
+
+export const postCouponAction = (coupon: CouponPostType): ThunkActionResult =>
+  async (dispatch, getState, api): Promise<void> => {
+    try {
+      dispatch(setDiscountLoadingStatus(LoadingStatus.Loading));
+      const { data } = await api.post<number>(ApiRoute.Coupons, coupon);
+      dispatch(loadDiscount(data));
+      dispatch(loadCoupon(coupon.coupon as string));
+      dispatch(setDiscountLoadingStatus(LoadingStatus.Succeeded));
+    } catch {
+      dispatch(setDiscountLoadingStatus(LoadingStatus.Failed));
+      // toast.error(Messages.LOAD_FAIL);
     }
   };

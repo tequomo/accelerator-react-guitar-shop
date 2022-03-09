@@ -6,12 +6,13 @@ import CartItem from './cart-item';
 
 const history = createMemoryHistory();
 const cartItem = getFakeCartItem();
+const onDeleteClick = jest.fn();
 
 describe('Component: CartItem', () => {
   it('should render correctly', () => {
     render(
       <Router history={history}>
-        <CartItem cartItem={cartItem} />
+        <CartItem cartItem={cartItem} onDeleteClick={onDeleteClick} />
       </Router>,
     );
 

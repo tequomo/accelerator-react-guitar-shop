@@ -76,6 +76,7 @@ export const getFakeStore = (): State => ({
     cartItems: [fakeCartItem],
     coupon: '',
     discount: 0,
+    discountLoadingStatus: LoadingStatus.Succeeded,
   },
   STATE: {
     firstLoadState: true,

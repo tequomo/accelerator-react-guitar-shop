@@ -6,13 +6,15 @@ import { Router } from 'react-router';
 import { createAPI } from '../../../services/api';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { getFakeStore } from '../../../utils/mock';
+import { getFakeGuitar, getFakeStore } from '../../../utils/mock';
 import { State } from '../../../types/state';
 import ModalCartDelete from './modal-cart-delete';
 
 const api = createAPI();
 const middlewares = [thunk.withExtraArgument(api)];
 const history = createMemoryHistory();
+const guitar = getFakeGuitar();
+const onModalClose = jest.fn();
 
 const mockStore = configureMockStore<
   State,
@@ -28,7 +30,7 @@ describe('Component: ModalCartDelete', () => {
     render(
       <Provider store={store}>
         <Router history={history}>
-          <ModalCartDelete/>
+          <ModalCartDelete isVisible={false} deletingGuitar={guitar} onModalClose={onModalClose}/>
         </Router>
       </Provider>,
     );
@@ -43,7 +45,7 @@ describe('Component: ModalCartDelete', () => {
     render(
       <Provider store={store}>
         <Router history={history}>
-          <ModalCartDelete/>
+          <ModalCartDelete isVisible={false} deletingGuitar={guitar} onModalClose={onModalClose}/>
         </Router>
       </Provider>,
     );

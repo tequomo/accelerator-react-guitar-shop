@@ -129,3 +129,10 @@ export const CouponValue = {
   MEDIUM: 'medium-444',
   HEIGHT: 'height-555',
 };
+
+export enum CouponMessage {
+  Default = '',
+  Accept = 'Промокод принят',
+  Decline = 'Неверный промокод',
+  HasSpace = 'Промокод содержит пробелы',
+}

@@ -110,6 +110,41 @@ export const addItemToCart = createAction(
   }),
 );
 
+export const removeItemFromCart = createAction(
+  ActionType.RemoveItemFromCart,
+  (item: GuitarType) => ({
+    payload: item,
+  }),
+);
+
+export const changeCartItemCount = createAction(
+  ActionType.ChangeCartItemCount,
+  (id: number, count: number) => ({
+    payload: {id, count},
+  }),
+);
+
+export const loadCoupon = createAction(
+  ActionType.LoadCoupon,
+  (coupon: string) => ({
+    payload: coupon,
+  }),
+);
+
+export const loadDiscount = createAction(
+  ActionType.LoadDiscount,
+  (discount: number) => ({
+    payload: discount,
+  }),
+);
+
+export const setDiscountLoadingStatus = createAction(
+  ActionType.SetDiscountLoadingStatus,
+  (discountLoadingStatus: LoadingStatus) => ({
+    payload: discountLoadingStatus,
+  }),
+);
+
 // export const loadCartItems = createAction(
 //   ActionType.LoadCartItems,
 //   (totalCountGuitars: number) => ({
