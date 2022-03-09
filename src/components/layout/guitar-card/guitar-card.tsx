@@ -1,6 +1,8 @@
 import { MouseEvent } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { AppRoute, IMG_BASE_PATH, StarRatingOrigin } from '../../../const';
+import { getItemsInCart } from '../../../store/reducers/cart-data/selectors';
 import { GuitarType } from '../../../types/guitar-type';
 import { modifyImgUrl } from '../../../utils/utils';
 import StarRating from '../star-rating/star-rating';
@@ -15,6 +17,9 @@ function GuitarCard({guitar, onAddCartClick}: GuitarCardProps): JSX.Element {
 
   const {id, name, price, previewImg, rating, comments} = guitar;
 
+  const cartItems = useSelector(getItemsInCart);
+  const isGuitarInCart = cartItems.find((cartItem) => cartItem.item.id === guitar.id) !== undefined;
+
   return (
     <div className="product-card"><img src={`/${modifyImgUrl(previewImg, IMG_BASE_PATH)}`} width="75" height="190" alt={name} />
       <div className="product-card__info">
@@ -28,7 +33,10 @@ function GuitarCard({guitar, onAddCartClick}: GuitarCardProps): JSX.Element {
       </div>
       <div className="product-card__buttons">
         <Link className="button button--mini" to={`${AppRoute.Guitar}${id}`}>Подробнее</Link>
-        <a className="button button--red button--mini button--add-to-cart" href="/#" onClick={(e) => onAddCartClick(e, guitar)}>Купить</a>
+        {
+          isGuitarInCart ? <Link className="button button--red-border button--mini button--in-cart" to={AppRoute.Cart}>В Корзине</Link> :
+            <a className="button button--red button--mini button--add-to-cart" href="/#" onClick={(e) => onAddCartClick(e, guitar)}>Купить</a>
+        }
       </div>
     </div>
   );
