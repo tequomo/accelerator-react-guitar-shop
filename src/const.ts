@@ -16,6 +16,7 @@ export enum ApiRoute {
 
 export enum HttpCode {
   Ok = 200,
+  Created = 201,
   NotFound = 404,
 }
 

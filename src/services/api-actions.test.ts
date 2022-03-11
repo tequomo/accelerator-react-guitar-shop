@@ -11,7 +11,9 @@ import {
   fetchSearchGuitarAction,
   fetchCurrentGuitarAction,
   fetchMinMaxPriceValuesAction,
-  fetchGuitarReviewsAction
+  fetchGuitarReviewsAction,
+  postCouponAction,
+  postOrderAction
 } from './api-actions';
 import {
   loadGuitars,
@@ -25,8 +27,13 @@ import {
   setCurrentGuitarLoadingStatus,
   setGuitarReviewsLoadingStatus,
   loadTotalCountReviews,
-  loadGuitarReviews
+  loadGuitarReviews,
+  loadDiscount,
+  loadCoupon,
+  setDiscountLoadingStatus,
+  setOrderLoadingStatus
 } from '../store/action';
+import { datatype } from 'faker';
 
 enum FakeParamsData {
   GuitarId = '2',
@@ -279,6 +286,55 @@ describe('Api actions', () => {
         setGuitarReviewsLoadingStatus(LoadingStatus.Failed),
       ]);
     });
+
+  });
+
+  it('should load discount and change discountLoadingStatus when POST /coupons', async () => {
+    const fakeDiscount = datatype.number();
+    const fakeCoupon = datatype.string();
+    mockAPI
+      .onPost(
+        ApiRoute.Coupons,
+        {coupon: fakeCoupon} )
+      .reply(
+        HttpCode.Ok,
+        fakeDiscount,
+      );
+
+    expect(store.getActions()).toEqual([]);
+
+    await store.dispatch(postCouponAction({coupon: fakeCoupon}));
+
+    expect(store.getActions())
+      .toEqual([
+        setDiscountLoadingStatus(LoadingStatus.Loading),
+        loadDiscount(fakeDiscount),
+        loadCoupon(fakeCoupon),
+        setDiscountLoadingStatus(LoadingStatus.Succeeded),
+      ]);
+
+  });
+
+  it('should sent order and change orderLoadingStatus when POST /orders', async () => {
+    const fakeId = datatype.number();
+    const fakeCoupon = datatype.string();
+    mockAPI
+      .onPost(
+        ApiRoute.Orders,
+        {guitarsIds: [fakeId], coupon: fakeCoupon} )
+      .reply(
+        HttpCode.Created,
+      );
+
+    expect(store.getActions()).toEqual([]);
+
+    await store.dispatch(postOrderAction({guitarsIds: [fakeId], coupon: fakeCoupon}));
+
+    expect(store.getActions())
+      .toEqual([
+        setOrderLoadingStatus(LoadingStatus.Loading),
+        setOrderLoadingStatus(LoadingStatus.Succeeded),
+      ]);
 
   });
 

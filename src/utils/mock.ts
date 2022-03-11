@@ -37,7 +37,7 @@ export const getFakeGuitar = (): GuitarType => ({
   comments: [fakeReview],
 });
 
-const fakeGuitar = getFakeGuitar();
+export const fakeGuitar = getFakeGuitar();
 
 export const getFakeGuitars = (): GuitarType[] => (
   new Array(FAKE_ITEMS_COUNT).fill(null).map(getFakeGuitar)
