@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { AppRoute, LoadingStatus } from '../../const';
@@ -8,6 +8,7 @@ import { GuitarType } from '../../types/guitar-type';
 import Footer from '../layout/footer/footer';
 import Header from '../layout/header/header';
 import ModalCartDelete from '../layout/modal-cart-delete/modal-cart-delete';
+import ModalSuccessOrder from '../layout/modal-success-order/modal-success-order';
 import CartFooter from './cart-footer/cart-footer';
 import CartItem from './cart-item/cart-item';
 
@@ -15,6 +16,8 @@ function CartPage(): JSX.Element {
 
   const [modalCartDeleteVisible, setModalCartDeleteVisible] = useState<boolean>(false);
   const [deletingGuitar, setDeletingGuitar] = useState<GuitarType | null>(null);
+  const [modalSuccessOrderVisible, setModalSuccessOrderVisible] = useState<boolean>(false);
+  const [orderCost, setOrderCost] = useState<number>(0);
 
   const dispatch = useDispatch();
 
@@ -28,6 +31,11 @@ function CartPage(): JSX.Element {
     setModalCartDeleteVisible((state) => !state);
     document.body.style.overflow = 'hidden';
   };
+
+  const handleOrderSuccess = useCallback((total: number) => {
+    setOrderCost(total);
+    setModalSuccessOrderVisible((state) => !state);
+  }, []);
 
   useEffect(() => {
     if(cartItems.length === 0 && discount !== 0) {
@@ -60,10 +68,11 @@ function CartPage(): JSX.Element {
                 </div>
             }
             {
-              cartItems.length !== 0 && <CartFooter totalPrice={totalPrice}/>
+              cartItems.length !== 0 && <CartFooter totalPrice={totalPrice} onOrderSuccess={handleOrderSuccess}/>
             }
           </div>
           {modalCartDeleteVisible && <ModalCartDelete isVisible={modalCartDeleteVisible} onModalClose={() => setModalCartDeleteVisible(false)} deletingGuitar={deletingGuitar}/>}
+          {modalSuccessOrderVisible && <ModalSuccessOrder isVisible={modalSuccessOrderVisible} onModalClose={() => setModalSuccessOrderVisible(false)} orderCost={orderCost}/>}
         </div>
       </main>
       <Footer />

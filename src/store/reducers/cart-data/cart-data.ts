@@ -8,14 +8,18 @@ import {
   addItemToCart,
   removeItemFromCart,
   changeCartItemCount,
-  setDiscountLoadingStatus
+  setDiscountLoadingStatus,
+  setOrderLoadingStatus,
+  clearCart,
+  removeGuitarFromCart
 } from '../../action';
 
-const initialState: CartData = {
+export const initialState: CartData = {
   cartItems: [],
   coupon: null,
   discount: 0,
   discountLoadingStatus: LoadingStatus.Idle,
+  orderLoadingStatus: LoadingStatus.Idle,
 };
 
 
@@ -50,6 +54,15 @@ const cartData = createReducer(initialState, (builder) => {
         }
       }
     })
+    .addCase(removeGuitarFromCart, (state, action) => {
+      const guitarInCart = state.cartItems.find((cartItem) => cartItem.item.id === action.payload.id);
+      if(guitarInCart !== undefined) {
+        const guitarIndex = state.cartItems.indexOf(guitarInCart);
+        if (guitarIndex !== -1) {
+          state.cartItems.splice(guitarIndex, 1);
+        }
+      }
+    })
     .addCase(changeCartItemCount, (state, action) => {
       const itemInCart = state.cartItems.find((cartItem) => cartItem.item.id === action.payload.id);
       if(itemInCart !== undefined) {
@@ -65,6 +78,16 @@ const cartData = createReducer(initialState, (builder) => {
     })
     .addCase(setDiscountLoadingStatus, (state, action) => {
       state.discountLoadingStatus = action.payload;
+    })
+    .addCase(setOrderLoadingStatus, (state, action) => {
+      state.orderLoadingStatus = action.payload;
+    })
+    .addCase(clearCart, (state) => {
+      state.cartItems.length = 0;
+      state.coupon = '';
+      state.discount = 0;
+      state.discountLoadingStatus = LoadingStatus.Idle;
+      state.orderLoadingStatus = LoadingStatus.Idle;
     });
 });
 

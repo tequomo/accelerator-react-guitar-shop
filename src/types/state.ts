@@ -41,6 +41,7 @@ export type CartData = {
   coupon: CouponType,
   discount: number,
   discountLoadingStatus: LoadingStatus,
+  orderLoadingStatus: LoadingStatus,
 }
 
 export type State = RootState;

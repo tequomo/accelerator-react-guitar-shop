@@ -6,12 +6,13 @@ import CartFooter from './cart-footer';
 
 const history = createMemoryHistory();
 const fakeTotalPrice = datatype.number();
+const onOrderSuccess = jest.fn();
 
 describe('Component: CartFooter', () => {
   it('should render correctly', () => {
     render(
       <Router history={history}>
-        <CartFooter totalPrice={fakeTotalPrice} />
+        <CartFooter totalPrice={fakeTotalPrice} onOrderSuccess={onOrderSuccess} />
       </Router>,
     );
 

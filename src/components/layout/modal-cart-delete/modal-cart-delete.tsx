@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import ReactFocusLock from 'react-focus-lock';
 import { useDispatch } from 'react-redux';
 import { GUITARS_TYPES, IMG_BASE_PATH } from '../../../const';
-import { removeItemFromCart } from '../../../store/action';
+import { removeGuitarFromCart } from '../../../store/action';
 import { GuitarType } from '../../../types/guitar-type';
 import { modifyImgUrl } from '../../../utils/utils';
 
@@ -33,7 +33,7 @@ function ModalCartDelete({isVisible, deletingGuitar, onModalClose}: CartDeletePr
   };
 
   const handleDeleteButtonClick = () => {
-    dispatch(removeItemFromCart(deletingGuitar as GuitarType));
+    dispatch(removeGuitarFromCart(deletingGuitar as GuitarType));
     handleModalClickClose();
   };
 

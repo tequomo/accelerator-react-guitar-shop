@@ -16,12 +16,13 @@ import {
   setUploadReviewLoadingStatus,
   loadDiscount,
   setDiscountLoadingStatus,
-  loadCoupon
+  loadCoupon,
+  setOrderLoadingStatus
 } from '../store/action';
 import { ThunkActionResult } from '../types/action';
 import { ReviewPostType, ReviewType } from '../types/review-type';
 import { GuitarType } from '../types/guitar-type';
-import { CouponPostType } from '../types/cart-type';
+import { CouponPostType, OrderPostType } from '../types/cart-type';
 
 const TOTAL_COUNT_HEADER = 'x-total-count';
 const DATA_LIMIT_KEY = '_limit=';
@@ -127,6 +128,18 @@ export const postCouponAction = (coupon: CouponPostType): ThunkActionResult =>
       dispatch(setDiscountLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setDiscountLoadingStatus(LoadingStatus.Failed));
-      // toast.error(Messages.LOAD_FAIL);
     }
   };
+
+export const postOrderAction = (order: OrderPostType): ThunkActionResult =>
+  async (dispatch, getState, api): Promise<void> => {
+    try {
+      dispatch(setOrderLoadingStatus(LoadingStatus.Loading));
+      await api.post<number>(ApiRoute.Orders, order);
+      dispatch(setOrderLoadingStatus(LoadingStatus.Succeeded));
+    } catch {
+      dispatch(setOrderLoadingStatus(LoadingStatus.Failed));
+      toast.error(Messages.LOAD_FAIL);
+    }
+  };
+

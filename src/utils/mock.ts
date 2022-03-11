@@ -77,6 +77,7 @@ export const getFakeStore = (): State => ({
     coupon: '',
     discount: 0,
     discountLoadingStatus: LoadingStatus.Succeeded,
+    orderLoadingStatus: LoadingStatus.Succeeded,
   },
   STATE: {
     firstLoadState: true,

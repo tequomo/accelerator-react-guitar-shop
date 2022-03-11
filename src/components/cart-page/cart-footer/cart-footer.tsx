@@ -1,17 +1,26 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CouponMessage, LoadingStatus } from '../../../const';
-import { postCouponAction } from '../../../services/api-actions';
+import { postCouponAction, postOrderAction } from '../../../services/api-actions';
 import { setDiscountLoadingStatus } from '../../../store/action';
-import { getCoupon, getDiscount, getDiscountLoadingStatus } from '../../../store/reducers/cart-data/selectors';
+import {
+  getCoupon,
+  getDiscount,
+  getItemsInCart,
+  getOrderLoadingStatus,
+  getDiscountLoadingStatus
+} from '../../../store/reducers/cart-data/selectors';
 import { hasBlankSpaces, removeSpaces } from '../../../utils/utils';
 
 type CartFooterProps = {
   totalPrice: number,
+  onOrderSuccess: (orderCost: number) => void,
 }
 
-function CartFooter({totalPrice}: CartFooterProps): JSX.Element {
+function CartFooter({totalPrice, onOrderSuccess}: CartFooterProps): JSX.Element {
 
+  const cartItems = useSelector(getItemsInCart);
+  const orderLoadingStatus = useSelector(getOrderLoadingStatus);
   const addedCoupon = useSelector(getCoupon);
   const discountPrice = (useSelector(getDiscount) / 100) * totalPrice;
   const discountLoadingStatus = useSelector(getDiscountLoadingStatus);
@@ -19,6 +28,7 @@ function CartFooter({totalPrice}: CartFooterProps): JSX.Element {
 
   const isDidAction = discountLoadingStatus !== LoadingStatus.Idle;
   const isCouponAccepted = discountLoadingStatus === LoadingStatus.Succeeded;
+  const guitarsIds = cartItems.map<number>((cartItem) => cartItem.item.id);
 
   const [couponInput, setCouponInput] = useState<string>('');
   const [couponMessage, setCouponMessage] = useState<CouponMessage>(CouponMessage.Default);
@@ -38,6 +48,16 @@ function CartFooter({totalPrice}: CartFooterProps): JSX.Element {
     evt.preventDefault();
     dispatch(postCouponAction({coupon: couponInput}));
   };
+
+  const handleOrderSubmit = () => {
+    dispatch(postOrderAction({guitarsIds: guitarsIds, coupon: couponInput}));
+  };
+
+  useEffect(() => {
+    if(orderLoadingStatus === LoadingStatus.Succeeded) {
+      onOrderSuccess(priceWithDiscount);
+    }
+  }, [onOrderSuccess, orderLoadingStatus, priceWithDiscount]);
 
   useEffect(() => {
     if(discountLoadingStatus === LoadingStatus.Succeeded) {
@@ -73,9 +93,9 @@ function CartFooter({totalPrice}: CartFooterProps): JSX.Element {
       </div>
       <div className="cart__total-info">
         <p className="cart__total-item"><span className="cart__total-value-name">Всего:</span><span className="cart__total-value">{totalPrice.toLocaleString()} ₽</span></p>
-        <p className="cart__total-item"><span className="cart__total-value-name">Скидка:</span><span className={`cart__total-value${discountPrice !== 0 ? ' cart__total-value--bonus' : ''}`}>- {discountPrice.toLocaleString()} ₽</span></p>
+        <p className="cart__total-item"><span className="cart__total-value-name">Скидка:</span><span className={`cart__total-value${discountPrice !== 0 ? ' cart__total-value--bonus' : ''}`}>{discountPrice !== 0 ? '- ' : ''}{discountPrice.toLocaleString()} ₽</span></p>
         <p className="cart__total-item"><span className="cart__total-value-name">К оплате:</span><span className="cart__total-value cart__total-value--payment">{priceWithDiscount.toLocaleString()} ₽</span></p>
-        <button className="button button--red button--big cart__order-button">Оформить заказ</button>
+        <button className="button button--red button--big cart__order-button" onClick={handleOrderSubmit}>Оформить заказ</button>
       </div>
     </div>
   );

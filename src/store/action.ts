@@ -117,6 +117,13 @@ export const removeItemFromCart = createAction(
   }),
 );
 
+export const removeGuitarFromCart = createAction(
+  ActionType.RemoveGuitarFromCart,
+  (guitar: GuitarType) => ({
+    payload: guitar,
+  }),
+);
+
 export const changeCartItemCount = createAction(
   ActionType.ChangeCartItemCount,
   (id: number, count: number) => ({
@@ -144,6 +151,15 @@ export const setDiscountLoadingStatus = createAction(
     payload: discountLoadingStatus,
   }),
 );
+
+export const setOrderLoadingStatus = createAction(
+  ActionType.SetOrderLodingStatus,
+  (orderLoadingStatus: LoadingStatus) => ({
+    payload: orderLoadingStatus,
+  }),
+);
+
+export const clearCart = createAction(ActionType.ClearCart);
 
 export const setFirstLoadState = createAction(
   ActionType.SetFirstLoadState,
