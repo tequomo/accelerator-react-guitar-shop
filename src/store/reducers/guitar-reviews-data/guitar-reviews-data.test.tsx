@@ -1,7 +1,8 @@
+import { datatype } from 'faker';
 import { LoadingStatus } from '../../../const';
 import { GuitarReviewsData } from '../../../types/state';
 import { getFakeReviews } from '../../../utils/mock';
-import { loadGuitarReviews, setGuitarReviewsLoadingStatus, setUploadReviewLoadingStatus } from '../../action';
+import { loadGuitarReviews, loadTotalCountReviews, setGuitarReviewsLoadingStatus, setUploadReviewLoadingStatus, updateReviews } from '../../action';
 import { guitarReviewsData } from './guitar-reviews-data';
 
 const state: GuitarReviewsData = {
@@ -12,6 +13,7 @@ const state: GuitarReviewsData = {
 };
 
 const guitarReviews = getFakeReviews();
+const newGuitarReviews = getFakeReviews();
 
 describe('Reducer: guitarReviewsData', () => {
 
@@ -20,11 +22,20 @@ describe('Reducer: guitarReviewsData', () => {
       .toEqual(state);
   });
 
-  it('should load reviews', () => {
+  it('should load guitar reviews', () => {
     expect(guitarReviewsData(state, loadGuitarReviews(guitarReviews)))
       .toEqual({
         ...state,
         guitarReviews: guitarReviews,
+      });
+  });
+
+  it('should load total count reviews', () => {
+    const fakeTotalCount = datatype.number(30);
+    expect(guitarReviewsData(state, loadTotalCountReviews(fakeTotalCount)))
+      .toEqual({
+        ...state,
+        totalCountReviews: fakeTotalCount,
       });
   });
 
@@ -51,6 +62,19 @@ describe('Reducer: guitarReviewsData', () => {
       .toEqual({
         ...state,
         uploadReviewLoadingStatus: LoadingStatus.Failed,
+      });
+  });
+
+  it('should update reviews', () => {
+    const oldState = {
+      ...state,
+      guitarReviews: guitarReviews,
+    };
+
+    expect(guitarReviewsData(oldState, updateReviews(newGuitarReviews)))
+      .toEqual({
+        ...state,
+        guitarReviews: newGuitarReviews,
       });
   });
 
