@@ -112,7 +112,7 @@ describe('Api actions', () => {
 
     it('should load current guitar and change currentGuitarLoadingStatus when GET /guitars/:id', async () => {
       mockAPI
-        .onGet(`${ApiRoute.Guitars}/${FakeParamsData.GuitarId}`)
+        .onGet(`${ApiRoute.Guitars}/${FakeParamsData.GuitarId}?${FakeParamsData.EmbedComments}`)
         .reply(
           HttpCode.Ok,
           fakeGuitar,

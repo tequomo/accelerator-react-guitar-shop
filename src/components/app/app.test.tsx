@@ -53,7 +53,7 @@ describe('Application routing', () => {
   it('should render GuitarPage when user navigate to "/guitars/:id"', () => {
     history.push(`${AppRoute.GuitarQuery}/1`);
     render(getFakeApp());
-    expect(screen.getAllByText(/Товар/i)[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/Каталог/i)[0]).toBeInTheDocument();
     expect(screen.getAllByText(/Отзывы/i)[0]).toBeInTheDocument();
     expect(screen.getByText(/Цена/i)).toBeInTheDocument();
   });

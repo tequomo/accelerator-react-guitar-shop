@@ -35,7 +35,6 @@ describe('Component: GuitarPage', () => {
 
     expect(screen.getByText(/Главная/i)).toBeInTheDocument();
     expect(screen.getAllByRole('link')[0]).toBeInTheDocument();
-    expect(screen.getAllByRole('heading')[0]).toHaveTextContent('Товар');
     expect(screen.getAllByText(/Рейтинг:/i)[0]).toBeInTheDocument();
   });
 

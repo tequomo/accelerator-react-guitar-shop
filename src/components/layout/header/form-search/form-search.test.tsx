@@ -59,10 +59,12 @@ describe('Component: FormSearch', () => {
 
     userEvent.type(screen.getByTestId('search'), guitar.name);
 
-    const listItems = screen.getAllByRole('listitem');
-    expect(listItems).toHaveLength(1);
+    // const listItems = screen.getAllByRole('listitem');
+    const resultItems = screen.getAllByTestId('result');
+    expect(resultItems).toHaveLength(1);
 
-    listItems.forEach((_item) => {
+
+    resultItems.forEach((_item) => {
       expect(screen.getByText(guitar.name)).toBeInTheDocument();
     });
 

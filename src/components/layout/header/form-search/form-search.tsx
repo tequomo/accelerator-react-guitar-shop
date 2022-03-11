@@ -55,7 +55,7 @@ function FormSearch(): JSX.Element {
       {searchResult &&
         <ul className="form-search__select-list">
           {searchResult.length ? searchResult.map(({id, name}, idx) => (
-            <li key={`${name}-${id}`} role={'button'} className="form-search__select-item" tabIndex={0} onClick={() => handleItemClick(id)} onKeyDown={(evt) => handleItemKeyboardClick(evt, id)}>
+            <li key={`${name}-${id}`} role={'button'} className="form-search__select-item" tabIndex={0} onClick={() => handleItemClick(id)} onKeyDown={(evt) => handleItemKeyboardClick(evt, id)} data-testid={'result'}>
               {name}
             </li>)) :
             <li className="form-search__select-item" tabIndex={0}>Ничего не нашлось</li>}

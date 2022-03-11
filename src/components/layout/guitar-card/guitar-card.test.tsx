@@ -25,10 +25,10 @@ const mockStore = configureMockStore<
 >(middlewares);
 
 const fakeStore = getFakeStore();
+const store = mockStore(fakeStore);
 
 describe('Component: GuitarCard', () => {
   it('should render correctly', () => {
-    const store = mockStore(fakeStore);
     render(
       <Provider store={store}>
         <Router history={history}>
@@ -45,13 +45,15 @@ describe('Component: GuitarCard', () => {
 
   it('should redirect and update dom when user click on link', () => {
     render(
-      <Router history={history}>
-        <Route>
-          <GuitarCard guitar={guitar} onAddCartClick={onFakeButtonClick} />
-        </Route>
-        <Route path={AppRoute.GuitarRoom} render ={() => (<h1>This is guitar page</h1>)}>
-        </Route>
-      </Router>,
+      <Provider store={store}>
+        <Router history={history}>
+          <Route>
+            <GuitarCard guitar={guitar} onAddCartClick={onFakeButtonClick} />
+          </Route>
+          <Route path={AppRoute.GuitarRoom} render ={() => (<h1>This is guitar page</h1>)}>
+          </Route>
+        </Router>
+      </Provider>,
     );
 
     userEvent.click(screen.getByText(/Подробнее/i));
@@ -63,13 +65,15 @@ describe('Component: GuitarCard', () => {
 
   it('should call callback when user click on buy button', () => {
     render(
-      <Router history={history}>
-        <Route>
-          <GuitarCard guitar={guitar} onAddCartClick={onFakeButtonClick} />
-        </Route>
-        <Route path={AppRoute.GuitarRoom} render ={() => (<h1>This is guitar page</h1>)}>
-        </Route>
-      </Router>,
+      <Provider store={store}>
+        <Router history={history}>
+          <Route>
+            <GuitarCard guitar={guitar} onAddCartClick={onFakeButtonClick} />
+          </Route>
+          <Route path={AppRoute.GuitarRoom} render ={() => (<h1>This is guitar page</h1>)}>
+          </Route>
+        </Router>
+      </Provider>,
     );
 
     userEvent.click(screen.getByText('Купить'));

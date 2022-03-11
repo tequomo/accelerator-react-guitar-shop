@@ -15,8 +15,7 @@ const api = createAPI();
 const middlewares = [thunk.withExtraArgument(api)];
 const history = createMemoryHistory();
 const guitar = getFakeGuitar();
-const onModalClose = jest.fn();
-const onSuccess = jest.fn();
+const fakeCallback = jest.fn();
 
 const mockStore = configureMockStore<
   State,
@@ -32,7 +31,7 @@ describe('Component: ModalReview', () => {
     render(
       <Provider store={store}>
         <Router history={history}>
-          <ModalReview activeGuitar={guitar} isVisible={false} onModalClose={onModalClose} onSuccess={onSuccess}/>
+          <ModalReview activeGuitar={guitar} isVisible={false} onModalClose={fakeCallback} onSuccess={fakeCallback}/>
         </Router>
       </Provider>,
     );
@@ -47,13 +46,13 @@ describe('Component: ModalReview', () => {
     render(
       <Provider store={store}>
         <Router history={history}>
-          <ModalReview activeGuitar={guitar} isVisible={false} onModalClose={onModalClose} onSuccess={onSuccess}/>
+          <ModalReview activeGuitar={guitar} isVisible={false} onModalClose={fakeCallback} onSuccess={fakeCallback}/>
         </Router>
       </Provider>,
     );
 
     userEvent.click(screen.getByLabelText('Закрыть'));
-    expect(onModalClose).toBeCalledTimes(1);
+    expect(fakeCallback).toBeCalledTimes(3);
   });
 
 });

@@ -25,10 +25,10 @@ const mockStore = configureMockStore<
 >(middlewares);
 
 const fakeStore = getFakeStore();
+const store = mockStore(fakeStore);
 
 describe('Component: ModalCartAdd', () => {
   it('should render correctly', () => {
-    const store = mockStore(fakeStore);
     render(
       <Provider store={store}>
         <Router history={history}>
@@ -44,9 +44,11 @@ describe('Component: ModalCartAdd', () => {
 
   it('should call callback when user click on close button', () => {
     render(
-      <Router history={history}>
-        <ModalCartAdd activeGuitar={guitar} isVisible={false} onModalClose={onModalClose} onSuccess={onSuccess}/>
-      </Router>,
+      <Provider store={store}>
+        <Router history={history}>
+          <ModalCartAdd activeGuitar={guitar} isVisible={false} onModalClose={onModalClose} onSuccess={onSuccess}/>
+        </Router>
+      </Provider>,
     );
 
     userEvent.click(screen.getByLabelText('Закрыть'));

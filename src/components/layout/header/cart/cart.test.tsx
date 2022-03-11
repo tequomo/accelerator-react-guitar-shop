@@ -23,10 +23,10 @@ const mockStore = configureMockStore<
 >(middlewares);
 
 const fakeStore = getFakeStore();
+const store = mockStore(fakeStore);
 
 describe('Component: Cart', () => {
   it('should render correctly', () => {
-    const store = mockStore(fakeStore);
     render(
       <Provider store={store}>
         <Router history={history}>
@@ -42,13 +42,15 @@ describe('Component: Cart', () => {
 
   it('should redirect and update dom when user click on link', () => {
     render(
-      <Router history={history}>
-        <Route>
-          <Cart />
-        </Route>
-        <Route path={AppRoute.Cart} render ={() => (<h1>This is my basket</h1>)}>
-        </Route>
-      </Router>,
+      <Provider store={store}>
+        <Router history={history}>
+          <Route>
+            <Cart />
+          </Route>
+          <Route path={AppRoute.Cart} render ={() => (<h1>This is my basket</h1>)}>
+          </Route>
+        </Router>
+      </Provider>,
     );
 
     userEvent.click(screen.getByText(/Перейти в корзину/i));
