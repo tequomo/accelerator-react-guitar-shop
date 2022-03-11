@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { AppRoute, SortingOrder, SortingType, UrlSortParams } from '../../../const';
@@ -25,18 +23,6 @@ function CatalogSort(): JSX.Element {
 
   useEffect(() => {
     if(firstSortInit){
-      // const querySortType = Array.from(queryString.entries())
-      //   .filter((arr) => Object.values(UrlSortParams).includes(arr[0]))[0];
-
-      // const querySortOrder = Array.from(queryString.entries())
-      //   .filter((arr) => Object.values(UrlSortParams.Order).includes(arr[0]))[1];
-
-      // if(querySortType[1] !== sortingType) {
-      //   setSortingType(querySortType[1]);
-      // }
-      // if(querySortOrder[1] !== sortingOrder) {
-      //   setSortingOrder(querySortOrder[1]);
-      // }
       setFirstSortInit(false);
       return;
     }

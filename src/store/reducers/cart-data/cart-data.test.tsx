@@ -12,7 +12,6 @@ export const state: CartData = {
   orderLoadingStatus: LoadingStatus.Idle,
 };
 
-// const fakeCartItem = getFakeCartItem;
 const fakeGuitar = getFakeGuitar();
 const fakeCartItem = {
   item: fakeGuitar,

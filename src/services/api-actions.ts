@@ -85,7 +85,6 @@ export const fetchGuitarReviewsAction = (guitarId: string, reviewsCount: number)
 export const postGuitarReviewAction = (review: ReviewPostType): ThunkActionResult =>
   async (dispatch, getState, api): Promise<void> => {
     try {
-      // dispatch(setUploadReviewLoadingStatus(LoadingStatus.Loading));
       const { data } = await api.post<ReviewType>(ApiRoute.Comments, review);
 
       const showedReviews = getState().GUITAR_REVIEWS_DATA.guitarReviews;
