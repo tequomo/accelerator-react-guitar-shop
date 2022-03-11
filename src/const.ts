@@ -91,9 +91,9 @@ export enum UrlPaginationParams {
   End = '_end',
 }
 
-export const Messages = {
-  LOAD_FAIL: 'Загрузка данных не удалась. Возможно, Вы не в сети',
-};
+export enum ToastMessage {
+  LoadFail = 'Загрузка данных не удалась. Возможно, Вы не в сети',
+}
 
 export enum GuitarPropertyTab {
   Characteristics = 'characteristics',
@@ -125,11 +125,11 @@ export const RatingValue = [
 ];
 
 export const CouponValue = {
-  DEFAULT: null,
-  LIGHT: 'light-333',
-  MEDIUM: 'medium-444',
-  HEIGHT: 'height-555',
-};
+  Default: null,
+  Light: 'light-333',
+  Medium: 'medium-444',
+  Height: 'height-555',
+} as const;
 
 export enum CouponMessage {
   Default = '',

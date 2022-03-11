@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { LoadingStatus } from '../../../const';
+import { CouponValue, LoadingStatus } from '../../../const';
 import { CartItemType } from '../../../types/cart-type';
 import { CartData } from '../../../types/state';
 import {
@@ -84,7 +84,7 @@ const cartData = createReducer(initialState, (builder) => {
     })
     .addCase(clearCart, (state) => {
       state.cartItems.length = 0;
-      state.coupon = '';
+      state.coupon = CouponValue.Default;
       state.discount = 0;
       state.discountLoadingStatus = LoadingStatus.Idle;
       state.orderLoadingStatus = LoadingStatus.Idle;

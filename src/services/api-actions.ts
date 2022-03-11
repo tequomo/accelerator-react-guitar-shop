@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { ApiRoute, EMBED_COMMENTS_KEY, LoadingStatus, Messages, PRICE_INTERVAL_QUERY } from '../const';
+import { ApiRoute, EMBED_COMMENTS_KEY, LoadingStatus, ToastMessage, PRICE_INTERVAL_QUERY } from '../const';
 import {
   doSearchRequest,
   loadMinMaxPriceValues,
@@ -38,7 +38,7 @@ export const fetchGuitarsAction = (queryString=''): ThunkActionResult =>
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setGuitarsLoadingStatus(LoadingStatus.Failed));
-      toast.error(Messages.LOAD_FAIL);
+      toast.error(ToastMessage.LoadFail);
     }
   };
 
@@ -53,7 +53,7 @@ export const fetchMinMaxPriceValuesAction = (queryString: string): ThunkActionRe
       dispatch(setPriceValuesLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setPriceValuesLoadingStatus(LoadingStatus.Failed));
-      toast.error(Messages.LOAD_FAIL);
+      toast.error(ToastMessage.LoadFail);
     }
   };
 
@@ -65,7 +65,7 @@ export const fetchCurrentGuitarAction = (id: string): ThunkActionResult =>
       dispatch(setCurrentGuitarLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setCurrentGuitarLoadingStatus(LoadingStatus.Failed));
-      toast.error(Messages.LOAD_FAIL);
+      toast.error(ToastMessage.LoadFail);
     }
   };
 
@@ -78,7 +78,7 @@ export const fetchGuitarReviewsAction = (guitarId: string, reviewsCount: number)
       dispatch(setGuitarReviewsLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setGuitarReviewsLoadingStatus(LoadingStatus.Failed));
-      toast.error(Messages.LOAD_FAIL);
+      toast.error(ToastMessage.LoadFail);
     }
   };
 
@@ -96,7 +96,7 @@ export const postGuitarReviewAction = (review: ReviewPostType): ThunkActionResul
       dispatch(setUploadReviewLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setUploadReviewLoadingStatus(LoadingStatus.Failed));
-      toast.error(Messages.LOAD_FAIL);
+      toast.error(ToastMessage.LoadFail);
     }
   };
 
@@ -114,7 +114,7 @@ export const fetchSearchGuitarAction = (query: string): ThunkActionResult =>
       dispatch(setSearchResultLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setSearchResultLoadingStatus(LoadingStatus.Failed));
-      toast.error(Messages.LOAD_FAIL);
+      toast.error(ToastMessage.LoadFail);
     }
   };
 
@@ -139,7 +139,7 @@ export const postOrderAction = (order: OrderPostType): ThunkActionResult =>
       dispatch(setOrderLoadingStatus(LoadingStatus.Succeeded));
     } catch {
       dispatch(setOrderLoadingStatus(LoadingStatus.Failed));
-      toast.error(Messages.LOAD_FAIL);
+      toast.error(ToastMessage.LoadFail);
     }
   };
 
