@@ -1,10 +1,10 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { GUITARS_TYPES, IMG_BASE_PATH } from '../../../const';
+import { GUITARS_TYPES, IMG_BASE_PATH, ItemCountValues } from '../../../const';
 import { addItemToCart, changeCartItemCount, removeItemFromCart } from '../../../store/action';
 import { CartItemType } from '../../../types/cart-type';
 import { GuitarType } from '../../../types/guitar-type';
-import { modifyImgUrl } from '../../../utils/utils';
+import { hasStartZero, modifyImgUrl, removeStartZero } from '../../../utils/utils';
 
 type CartItemPropsType = {
   cartItem: CartItemType,
@@ -23,14 +23,14 @@ function CartItem({cartItem: {item, itemCount}, onDeleteClick}: CartItemPropsTyp
   const dispatch = useDispatch();
 
   const checkAddItemCount = () => {
-    if(guitarsCount < 99) {
+    if(guitarsCount < ItemCountValues.Max) {
       setGuitarsCount((state) => state + 1);
       dispatch(addItemToCart(item));
     }
   };
 
   const checkRemoveItemCount = () => {
-    if(guitarsCount > 1) {
+    if(guitarsCount > ItemCountValues.Min) {
       setGuitarsCount((state) => state - 1);
       dispatch(removeItemFromCart(item));
     }
@@ -39,8 +39,9 @@ function CartItem({cartItem: {item, itemCount}, onDeleteClick}: CartItemPropsTyp
     }
   };
 
-  const handleChangeCountInput = (evt: ChangeEvent<HTMLInputElement>): void => {
-    setGuitarsCount(+evt.target.value);
+  const handleChangeInput = (evt: ChangeEvent<HTMLInputElement>): void => {
+    const count = hasStartZero(evt.target.value) ? +removeStartZero(evt.target.value) : +evt.target.value;
+    setGuitarsCount(count);
   };
 
   const handleChangeCartItemCount = (evt: ChangeEvent<HTMLInputElement>): void => {
@@ -48,7 +49,10 @@ function CartItem({cartItem: {item, itemCount}, onDeleteClick}: CartItemPropsTyp
       onDeleteClick();
     }
     else {
-      dispatch(changeCartItemCount(item.id, +evt.target.value));
+      let count = hasStartZero(evt.target.value) ? +removeStartZero(evt.target.value) : +evt.target.value;
+      count = (count > ItemCountValues.Max) ? ItemCountValues.Max : count;
+      setGuitarsCount(count);
+      dispatch(changeCartItemCount(item.id, count));
     }
   };
 
@@ -77,7 +81,7 @@ function CartItem({cartItem: {item, itemCount}, onDeleteClick}: CartItemPropsTyp
             <use xlinkHref="#icon-minus"></use>
           </svg>
         </button>
-        <input className="quantity__input" type="number" placeholder="1" id="2-count" name="2-count" max="99" value={guitarsCount} onChange={handleChangeCountInput} onBlur={handleChangeCartItemCount}/>
+        <input className="quantity__input" type="number" placeholder="1" id="2-count" name="2-count" max="99" value={guitarsCount.toString()} onChange={handleChangeInput} onInput={handleChangeInput} onBlur={handleChangeCartItemCount}/>
         <button className="quantity__button" aria-label="Увеличить количество" onClick={checkAddItemCount}>
           <svg width="8" height="8" aria-hidden="true">
             <use xlinkHref="#icon-plus"></use>

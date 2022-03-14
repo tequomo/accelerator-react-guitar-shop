@@ -86,6 +86,11 @@ export const UrlSortParams = {
   Order: '_order',
 };
 
+export const ItemCountValues = {
+  Min: 1,
+  Max: 99,
+};
+
 export enum UrlPaginationParams {
   Start = '_start',
   End = '_end',

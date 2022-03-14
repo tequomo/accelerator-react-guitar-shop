@@ -1,12 +1,22 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Link, useLocation, useRouteMatch } from 'react-router-dom';
+import { AppRoute } from '../../../../const';
+
 function Navigation(): JSX.Element {
+
+  const currentRoute = useRouteMatch();
+
+  const isCatalog = (currentRoute.path === `${AppRoute.GuitarQuery}${AppRoute.CatalogPage}`) || (currentRoute.path === AppRoute.Main);
+
   return (
     <nav className="main-nav">
       <ul className="main-nav__list">
-        <li><a className="link main-nav__link link--current" href="/#">Каталог</a>
+        <li><Link className={`link main-nav__link${isCatalog ? ' link--current' : ''}`} to={AppRoute.Main}>Каталог</Link>
         </li>
-        <li><a className="link main-nav__link" href="/#">Где купить?</a>
+        <li><Link className="link main-nav__link" to={'/#'}>Где купить?</Link>
         </li>
-        <li><a className="link main-nav__link" href="/#">О компании</a>
+        <li><Link className="link main-nav__link" to={'/#'}>О компании</Link>
         </li>
       </ul>
     </nav>

@@ -36,4 +36,7 @@ export const reviewRatingValues = new Array(MAX_RATING_VALUE).fill(null).map((_,
 
 export const hasBlankSpaces = (str: string) => str.match(/(\s)/g) !== null;
 export const removeSpaces = (str: string) => str.replace(/(\s)/g,'');
+export const hasStartZero = (str: string) => str.match(/^0+/) !== null;
+export const removeStartZero = (str: string) => str.replace(/^0+/,'');
+
 
